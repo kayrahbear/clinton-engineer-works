@@ -1,13 +1,4 @@
-const { getCorsHeaders } = require("./cors");
-
-const buildResponse = (statusCode, payload, origin) => ({
-  statusCode,
-  headers: {
-    "Content-Type": "application/json",
-    ...getCorsHeaders(origin),
-  },
-  body: JSON.stringify(payload),
-});
+const { buildResponse } = require("../utils/response");
 
 const withErrorHandling = (handler) => async (event) => {
   try {

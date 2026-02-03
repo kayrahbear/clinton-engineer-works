@@ -45,8 +45,8 @@ resource "aws_db_instance" "main" {
   performance_insights_enabled = var.environment == "prod"
 
   # Deletion protection
-  deletion_protection = var.environment == "prod"
-  skip_final_snapshot = var.environment != "prod"
+  deletion_protection       = var.environment == "prod"
+  skip_final_snapshot       = var.environment != "prod"
   final_snapshot_identifier = var.environment == "prod" ? "${var.project_name}-${var.environment}-final-snapshot" : null
 
   tags = {

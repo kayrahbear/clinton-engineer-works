@@ -67,3 +67,8 @@ output "s3_deployment_bucket" {
   description = "S3 bucket for Lambda deployment packages"
   value       = aws_s3_bucket.lambda_deployments.bucket
 }
+
+output "ops_instance_id" {
+  description = "Ops EC2 instance ID (SSM managed)"
+  value       = aws_instance.ops.id
+}

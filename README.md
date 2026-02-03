@@ -119,6 +119,35 @@ DB_USER
 DB_PASSWORD
 ```
 
+### RDS migrations via SSM port forwarding (recommended)
+
+After Terraform apply, use the SSM-managed ops instance to forward a local port
+to the private RDS endpoint without creating a bastion.
+
+1. Fetch the ops instance ID and RDS endpoint:
+
+```bash
+cd infrastructure
+terraform output -raw ops_instance_id
+terraform output -raw rds_address
+```
+
+2. Start the SSM port forwarding session:
+
+```bash
+aws ssm start-session \
+  --target <ops-instance-id> \
+  --document-name AWS-StartPortForwardingSessionToRemoteHost \
+  --parameters '{"host":["<rds-address>"],"portNumber":["5432"],"localPortNumber":["5432"]}'
+```
+
+3. In a second terminal, run migrations with SSL enabled:
+
+```bash
+cd backend
+DB_HOST=127.0.0.1 DB_PORT=5432 DB_SSL=true npm run db:migrate
+```
+
 ## Infrastructure Deployment
 
 ### First-Time Setup

@@ -102,3 +102,10 @@ variable "lambda_timeout" {
   type        = number
   default     = 30
 }
+
+# Ops EC2 (SSM-managed) instance
+variable "ops_instance_type" {
+  description = "Instance type for the ops EC2 instance"
+  type        = string
+  default     = "t3.micro"
+}

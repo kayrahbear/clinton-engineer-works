@@ -30,12 +30,15 @@ if (Number.isNaN(steps) || steps < 1) {
   process.exit(1)
 }
 
+const useSsl = process.env.DB_SSL === 'true'
+
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432', 10),
   database: process.env.DB_NAME || 'sims_legacy',
   user: process.env.DB_USER || 'sims_admin',
   password: process.env.DB_PASSWORD,
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
   max: 5,
 })
 
