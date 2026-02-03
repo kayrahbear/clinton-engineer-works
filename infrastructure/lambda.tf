@@ -6,8 +6,9 @@ resource "aws_lambda_function" "api" {
   function_name = "${var.project_name}-${var.environment}-api"
   description   = "Sims Legacy Tracker API handler"
 
-  # Placeholder - will be updated with actual deployment package
-  filename         = data.archive_file.lambda_placeholder.output_path
+  # Deployment package stored in S3
+  s3_bucket        = aws_s3_bucket.lambda_deployments.bucket
+  s3_key           = aws_s3_object.lambda_placeholder.key
   source_code_hash = data.archive_file.lambda_placeholder.output_base64sha256
 
   runtime     = var.lambda_runtime
@@ -45,6 +46,14 @@ data "archive_file" "lambda_placeholder" {
     content  = "exports.handler = async (event) => ({ statusCode: 200, body: JSON.stringify({ message: 'Sims Legacy Tracker API' }) });"
     filename = "index.js"
   }
+}
+
+# Upload placeholder zip to S3
+resource "aws_s3_object" "lambda_placeholder" {
+  bucket = aws_s3_bucket.lambda_deployments.bucket
+  key    = "lambda-placeholder.zip"
+  source = data.archive_file.lambda_placeholder.output_path
+  etag   = filemd5(data.archive_file.lambda_placeholder.output_path)
 }
 
 # CloudWatch log group for Lambda

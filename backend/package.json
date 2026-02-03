@@ -4,12 +4,20 @@
   "private": true,
   "description": "Backend for the Sims 4 Legacy Challenge Tracker",
   "scripts": {
+    "dev": "node src/dev-server.js",
+    "build": "node scripts/build-lambda.js",
+    "package": "npm run build",
+    "db:migrate": "node ../database/scripts/migrate.js up",
+    "db:migrate:status": "node ../database/scripts/migrate.js status",
+    "db:migrate:down": "node ../database/scripts/migrate.js down --steps=1",
+    "db:migrate:baseline": "node ../database/scripts/migrate.js baseline",
     "seed": "node ../database/scripts/seed.js",
     "seed:reference": "node ../database/scripts/seed-reference-data.js",
     "seed:legacy": "node ../database/scripts/seed-pack-legacy.js",
     "db:clear": "node ../database/scripts/clear-database.js"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.465.0",
     "dotenv": "^16.3.1",
     "pg": "^8.12.0"
   }

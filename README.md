@@ -67,6 +67,58 @@ The schema includes 23 tables covering:
 
 All succession laws (gender, bloodline, heir, species) are modeled as PostgreSQL enums.
 
+## Database Migrations
+
+Migrations live in `database/migrations` using paired files:
+
+- `NNN_description.up.sql`
+- `NNN_description.down.sql`
+
+The migration runner tracks applied migrations in a `schema_migrations` table.
+
+### Apply migrations (local or RDS)
+
+```bash
+cd backend
+npm run db:migrate
+```
+
+### Check migration status
+
+```bash
+cd backend
+npm run db:migrate:status
+```
+
+### Roll back the last migration
+
+```bash
+cd backend
+npm run db:migrate:down
+```
+
+### Baseline existing schema
+
+If your database already has the schema applied (e.g., from `schema.sql`), record
+the migration as applied without re-running it:
+
+```bash
+cd backend
+npm run db:migrate:baseline
+```
+
+### Environment variables
+
+The migration runner uses the same DB environment variables as the backend:
+
+```
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+```
+
 ## Infrastructure Deployment
 
 ### First-Time Setup
@@ -97,6 +149,12 @@ After deployment, Terraform outputs:
 - `s3_deployment_bucket` - Deployment artifact bucket
 - `db_secret_arn` - Secrets Manager ARN for DB credentials
 
+### Lambda package bucket
+
+Lambda deployment packages are stored in the S3 bucket `s3_deployment_bucket`.
+Terraform uploads a placeholder zip at `lambda-placeholder.zip` until the real
+deployment workflow is wired up.
+
 ### Environment Differences
 
 | Setting | Dev | Prod |
@@ -123,6 +181,24 @@ cd backend
 cp .env.example .env
 npm install
 npm run dev
+```
+
+### Secrets Manager DB credentials (Lambda)
+
+In AWS, the Lambda is configured with `DB_SECRET_ARN`. When this is set, the
+backend loads DB credentials from Secrets Manager instead of local env vars.
+
+The secret JSON should include:
+
+```json
+{
+  "username": "sims_admin",
+  "password": "...",
+  "host": "...",
+  "port": 5432,
+  "dbname": "sims_legacy",
+  "engine": "postgres"
+}
 ```
 
 ## Legacy Challenge Laws

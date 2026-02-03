@@ -56,7 +56,7 @@ variable "db_username" {
 variable "db_engine_version" {
   description = "PostgreSQL engine version"
   type        = string
-  default     = "15.4"
+  default     = "15.15"
 }
 
 # Networking
