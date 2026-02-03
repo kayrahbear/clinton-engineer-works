@@ -1,0 +1,2146 @@
+[
+  {
+    "generation_number": 1,
+    "pack_name": "Outdoor Retreat",
+    "backstory": "The founder of your legacy challenge will be a hopeless romantic looking for the one to take on the journey of a lifetime. Your sim grew up in a fisher family and, to this date, it's still is one of their favorite things to do. Next to fishing, your sim loves to read and their perfect life is a simple house amidst nature where they can spend all of their time exploring the land with their partner. However, there is one downside; the love of their life hates bugs and creepy crawlers.",
+    "required_goals": [
+      {
+        "goal_text": "Complete the Angling Ace Aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Outdoor Enthusiast aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date a sim with the 'squeamish trait'",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Take your sim and partner on a holiday to Granite Falls",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the herbalism skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the fish & insects collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Enter the secret lot in Granite Falls and befriend Hermit",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Go on two holidays, one to camp and one in a lodge",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own camping or lodge just using base game and Outdoor Retreat",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Have a Weenie Roast party",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Bookworm",
+      "Romantic",
+      "Loves Outdoors"
+    ],
+    "required_career": "Writer",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 2,
+    "pack_name": "Spa Day",
+    "backstory": "Your 2nd generation Sim will be a perfect mix of their parents, in love with the balance of nature but absolutely despising everything related to living in nature. Their desire for balance can be found in working out, taking good care of the body and soul and living a minimalistic life style. Everything in their life is organized and under their control and this doesn't make them an easy sim to live with because they expect nothing else but perfection from everyone else too",
+    "required_goals": [
+      {
+        "goal_text": "Complete one of the three Spa Day aspirations (Inner Peace, Self-Care Specialist, Zen Guru)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the wellness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Live a life with minimal possessions but enough money to buy anything high quality (aka you can be rich but you don't own many things)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Finish the Business career",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date at least 5 sims before you settle down, none of them are perfect enough. You are allowed to have kids with all sims you date if you want.",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete (one of) the other two aspirations for Spa Day",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own Gym/Spa",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "High Maintenance",
+      "Perfectionist",
+      "Ambitious"
+    ],
+    "required_career": "Business",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 3,
+    "pack_name": "Get to Work",
+    "backstory": "Your 3rd generation Sim has only seen one thing from their parents: work hard and be perfect. Even as a teen they've already been working in addition to their studies. This has driven them into ambitious careers that they want to excel in as fast as possible. However, this is not their true dream. They would love to be the proud owner of a bakery that sells beautiful cakes and buns. Maybe their true love will even walk through the door of their shop one day?",
+    "required_goals": [
+      {
+        "goal_text": "Have a part-time job as a student but still graduate as an A-grade student",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the baking skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete one of the get to work careers before your sim becomes an adult",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Open your own bakery and run a business as your main job",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get married to one of the customers from your shop (first interaction/meet must be in the shop)",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own bakery",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete one of the following aspirations: Grilled Cheese, Master Chef or the Master Mixologist Aspiration",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Foodie",
+      "Vegetarian",
+      "Good"
+    ],
+    "required_career": "Doctor",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 4,
+    "pack_name": "Get Together",
+    "backstory": "Your 4th generation Sim grew up in the safety of a little bakery and is DONE with the small town life. They want to explore the world, unleash their creativity but most of all: hang out with the most amazing people from all around the world. They very rarely wake up before the sunset and going to bed at 7AM is perfectly normal. Especially if you danced and performed all night! They postpone starting a family until late in life and even when they have a family they still love to organize nights out (allowed to use movie night and bowling night for more diversity)",
+    "required_goals": [
+      {
+        "goal_text": "Don't marry or have kids until you're an adult over half of their lifespan in that phase",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the DJ and Dancing skills",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the leader of the pack aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have your sim run a club that unlocks all members and at least 15 club perks",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Earn enough money for your sim to have a music and/or dance studio in their house",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own nightclub",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete both tracks of the entertainment career",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the Party Animal Aspiration",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Outgoing",
+      "Insider",
+      "Dance Machine"
+    ],
+    "required_career": "Entertainer",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 5,
+    "pack_name": "Dine Out",
+    "backstory": "Your 5th generation Sim has always heard stories about the great bakery owned by their grandparents. Unfortunately they never got to meet them because they had already passed once your sim was born. The idea of making their own food has always intrigued them. Ever since they were young they've been part of the night life of others and they feel like those two would make the perfect combination: running a successful restaurant that becomes THE hotspot of the town. One challenge: your Sim doesn't eat meat themselves. Maybe open the first vegan restaurant in the neighborhood?",
+    "required_goals": [
+      {
+        "goal_text": "Get to at least level 5 in the culinary career",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Own and run a successful restaurant",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the experimental food print collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the first three levels of the master chef or the master mixologist aspiration (if you do the optional goals you can complete it entirely)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Make every single meal once",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the cooking and gourmet cooking skill",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the culinary career completely (you can pick which branch and pick the matching aspiration to complete)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own restaurant",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the mixology skill",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Foodie",
+      "Perfectionist",
+      "Vegetarian"
+    ],
+    "required_career": "Culinary",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 6,
+    "pack_name": "City Living",
+    "backstory": "Your 6th generation Sim has always know their passion: becoming a critic and judging others. From the first moment a food critic visited their parents restaurant they were sold on the job. Their dream? Becoming rich from deciding if other people's work is worth the light of day. Besides their job, they love to invite friends over to the big city, show them around and end the night with a solid karaoke session. Showing off their ever growing apartment and budget and moving into the fancier parts of town makes them feel important and powerful.",
+    "required_goals": [
+      {
+        "goal_text": "Complete the city poster collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Visit every single festival in the city at least once",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the singing skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have karaoke nights with your friends at least once a week",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the city native aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Start in a small apartment and work yourself up to one of the three penthouses (you can pick yourself how often you move)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Accidentally kill one of your friends by serving them a home made pufferfish nigiri (you are allowed to try and bring them back to life)",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own Karaoke bar",
+        "is_optional": true
+      },
+      {
+        "goal_text": "After completing the career, switch to the social media one and complete it as far as possible",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Never get married or find a partner and adopt a kid",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the snowglobe collection",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Unflirty",
+      "Self-Assured",
+      "Snob"
+    ],
+    "required_career": "Critic",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 7,
+    "pack_name": "Vampires",
+    "backstory": "Your 7th generation Sim grew up in the city with parent(s) who were always out and about. Their passion has always been drawing and that has been how they coped with emotions for as long as they can remember. They basically raised themselves and as they get older, they get into trouble in the darker parts of the city. One day they meet a charming Vampire and it becomes their life mission to become one too. Climbing up the vampire ranks their thirst for power grows. Their dream is to find another vampire to rule Forgotten Hollow with. However, once they do you fall in love and have a vampire baby they realize they don't want to condemn your child to a life in the dark and they set out to find a cure for their child.",
+    "required_goals": [
+      {
+        "goal_text": "Live in forgotten Hollow and befriend all the vampires",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get turned into a Vampire",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become a Grand Master Vampire",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Master Vampire aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Unlock all vampiric traits (apart from conflicting ones)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Find the cure for being a vampire and cure your child",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have a child/children with another vampire",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Create vampire offspring (new vampires) during your vampire era",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start your life in Forgotten Hollow as a runaway; without any money or belongings (rags to riches)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "After becoming a parent start the 'Good Vampire' aspiration",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Loner",
+      "Art Lover",
+      "Gloomy"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 8,
+    "pack_name": "Parenthood",
+    "backstory": "Your 8th generation Sim did not have a normal/easy childhood at all: 1) Growing up between Vampires in Forgotten Hollow 2) Having a parent who is dedicated to \"saving your life\" and 3) Leaving their home once they were cured because it was no longer safe, shaped them into who they are today: someone who wants to have a close knit family and a normal life above all else. They want to create a sense of home, safety and protection that they themselves never had. Their family is their number one priority and you will do anything to make them happy.",
+    "required_goals": [
+      {
+        "goal_text": "Have 6 kids so you have a maximum of 8 sims living in your household (incl. You + Partner)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Big Happy Family aspiration OR the Super Parent aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "After completing one of the aspirations above switch to the 'successful lineage' aspiration and finish that too",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Master the parenting skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Never age up a toddler/kid before all skills and character values are (positively) maxed out",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Play with this generation until all kids are young adults",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Be best friends with all of your kids (social bar maxed out)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "After completing the Big Happy Family aspiration OR the Super Parent aspiration also complete the second one before switching to 'successful lineage'",
+        "is_optional": true
+      },
+      {
+        "goal_text": "You can shorten this generation by having less kids if you don't like family gameplay too much",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Neat",
+      "Childish",
+      "Bookworm"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 9,
+    "pack_name": "Cats & Dogs",
+    "backstory": "Your 9th generation Sim grew up in a large household of 6 and has an incredible sense of family. They love the safety of their parental home but there was always something missing; pets. Friends from school always had cats and/or dogs and this made your sim want that as well. Their wish: make sure everyone has happy and healthy pets to bring that same sense of home and safety they had when growing up. However, growing up in such a large family has taught your sim one thing: never so many kids again. They'd rather have 4 cats, 2 dogs and 1 partner than 6 kids!",
+    "required_goals": [
+      {
+        "goal_text": "Live in Brindleton Bay",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Buy and run a successful clinic",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Pet Training and Veterinarian skills",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Own at least one dog and one cat (can be more to your own liking)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the 'friend of the animals' aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the feathers collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Meet your partner through the vet clinic you work in and eventually employ them there (can also be an existing employee)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have a dog who knows all the commands",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own vet clinic",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Live in a house with the cat and dog hangout lot traits",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own training grounds",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Also have a rodent (if you also use my first pet stuff)",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Cat Lover",
+      "Dog Lover",
+      "Good"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 10,
+    "pack_name": "Seasons",
+    "backstory": "Your 10th generation Sim absolutely loves family traditions, hosting parties and just enjoying all life has to offer all year round. Growing up in the safety of Brindleton Bay your sim knows nothing else than happy family times. However, life is not just perfect. Your sim struggles to find the happy marriage they always dreamed of and even though from the outside their life seems perfect, the household your sim lives in holds some darker secrets and tragedies",
+    "required_goals": [
+      {
+        "goal_text": "All kids have to enter the scouts",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the freelance botanist aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Party Animal aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have two failed marriages (live with both husbands and slowly break up over a worse getting relationship)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Celebrate ALL holiday calendars 100% successful for all sims living in the household",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the skating skill (hidden skill)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the flower arranging skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the gardening skill",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Have one of the kids in the family die of freezing/lightning/overheating (to add to the tragedy of this generation)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Create your own holiday calendar, where the amount of holidays is the same as the current or more",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Family-Oriented",
+      "Outgoing",
+      "Cheerful"
+    ],
+    "required_career": "Gardener",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 11,
+    "pack_name": "Jungle Adventure",
+    "backstory": "Your 11th generation Sim has some life goals: spend time outdoors, learn about different cultures and places, and eventually visit the beautiful Jungle of Salvadorada. At a young age, in scouts, they already discovered their love for being out and discovering the world. There simply is too much to see to stay in one place. Their hunger to learn more and go back further in time is hard to calm. Having almost no home base makes it difficult to start a family and this sometimes leaves them with a little bit of a lonely feeling. However, they're not sure they even want a family, looking back at their childhood and the struggles they had in your own home...",
+    "required_goals": [
+      {
+        "goal_text": "Max out the Salvadorian Culture Skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Archeology skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete both the Jungle Explorer and Archaeology Scholar aspirations",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Life in at least 3 different worlds over the course of your life",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Fossils Collection (15 from BaseGame and 5 from Jungle Adventure)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Summon at least two skeletons",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Visit both the secret lot in Oasis Springs and Willow Creek",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the Crystals Collection (Basegame + 2 from Jungle Adventure)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Become a skeleton for two days",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own holiday home/campsite in Salvadorada",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Genius",
+      "Geek",
+      "Glutton"
+    ],
+    "required_career": "Writer",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 12,
+    "pack_name": "Get Famous",
+    "backstory": "Your 12th generation Sim has seen so much by traveling the world with their parents. However, they're done standing in the shadow of their parents success. Their parents might be a famous writer and archaeologist but they have BIGGER plans. They want to be SEEN by the world no matter the costs. They don't want to be liked or loved, they want to be adored. However, they might need to put in some work before they're there. Staring out in the gutter of Del Sol Valley they might have to settle for some smaller jobs first...",
+    "required_goals": [
+      {
+        "goal_text": "Live in Del Sol Valley",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Start this Generation with not more than 20.000 and work yourself up to living in the more expensive neighborhoods",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have many (failed) relationships but never get married",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Adopt one or more children towards the end of your adult life",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have your kids join the drama club after school",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the acting skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the World-Famous Celebrity aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Master Actor aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become a 5 star celebrity with a pristine reputation",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the fabulously wealthy aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own version of Plumbob Studio's",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start with less than 20.000 to challenge yourself even more",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Max out the media production/photography skill and earn even more money as a \"side hussle\"",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Self-Absorbed",
+      "Noncommittal",
+      "Materialistic"
+    ],
+    "required_career": "Actor",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 13,
+    "pack_name": "Strangerville",
+    "backstory": "Your 13th generation Sim grew up in the spotlight of their parent. Being adopted as a 'charity project' is something they struggled with throughout their entire childhood. They never felt like they fit in quite well with these rich folks. They tried being an actor like their parent but quickly noticed that they don't have the talent or patience they'd need for it. As they see their life slowly decay in front of their eyes, they move out to a little shithole trailer park to drink and waste away their life. Until one day, something strange starts to happen in the town and they are dead set on getting to the bottom of what is happening.",
+    "required_goals": [
+      {
+        "goal_text": "Complete the Strangerville mystery aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Move into the trailer park in Strangerville as a young adult and only move out to an actual house after completing the strangerville mystery",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Join and complete the military career",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the fitness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the video gaming skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Don't date/find love/marry or have kids before you complete the strangerville mystery and move out of the trailer home",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become best friends with someone as a teenager and end up marrying them later in life",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own extremely abandoned trailer",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start this generation without any money as a \"runaway\" and play it rags to riches style",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Slob",
+      "Lazy",
+      "Gloomy"
+    ],
+    "required_career": "Military",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 14,
+    "pack_name": "Realm of Magic",
+    "backstory": "Your 14th generation Sim grew up in a strict military household. Always be on your best behavior, stand up straight, get good grades and always be polite. However, they've heard stories. Their parent wasn't always that perfect themselves. As a matter of fact, they got to where they are by beating some mysterious monster. This story is never told at home but your Sim knows enough. They NEED to know more. As they explore the town and ask around they cross paths with someone else who is interested in magical encounters in Strangerville: a sage. After this first encounter they feel an itch that needs to scratched: they want to become a spellcaster no matter the costs. This was meant to be, this was their destiny.",
+    "required_goals": [
+      {
+        "goal_text": "Live in Glimmerbrook",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Spellcraft & Sorcery aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Purveyor of Potions aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the potions collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get yourself a Familiar",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go from human to spellcaster (by completing the quest from one of three sages)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Learn all 24 spells and complete all 15 potions",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become a Rank 6 Viruoso Spellcaster",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Fall in love/marry/have a child another spellcaster but give birth to human child without magic (you are allowed to cheat this in CAS)",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own Magic Realm",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Perfectionist",
+      "Ambitious",
+      "Erratic"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 15,
+    "pack_name": "Island Living",
+    "backstory": "Your 15th generation Sim was born in a spellcaster household but doesn't have any magic themselves. They hate themselves for being born \"normal\". Seeing how their parent is treated by other magical folks for having a \"broken\" child breaks their heart. Even though their parents love them the way they are, you Sim still want to find a cure to whatever is wrong with them. In the deep dark parts of town they've heard people speak of the origin of magic: mermaids. They decide to travel to the far ends of the world to find one and ask for a cure. However, once they arrive in Sulani they're faced with a terrible truth. The humans have ruined the islands nature so much that mermaids have almost gone extinct. With little hope they begin your journey to heal the world and bring back the magic. After all, they experience an exceptional bond with this place in the world. Like you were meant to be here....",
+    "required_goals": [
+      {
+        "goal_text": "Live in Sulani, start with a house off the grid",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the beach life aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the conservationist career",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the seashells collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Meet and fall in love with a mermaid",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become a mermaid",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Design your own beach",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Do all beach activities at least once: Building sand castles, snorkeling, Floating, sunbathing, Sulani Festivals, host kava parties, woohoo in the waterfall",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Child of the Islands",
+      "Child of the Ocean",
+      "Clumsy"
+    ],
+    "required_career": "Conservationist",
+    "required_career_branch": "Marine Biologist"
+  },
+  {
+    "generation_number": 16,
+    "pack_name": "Discover University",
+    "backstory": "Your 16h generation Sim just wants to live a normal life. Their parents and grandparents have spend their entire life chasing magic and with that they cursed your Sim to be a mermaid. They hate the beach, they hate sand and they hate anything that isn't normal. On their 18th birthday they get presented a ticket out: a way to leave the magic behind and go to university like a normal teenager. they want to study and enjoy university life to the fullest. They enjoy it so much that they decide to stay there as a teacher after they graduate themselves.",
+    "required_goals": [
+      {
+        "goal_text": "If you played the Sulani generation before this, cure your sim of being a mermaid on their birthday into young adulthood",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Live in Brichester",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Academic Aspiration (during your studies as young adult)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Renaissance Sim aspiration (during your working life as adult)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Finish at least one degree with honors while you're a young adult",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Master either the research & debate OR the Robotics skill depending on which university you attend",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Join the Secret Society",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own dorm",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own Student Commons",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Do a second study within the time you're a young adult at the other university (and max out the matching skill to that)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Own a servo",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Genius",
+      "Bookworm",
+      "Neat"
+    ],
+    "required_career": "Education",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 17,
+    "pack_name": "Eco lifestyle",
+    "backstory": "Your 17th generation Sim grew up in the small town of Brichester. Being so close to the Foxbury campus has inspired them all their lives. If servo's can help around the household what else can we do with robotics and modern technology? They are motivated to make the world a better place by recycling, researching the potentials of robotic design, and repurposing as much as possible. And they have found just the place; a gross harbor town that clearly needs cleaning up!",
+    "required_goals": [
+      {
+        "goal_text": "Live in every neighborhood of Evergreen Harbor and make them look clean and pretty",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Make sure you have a green eco footprint in all neighborhoods",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete both the Eco innovator & the Master Maker aspirations",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Fabrication skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Juice Fizzing skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Help voting in every neighborhood so all have neighborhood action plans in place",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have your own garden and eat as much natural food as possible (maybe even vegan?)",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own community space(s)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start this generation without any/very little money so you can play rags to riches style",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Go dumpster diving for most of your furniture",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Green Fiend",
+      "Maker",
+      "Recycle Disciple"
+    ],
+    "required_career": "Civil Designer",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 18,
+    "pack_name": "Nifty Knitting",
+    "backstory": "Your 18th generation Sim grew up in a world surrounded by crafters and people who are insanely creative with recycled materials. All throughout their lives they have had only one dream: earn money by crafting. Open a webshop and get recognized for the crafts they make. Their first love is knitting, but honestly, anything creative will go. Your sims personal life has always been easygoing. Being utterly in love with their high school sweetheart might have something to do with that. They'll have the perfect family and live the perfect life until that one day they decide to gift their partner a self knitted sweater....",
+    "required_goals": [
+      {
+        "goal_text": "Max out the knitting skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the painting skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the guitar skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Lord/Lady of the knits aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Teach all your children how to knit",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Marry your high school sweetheart",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Curse your loved one with the sweater curse eventually leading to a breakup",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "You are allowed to participate in other crafts and sell those on Plopsy too, depending on the packs you own. However, sell nothing outside of Plopsy!",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build yourself an art studio for your sim to work from",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the painter extraordinaire aspiration",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Creative",
+      "Goofball",
+      "Art Lover"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 19,
+    "pack_name": "Snowy Escape",
+    "backstory": "Your 19th generation Sim has always used working out as a way to escape from things. Through their parent's divorce there was quite a lot of emotion to deal with and moving your body has been your way of moving their emotions. From running to boxing, they love it all. They actually have 1 dream: make it your way of life. Snowboard, ski, mountain climb, hike, they want to do it all and never stop. In pursuit of their dreams they find themselves moving to Mt. Komorebi. To sustain their expensive sports, they must take a job at the most terrible place on eath: one of those big corporate offices",
+    "required_goals": [
+      {
+        "goal_text": "Live in Mt. Komorebi",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Extreme Sports Enthusiast aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Fitness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the rock climbing skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the snowboarding skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the skiiing skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go to the Onsen every week with your entire family",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Unlock at least on lifestyle per sim in your household",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go to the secret lot in Mt. Komorebi",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the Mt. Komorebi Sightseer aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the bodybuilder aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own Onsen",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own lot on the mountain peak (secret lot)",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Adventurous",
+      "Proper",
+      "Active"
+    ],
+    "required_career": "Salaryperson",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 20,
+    "pack_name": "Paranormal Stuff",
+    "backstory": "Your 20th generation Sim grows up in the cold snowy mountains while actually hating the cold. In a box in the attic they find the old diaries of your great great grandparents. In these diaries their great great grandparent describes how they got rid of the curse of magic to go to university. Your Sims interest is peaked and they want to get to the bottom of this. They decide to buy an old house and start researching this magic. However, they do not find what you expect.... What also might not help is that they themselves are not the friendliest of spirits, they thrive on breaking up marriages, spooking others and in reality; they might be the poltergeist people are trying to get rid of when they hire them.",
+    "required_goals": [
+      {
+        "goal_text": "Live in a house with the haunted lot trait",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the medium skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Summon Bonehilda to help out with the household tasks & befriend her",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the villainous Valentine aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Chief of Mischief aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Break up at least 5 marriages (preferably marriages of couples who hired you to cleanse their house)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have an accidental pregnancy from one of your cheating adventures but never ever become friends with the kid",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own haunted house or change an existing house to a grim looking haunted house",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the public enemy aspiration (for this you have to join the criminal career, you can do this if you complete the generation quickly)",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Evil",
+      "Mean",
+      "Hates Children"
+    ],
+    "required_career": "Freelance Paranormal Investigator",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 21,
+    "pack_name": "Dream home decorator",
+    "backstory": "Your 21st generation Sim grew up lonely, very very lonely. It was always made clear to them that you were unwanted and they had to figure out their own life. Growing up in a hellhole, they did found one thing to give them hope: dreaming. They dreamed of making the house a true home. They dreamed of replacing every floor tile with beautiful wooden floors. They dreamed of painting the walls in lush colors. They dreamed and dreamed until they were old enough and they could escape that hell. However, the dream never stopped. They started making the dream reality and used all the inspiration from their childhood to make sure no one ever felt like their own home wasn't homey, stylish, pretty or anything else they wished for. One day, your sims themselves will live the prettiest home for sure!",
+    "required_goals": [
+      {
+        "goal_text": "Max out the Charisma skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the handiness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Interior Decorator career track",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get fired for a job only ONCE because you flirt with the client, you'll end up falling in love with this person so it's okay!",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Mansion Baron Aspiration by slowly building and renovating your house over the course of your life",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Start this generation as a rags to riches with little to no money (this will make completing the aspiration significantly more difficult)",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Creative",
+      "Good",
+      "Loner"
+    ],
+    "required_career": "Interior Decorator",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 22,
+    "pack_name": "Cottage Living",
+    "backstory": "Your 22nd generation Sim grew up in a loving and safe house. However, there was one thing they never really liked at home and that was the obsession to have more and better and prettier houses. They prefer simple living and being in touch with nature. They want to live off the land and appreciate all that nature has to offer. They end up buying a small farm and living out their cottage core dreams.",
+    "required_goals": [
+      {
+        "goal_text": "Live in Henford-on-Bagley",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the country caretaker aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the cross stitching skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Live on a lot with the simple living lot challenge",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Win every single price at the finchwick fair (6x)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Cook/bake together with your family every Sunday",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Befriend as many animals as possible",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have at least one picnic with your family every season/4 weeks",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the plants/gardening collection (base game + Cottage living)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Buy clothes for your animals by interacting with the Creature Keeper",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Also enable the wild foxes lot challenge",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Make your sim Lactose intolerant instead of a foodie and make cooking even more challenging",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you have Get to Work, Outdoor Retreat, Jungle adventure, Vampires, Cats & Dogs, Seasons or Island living; complete the plant/gardening collection from those packs as well.",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Animal Enthusiast",
+      "Loves Outdoors",
+      "Foodie"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 23,
+    "pack_name": "My Wedding Stories",
+    "backstory": "Growing up in the romantic woods of Henford-on-Bagley your 23rd generation Sim has one dream: Romantic proposals, perfect weddings and a life full of love and romance. However, they first need to meet someone to marry and, as it turns out, that is not as easy as it sounds. They decide on the second best thing (for now): move to Tartosa and start working at a wedding planning agency.",
+    "required_goals": [
+      {
+        "goal_text": "Live in Tartosa",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete Serial Romantic Aspiration (in search of your true love)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Soulmate aspiration after completing the serial romantic one",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get married as an adult",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have every single event that can be associated with a wedding (Bach Party, Engagement dinner, Family gathering, Reception, Rehearsal dinner)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Renew your vows after being married for 1 year",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Collect all the messages in a bottle",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own wedding venue",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Have a failed marriage, divorce and do it all over again",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Romantic",
+      "Ambitious",
+      "Family-Oriented"
+    ],
+    "required_career": "Business",
+    "required_career_branch": "Management"
+  },
+  {
+    "generation_number": 24,
+    "pack_name": "Werewolves",
+    "backstory": "Your 24th generation Sim has always felt different. They never fit in the bright and sunny life of Tartosa where everyone is happy and in love UGH. As they runaway from home they get by, by stealing from others and living in abandoned shacks. In search of where they fit in they stumble upon the town of Moonwood Mill. There is something here that draws them in. Something about the dark, abandoned town that makes them stay longer than they've been in any other location. After meeting some of the locals they are sure, this is the place they were supposed to be. They put everything on the line to become part of one of the local packs. They're done being a lone wolf. Your sim wants to belong. However, being in a pack is not as easy as they thought, when the alpha wolf and you have an interesting dynamic...",
+    "required_goals": [
+      {
+        "goal_text": "Live in Moonwood Mill & explore the town through the deep dark tunnels",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Turn into a werewolf (Complete the Werewolf initiate aspiration)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Join either the Wildfangs or the Moonwood Collective and depending on which you pick; complete the matching aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "At some point become a lone wolf because you and alpha of the pack had a fallout (You get to decide your own storyline on why this happens)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the lone wolf aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Find the cure for being a werewolf (complete the cure seeker aspiration)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the fitness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the programming skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the mischievous skill",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own pack hide-outs",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Hot-Headed",
+      "Kleptomaniac",
+      "Slob"
+    ],
+    "required_career": "Criminal",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 25,
+    "pack_name": "High School Years",
+    "backstory": "Your 25th generation Sim grew up in a pretty rough environment. It's safe to say their childhood was far from normal. Knowing their parents run with the wolves and one day they might too scares them a lot. They know about the magical beings of spellcasters and vampires from their ancestors and if they are completely honest, they are not really looking forward to living a life away from the humans, having to pretend they are normal. They try to do anything and everything growing up to just be normal. It's not until they go to high school that they finally find a place they belong",
+    "required_goals": [
+      {
+        "goal_text": "Go thrift shopping with your sim at least once a week during their teenage years",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Join an after school activity and make sure they perform well in it",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Successfully go to prom at least once (with a date)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the entrepreneur skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Fall in love in high school and marry your high school sweetheart",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Pull various pranks in school without getting expelled from school",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete one of the four aspirations (drama Llama, Goal oriented, Live Fast or Admired Icon) during their teenage years.",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Move to Copperdale and live there - if you use mods you can use a mod to live on your own as a teenager already",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete one extra aspiration during their teenage years",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own high school",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Let your sim have the werewolf gene and go through high school as werewolf. You're also allowed to cure them or cheat them to a normal sim.",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Overachiever",
+      "Party Animal",
+      "Socially Awkward"
+    ],
+    "required_career": "Simfluencer",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 26,
+    "pack_name": "Growing Together",
+    "backstory": "Your 26th generation Sim is the youngest in the family and grows up in a peaceful household in Copperdale but when their parents grow older and their older siblings have moved out it's their time to shine. They offer to care for their parents while also starting their own family in the wonderful city of San Sequoia. They are the glue that holds generations together. Their dream is to live with as many generations possible in one household. Their parents, their kids and maybe even grand kids all together. They intend to build a home for generations to come!",
+    "required_goals": [
+      {
+        "goal_text": "As a kid, your 26th generation sim needs to complete 1/4 aspirations (Creative Genius, Mind and Body, Playtime Captain, Slumber Party Animal)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "As a kid your sim must exchange friendship bracelets with their childhood best friend and they will stay best friends for the rest of their lives",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Host slumber parties for all your kids and possibly host them when you're a kid yourself (so basically in generation 25)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have at least 4 kids - more if you want",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Try all foods in the high chair with all of your kids",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Teach all of your kids how to ride bikes",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Build a treehouse with the family",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have the 25th generation in your house until the pass away",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Unlock as many milestones as possible",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Host a baby shower every time you're pregnant",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Host at least 1 family reunion with all of your brothers and sisters - if they have families of their own make sure you know all of your extended family too",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete more than 1 aspiration from the list as a kid",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Invite over your brothers/sisters for a stayover at your house",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start this generation as a rags to riches and build up the family home as you make more money",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Family-Oriented",
+      "Good",
+      "Cheerful"
+    ],
+    "required_career": "Tech Guru",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 27,
+    "pack_name": "Horse Ranch",
+    "backstory": "Your 27th generation Sim is the youngest kid of a large family. They grew up in a very full house. Grandparents, parents, siblings, nieces and nephews and even some pets. Being introverted they never really liked all of these people around. They were happy to be able to escape the noise of the household to go horse back riding on the weekends. It's a hobby they took on as a kid and nothing has ever matched the bond they felt with their horse. They dream of a ranch life where they have all the space for themselves and their horses. And maybe, one day a small family.",
+    "required_goals": [
+      {
+        "goal_text": "Live on a ranch in Chestnut Ridge",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Own at least 2 horses, more if you want",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have al least 1 mini sheep or goat",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Each horse you own must fully develop their skills, even if you intent to sell them later",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Breed at least one time and raise a horse from foal to elder",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Win every single horse competition available",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Championship rider aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Make nectar at least once and if you do, only make it with self-grown ingredients",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Host a ranch gathering event",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Host an animal day event",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go explore the puzzle cave in Chestnut Ridge",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the expect nectar maker aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Start with a small ranch but earn yourself enough money to live on a 50x50 or 64x64 lot ranch",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own ranch",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Hire a ranch help (if you want)",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Horse Lover",
+      "Loyal",
+      "Rancher"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 28,
+    "pack_name": "Home Chef Hustle",
+    "backstory": "Your 28th generation Sim grew up on the ranch and it was nice to grow up in such a spacious place with so many resources from nature close by. From a young age they were fascinated with using those resources for flavorful adventures. Their parent was always busy working on the ranch but one thing they did every Sunday: Bake. As your sim ages this baking increases and as soon as they can they start selling their baked goods and saving up for better kitchen appliances. Their dream is to one day afford a home with a spacious kitchen and a glorious backyard to sell their goods from.",
+    "required_goals": [
+      {
+        "goal_text": "Finish the appliance wiz aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Finish the Market Magnate aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the cooking skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the gourmet cooking skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "As a kid bake every Sunday with their parent and once they become a parent themselves, bake every Sunday with your kids as well",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Build your own house with an emphasis on the kitchen, make it the heart of the home",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Meet your partner through your work - they can either be one of your customers or one of your co-workers later on",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "If you have high school years: Max out the entrepreneurial skill",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you have cottage living: add the simple living trait so you can only cook with supplies you actually own",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Foodie",
+      "Cheerful",
+      "Self-Assured"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 29,
+    "pack_name": "For Rent",
+    "backstory": "Your 29th generation Sim grew up amidst the hustle culture. From as long as they can remember their parent was selling baked goods from the garden. Much of their youth was about helping out around the house and everything was about the family business. They discover early on that they are quite smart and business savy and soon they start to realize that they might be capable of great success. Together with their childhood sweetheart, which they met over many games of hopscotch and marbles, they venture into the business of being a property owner. Whether they will be good for their tenants or if they are going to simply be there for the money is up for you to decide.",
+    "required_goals": [
+      {
+        "goal_text": "Finish the 'five star property owner' aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Live in Tomarang",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Finish the Fount of Tomarani Knowledge",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Marry your childhood sweetheart, they must be best friends from a young age",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Own at least one property, but you may own multiple if you can handle it",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the handiness skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the logic skill",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Finish the seeker of secrets aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "You can retire them as an elder and then complete the discerning Dweller aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you're up for a challenge, give one of your unit the mold challenge and one of your units the maintenance troubles challenge",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Nosy",
+      "Generous",
+      "Child of the Village"
+    ],
+    "required_career": "Business",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 30,
+    "pack_name": "Crystal Creations",
+    "backstory": "Your 30th generation Sim grew up rich, like very very rich. Their parents owned most of the property... well.. anywhere. There is not a place they can remember their parents did not own some real estate. One thing that always bothered them is that no matter how rich their parents were, they somehow still opted for very ugly jewlery. Even though there is so much beauty out there! Once your sim is old enough to move out of the house they decide to rent a flat from their parents (can be just a starter home if you don't have for rent) and make their own jewlery. Growing up with parents who were self employed they know that's what they want too. None of that silly 9-5 business. Gems are their passion and they want to work on it 24/7! The more they work with gems and metals the more they realize they might hold more power than meets the eye. They always believed that the whispers and stories of magic in the family was just some funny bedtime story but they are beginning to think otherwise...",
+    "required_goals": [
+      {
+        "goal_text": "Complete the gemstone colleciton",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the metals collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the gemology skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "When proposing to a partner you must use a self cut ring",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Charge at least 5 pieces of jewlery",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Summon the grim reaper at least once",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Grow a crystal tree",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "If you also own Realm of Magic feel free to make them a spellcaster",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you still have the grave of your spellcaster gen (gen 14) - summon their ghost and befriend them",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Make every single piece of jewlery that came with this pack",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Romantic",
+      "Art Lover",
+      "Creative"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 31,
+    "pack_name": "Lovestruck",
+    "backstory": "Your 31st generation Sim grew up with a lot of bling, literally. Their parent somehow managed to turn the most ugly of rocks into a beautiful ring or necklace. Since your sim was a little kid they have been dreaming of that one day they get to take one of those beautiful rings and propose to the love of their life. As soon as they can afford their own house they move to Ciudad Enamorada to live out their lovebug dreams. However, as it seems, romance is not all that easy. Dating turns out to be a bumpy road and once you pass the dating phase it's even harder to keep your partner happy! It might take some tries, but your sim will get there eventually! After finding the ONE themselves, they decide to start giving dating advice to others, because why not share the lessons learned?",
+    "required_goals": [
+      {
+        "goal_text": "Move to Ciudad Enamorada as soon as you're a young adult",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Only go on customized dates - no basegame dating here",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Use Cupid Corner at least 3 times to find matches",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date 5 sims before finding the one you want to marry - go on at least 2 dates with each sim",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Paragon Partner aspiration before you marry",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Romantic Explorer aspiration with the sim you marry",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Reach the highest level of the Romance Consultant Career",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Find Sammy Garcia (The Ring Bear) and help him find his missing ring",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Romantic Skill",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Build your own lounge/bar and give it the Singles Hangout Lot trait to meet potential partners",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Have the following items in your house: Heart-Shaped bed, Card game and Bear Rug",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Lovebug",
+      "Art Lover",
+      "Cheerful"
+    ],
+    "required_career": "Romance Consultant",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 32,
+    "pack_name": "Life and Death",
+    "backstory": "Your 32nd generation Sim grew up in a household full of love. Their parents had the type of love that is rare to find. One, where it almost seems like, it would go beyond life. Maybe that is the reason they've always been so intrigued with death. Death never sounded like \"an end\" but merely a new beginning. Your sim sees death as something to get to know, not run away from. When they are young they are not sure what this means for their time as a living sim but as they grow older they seem to find a way to implement death into their day to day life. Their interest in death goes beyond learning how it works and having some interesting afterlife experiences. They love death, literally and unconditionally.",
+    "required_goals": [
+      {
+        "goal_text": "Live in Ravenwood",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date a skeptical sim but break up because they do not share your beliefs",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date, fall in love and have a baby with grim - you're not allowed to cheat to meet him",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Ghost Historian Aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the thanatology skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have a pet raven",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the tarot card collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete your bucketlist, even the ghost levels",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Let your parents live as ghosts and keep in touch with them (they may live with you)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Make at least one wish in the wishing well",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Write a will",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Assign at least 2 family heirlooms",
+        "is_optional": false
+      },
+      {
+        "goal_text": "When this sim dies, continue playing with this sim as a ghost. They are even allowed to have children as a ghost so your heir is only born when their story is done",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the skill tree (you can decide good or bad) for your sim as a ghost",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Visit all festivals in Ravenwood (Afterlife Anonymous, Crows Crossing celebration of life, Moon revelry, Ravenwood Family day and Thinned Festiveil)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "When the generation is complete you can decide if your sim will be reborn or move on to the afterlife permanently",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Have this sim be a reborn sim from a previous generation",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own cemetery",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Assign the Hallowed Grounds lot trait to your house",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Chased by Death",
+      "Macabre",
+      "Bookworm"
+    ],
+    "required_career": "Undertaker",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 33,
+    "pack_name": "Businesses and Hobbies",
+    "backstory": "Your 33rd generation Sim had an interesting childhood for sure. While their life was only beginning they were surrounded by death. This might not resonate with their personality but it does make them very realistic: life is short and one must live it to the fullest. Being young and already wise they lean towards creative hobbies. Creating meaningful tattoos for themselves or learning to restore what is broken through pottery, they appreciate the beauty in it all. Early on in life they figure out their youth and authenticity makes working for someone else a bit tricky. They decide that being their own boss is clearly the best option.",
+    "required_goals": [
+      {
+        "goal_text": "Complete the Esteemed Entrepreneur Aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Nordhaven Bike Parts Collection",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Live in Nordhaven. You can have a business in your house or on a separate lot, your choice!",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Pick one of the cities festivals (there are two each day) and visit it once every single week",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Pottery Skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Tattooing Skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the neutral branch of the Small Business Skill Tree",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete either the dreamer or schemer branch of the Small Business Skill Tree",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Once unlocked, you must use every perk in the skill tree at least once",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Run the small business with someone that is in your sims Family (does not have to be household)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Play with this sim until they unlock 4 skill mastery perks and pass at least one on to your child(ren)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "You can marry and have children as you see fit, no requirements here",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Create at least one Family Recipe that you can pass down, together with the other family heirlooms you created in Gen 32 (or before)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Get a tattoo for your parents, partner and kids (and if you have it, your pet) - something to honor them by!",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the Master Mentor Aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the Trashley Certified Art Collection",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Max out the cooking skill and make all the candies at least once with the new candy machine",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you do this, have one of your Sims eat the shocked candy and summon Lightning",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Ambitious",
+      "Creative",
+      "Self-Assured"
+    ],
+    "required_career": null,
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 34,
+    "pack_name": "Enchanted by Nature",
+    "backstory": "Your 34th generation Sim comes from a creative household of hard working people. They know the ins and outs of running a business and would not mind eventually also being their own boss. But there is one thing they do not like: the city. Their parents are running a business in the city so they never leave the city. And that while it is surrounded by all this beautiful nature. From a young age your sim sneaks out to enjoy breezes of fresh air. As a teen they rebel against being inside and helping out in the business all the time. Once they become a young adult they decide it is time to leave and chase their own dreams. They leave home and take nothing with them. They look for purpose in life through being one with Nature. What they did not expect is that this purpose would involve magic, wings and so much potential!",
+    "required_goals": [
+      {
+        "goal_text": "Leave your parental home as soon as you become a young adult (or as a teenager if you are using mods). Take no money or possessions with you and move to Innisgreen.",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Play rags to riches style",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Nature Nomad Aspiration - you're not allowed to live in a house/have a job until it's complete",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Join and complete the Naturopath career (after you complete the Nature Nomad Aspiration)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Fairy Stories Aspiration (after completing the Nature Nomad Aspiration)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Become a fairy, once you're a fairy you will remain a fairy for the rest of your life",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Date a plant sim, it's up to you if that will also be your life partner",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have a lush garden, lots of indoor plants and make sure plants and gardening are an important part of your sims life",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Apothecary skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Natural Living Skill",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Befriend both Spruce Almighty and Mother Nature",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Innisgreen Ingredients Collection",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the Elixir Enthusiast Aspiration",
+        "is_optional": true
+      },
+      {
+        "goal_text": "If you own other occult packs, try to befriend one of each occult you have and if you own Get Together join a mystical club!",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Complete the Gardening collection",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Mystical",
+      "Plant Lover",
+      "Disruptive"
+    ],
+    "required_career": "Naturopath",
+    "required_career_branch": null
+  },
+  {
+    "generation_number": 35,
+    "pack_name": "Adventure Awaits",
+    "backstory": "Your 35th generation Sim grew up in a whimsical household, literally. They have stunning nature around them and every day feels magical. When they grow up this magic seems to fade though. They did not inherit wings and magical abilities, they are just... human. And with that realization it's like they are loosing touch with mother nature. Going to school, having a parttime job. It's not like it used to be, the magic is gone and the routine kicks in. And yet your sim cannot shake the desire for adventure. It's like it's waiting for them. So when they graduate high school they decide to pack up and leave. They want to chase magical adventures of their own. They move to Gibbi Point and want to experience all the adventures possible. And the biggest adventure that awaits them: finding true love and a family which brings back all the magic in their life. In a different shape and form but it never felt so real",
+    "required_goals": [
+      {
+        "goal_text": "Have an imaginary friend as a kid to make up for feeling left out (not being a fairy and all)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Next to your imaginary friend you are allowed to have as many friends as you want",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go to a playground every single week at least once",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete at least 2 formative moments as a kid",
+        "is_optional": false
+      },
+      {
+        "goal_text": "As a teen focus on school and have a parttime job",
+        "is_optional": false
+      },
+      {
+        "goal_text": "When you become a Young Adult move to Gibbi Point",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Marry and have all your kids as a young adult",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Have at least 3 kids",
+        "is_optional": false
+      },
+      {
+        "goal_text": "One of them needs to complete the Cool Kid on the Block aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "They all need to complete at least one formative moment",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Archery skill with any of your household sims",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Paper crafting skill with any of your household sims",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Entomology skill with any of your household sims",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Fitness skill with any of your household sims",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Max out the Diving skill with any of your household sims",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Go on at least 3 get-aways with this generation",
+        "is_optional": false
+      },
+      {
+        "goal_text": "As a kid go to at least one get-away camp (you can choose the theme and schedule yourself)",
+        "is_optional": false
+      },
+      {
+        "goal_text": "At least one get-away with your whole family",
+        "is_optional": false
+      },
+      {
+        "goal_text": "A private get-away with just your sim",
+        "is_optional": false
+      },
+      {
+        "goal_text": "As a young adult join the park worker career and try to max it out as far as you manage",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Critter Hunter Aspiration",
+        "is_optional": false
+      },
+      {
+        "goal_text": "Complete the Butterfly Collection",
+        "is_optional": false
+      }
+    ],
+    "optional_goals": [
+      {
+        "goal_text": "Complete the Lore Map in the town's Square by completing all the villager quests",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Have both of your adult sims in the Park Worker career at the same time",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Schedule weekly recurring get-aways for the kids or your entire family",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Let the kids in your family also have imaginary friends",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Do all activities for kids: Play pretend, Rock Paper Scissors, Hide and Seek and playing with papercrafts",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build/Have a home gym",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Host a get-away at your own house (you can come up with the theme)",
+        "is_optional": true
+      },
+      {
+        "goal_text": "Build your own custom venue for a get-away",
+        "is_optional": true
+      }
+    ],
+    "required_traits": [
+      "Competitive",
+      "Loner",
+      "Active"
+    ],
+    "required_career": "Park Worker",
+    "required_career_branch": null
+  }
+]

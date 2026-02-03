@@ -1,0 +1,68 @@
+[
+  { "career_name": "Astronaut", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Athlete", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Business", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Criminal", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Culinary", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Entertainer", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Painter", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Secret Agent", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Tech Guru", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Writer", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": null },
+
+  { "career_name": "Babysitter", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": null },
+  { "career_name": "Barista", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": null },
+  { "career_name": "Fast Food Employee", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": null },
+  { "career_name": "Manual Laborer", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": null },
+  { "career_name": "Retail Employee", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": null },
+
+  { "career_name": "Detective", "max_level": 10, "has_branches": false, "career_type": "active", "teen_eligible": false, "university_only": false, "pack_required": "Get to Work" },
+  { "career_name": "Doctor", "max_level": 10, "has_branches": false, "career_type": "active", "teen_eligible": false, "university_only": false, "pack_required": "Get to Work" },
+  { "career_name": "Scientist", "max_level": 10, "has_branches": false, "career_type": "active", "teen_eligible": false, "university_only": false, "pack_required": "Get to Work" },
+
+  { "career_name": "Critic", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "City Living" },
+  { "career_name": "Politician", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "City Living" },
+  { "career_name": "Social Media", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "City Living" },
+
+  { "career_name": "Gardener", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Seasons" },
+
+  { "career_name": "Military", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Strangerville" },
+
+  { "career_name": "Actor", "max_level": 10, "has_branches": false, "career_type": "active", "teen_eligible": false, "university_only": false, "pack_required": "Get Famous" },
+
+  { "career_name": "Conservationist", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Island Living" },
+  { "career_name": "Lifeguard", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": "Island Living" },
+  { "career_name": "Diver", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": "Island Living" },
+  { "career_name": "Fisherman", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": "Island Living" },
+
+  { "career_name": "Education", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Discover University" },
+  { "career_name": "Engineer", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": true, "pack_required": "Discover University" },
+  { "career_name": "Law", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": true, "pack_required": "Discover University" },
+
+  { "career_name": "Freelance Artist", "max_level": 10, "has_branches": false, "career_type": "freelance", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Freelance Writer", "max_level": 10, "has_branches": false, "career_type": "freelance", "teen_eligible": false, "university_only": false, "pack_required": null },
+  { "career_name": "Freelance Programmer", "max_level": 10, "has_branches": false, "career_type": "freelance", "teen_eligible": false, "university_only": false, "pack_required": null },
+
+  { "career_name": "Civil Designer", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Eco Lifestyle" },
+  { "career_name": "Freelance Crafter", "max_level": 10, "has_branches": false, "career_type": "freelance", "teen_eligible": false, "university_only": false, "pack_required": "Eco Lifestyle" },
+
+  { "career_name": "Salaryperson", "max_level": 10, "has_branches": true, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Snowy Escape" },
+
+  { "career_name": "Interior Decorator", "max_level": 10, "has_branches": false, "career_type": "active", "teen_eligible": false, "university_only": false, "pack_required": "Dream Home Decorator" },
+
+  { "career_name": "Freelance Paranormal Investigator", "max_level": 10, "has_branches": false, "career_type": "freelance", "teen_eligible": false, "university_only": false, "pack_required": "Paranormal Stuff" },
+
+  { "career_name": "Simfluencer", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": true, "university_only": false, "pack_required": "High School Years" },
+  { "career_name": "Video Game Streamer", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": true, "university_only": false, "pack_required": "High School Years" },
+
+  { "career_name": "Handyperson", "max_level": 3, "has_branches": false, "career_type": "part_time", "teen_eligible": true, "university_only": false, "pack_required": "For Rent" },
+
+  { "career_name": "Romance Consultant", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Lovestruck" },
+
+  { "career_name": "Undertaker", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Life and Death" },
+  { "career_name": "Reaper", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Life and Death" },
+
+  { "career_name": "Naturopath", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Enchanted by Nature" },
+
+  { "career_name": "Park Worker", "max_level": 10, "has_branches": false, "career_type": "traditional", "teen_eligible": false, "university_only": false, "pack_required": "Adventure Awaits" }
+]

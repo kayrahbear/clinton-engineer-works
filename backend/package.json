@@ -1,0 +1,16 @@
+{
+  "name": "sims-legacy-tracker-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend for the Sims 4 Legacy Challenge Tracker",
+  "scripts": {
+    "seed": "node ../database/scripts/seed.js",
+    "seed:reference": "node ../database/scripts/seed-reference-data.js",
+    "seed:legacy": "node ../database/scripts/seed-pack-legacy.js",
+    "db:clear": "node ../database/scripts/clear-database.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "pg": "^8.12.0"
+  }
+}
