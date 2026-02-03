@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+@layer base {
+  body {
+    @apply bg-ff-bg text-ff-text;
+  }
+}
+
+@layer components {
+  .ff-app-bg {
+    @apply bg-ff-bg bg-ff-gradient;
+  }
+
+  .ff-card {
+    @apply bg-ff-surface/90 border border-ff-border rounded-2xl shadow-soft backdrop-blur;
+  }
+
+  .ff-card-hover {
+    @apply transition hover:shadow-glowMint hover:border-ff-mint/40;
+  }
+
+  .ff-chip {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm
+      bg-ff-surface2/60 border border-ff-border text-ff-text;
+  }
+
+  .ff-btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium
+      bg-ff-mint2 text-ff-surface hover:bg-ff-mint transition;
+  }
+
+  .ff-btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium
+      bg-ff-surface2 text-ff-text border border-ff-border hover:border-ff-pink/50 transition;
+  }
+
+  .ff-input {
+    @apply w-full rounded-xl bg-ff-surface border border-ff-border px-3 py-2
+      placeholder:text-ff-muted focus:outline-none focus:ring-2 focus:ring-ff-mint/40;
+  }
+}

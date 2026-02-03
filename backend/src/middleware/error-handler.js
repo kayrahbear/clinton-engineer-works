@@ -1,10 +1,10 @@
-const buildResponse = (statusCode, payload) => ({
+const { getCorsHeaders } = require("./cors");
+
+const buildResponse = (statusCode, payload, origin) => ({
   statusCode,
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": process.env.CORS_ALLOWED_ORIGIN || "*",
-    "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    ...getCorsHeaders(origin),
   },
   body: JSON.stringify(payload),
 });
@@ -14,10 +14,11 @@ const withErrorHandling = (handler) => async (event) => {
     return await handler(event);
   } catch (error) {
     console.error("Unhandled error", error);
+    const origin = event?.headers?.origin || event?.headers?.Origin || "";
     return buildResponse(500, {
       status: "error",
       message: "Internal Server Error",
-    });
+    }, origin);
   }
 };
 

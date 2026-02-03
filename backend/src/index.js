@@ -1,39 +1,38 @@
 const { healthHandler } = require("./handlers/health");
+const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
 
-const notFound = () => ({
+const notFound = (origin) => ({
   statusCode: 404,
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": process.env.CORS_ALLOWED_ORIGIN || "*",
-    "Access-Control-Allow-Methods": "GET,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    ...getCorsHeaders(origin),
   },
   body: JSON.stringify({ message: "Not Found" }),
 });
 
-const optionsResponse = () => ({
+const optionsResponse = (origin) => ({
   statusCode: 204,
   headers: {
-    "Access-Control-Allow-Origin": process.env.CORS_ALLOWED_ORIGIN || "*",
-    "Access-Control-Allow-Methods": "GET,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    ...getCorsHeaders(origin),
   },
   body: "",
 });
 
 const handler = async (event) => {
+  const origin = event?.headers?.origin || event?.headers?.Origin || "";
+
   if (event?.httpMethod === "OPTIONS") {
-    return optionsResponse();
+    return optionsResponse(origin);
   }
 
   const path = event?.path || "";
 
   if (event?.httpMethod === "GET" && path.endsWith("/health")) {
-    return healthHandler();
+    return healthHandler(origin);
   }
 
-  return notFound();
+  return notFound(origin);
 };
 
 module.exports = {

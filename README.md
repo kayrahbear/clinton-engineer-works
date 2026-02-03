@@ -174,6 +174,12 @@ npm install
 npm run dev
 ```
 
+If you're using nvm, ensure Node 20.19+ is active before installing dependencies:
+
+```bash
+nvm use 20.19.0
+```
+
 ## Backend Setup
 
 ```bash
