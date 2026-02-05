@@ -23,8 +23,11 @@ resource "aws_api_gateway_deployment" "main" {
       aws_api_gateway_rest_api.main.body,
       aws_api_gateway_resource.api_v1.id,
       aws_api_gateway_resource.health.id,
+      aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.health_get.id,
       aws_api_gateway_method.health_options.id,
+      aws_api_gateway_method.proxy_any.id,
+      aws_api_gateway_method.proxy_options.id,
     ]))
   }
 
@@ -34,10 +37,15 @@ resource "aws_api_gateway_deployment" "main" {
 
   depends_on = [
     aws_api_gateway_resource.api_v1,
+    aws_api_gateway_resource.proxy,
     aws_api_gateway_integration.health_get,
     aws_api_gateway_integration.health_options,
+    aws_api_gateway_integration.proxy_any,
+    aws_api_gateway_integration.proxy_options,
     aws_api_gateway_method_response.health_options,
+    aws_api_gateway_method_response.proxy_options,
     aws_api_gateway_integration_response.health_options,
+    aws_api_gateway_integration_response.proxy_options,
   ]
 }
 
@@ -153,6 +161,75 @@ resource "aws_api_gateway_integration_response" "health_options" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"  = "'${var.environment == "prod" ? "https://your-domain.com" : "*"}'"
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
+  }
+}
+
+# /api/v1/{proxy+} resource (catch-all for all API routes)
+resource "aws_api_gateway_resource" "proxy" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  parent_id   = aws_api_gateway_resource.api_v1.id
+  path_part   = "{proxy+}"
+}
+
+# ANY /api/v1/{proxy+} - Forward all methods to Lambda
+resource "aws_api_gateway_method" "proxy_any" {
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.proxy.id
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "proxy_any" {
+  rest_api_id             = aws_api_gateway_rest_api.main.id
+  resource_id             = aws_api_gateway_resource.proxy.id
+  http_method             = aws_api_gateway_method.proxy_any.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.api.invoke_arn
+}
+
+# OPTIONS /api/v1/{proxy+} - Handle CORS preflight for all routes
+resource "aws_api_gateway_method" "proxy_options" {
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.proxy.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "proxy_options" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "proxy_options" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "proxy_options" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  status_code = aws_api_gateway_method_response.proxy_options.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
   }
 }

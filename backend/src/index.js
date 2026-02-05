@@ -35,6 +35,13 @@ const {
   updateSimCareer,
   removeSimCareer,
 } = require("./handlers/sim-careers");
+const { getSimFamilyTree } = require("./handlers/family-tree");
+const {
+  getSimRelationships,
+  addSimRelationship,
+  updateSimRelationship,
+  removeSimRelationship,
+} = require("./handlers/sim-relationships");
 const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
 
@@ -49,6 +56,10 @@ const ROUTE_LEGACY_SIMS = new RegExp(
 );
 
 // Sub-resource ID routes (2 UUIDs) - checked before collection routes
+const ROUTE_SIM_RELATIONSHIP_ID = new RegExp(
+  `\\/sims\\/(${UUID_PATTERN})\\/relationships\\/(${UUID_PATTERN})\\/?$`,
+  "i"
+);
 const ROUTE_SIM_TRAIT_ID = new RegExp(
   `\\/sims\\/(${UUID_PATTERN})\\/traits\\/(${UUID_PATTERN})\\/?$`,
   "i"
@@ -67,6 +78,14 @@ const ROUTE_SIM_CAREER_ID = new RegExp(
 );
 
 // Sub-resource collection routes (1 UUID)
+const ROUTE_SIM_FAMILY_TREE = new RegExp(
+  `\\/sims\\/(${UUID_PATTERN})\\/family-tree\\/?$`,
+  "i"
+);
+const ROUTE_SIM_RELATIONSHIPS = new RegExp(
+  `\\/sims\\/(${UUID_PATTERN})\\/relationships\\/?$`,
+  "i"
+);
 const ROUTE_SIM_TRAITS = new RegExp(
   `\\/sims\\/(${UUID_PATTERN})\\/traits\\/?$`,
   "i"
@@ -173,6 +192,24 @@ const handler = async (event) => {
 
   // --- Sim sub-resource ID routes (2 UUIDs) checked first ---
 
+  // PUT|DELETE /sims/:simId/relationships/:relationshipId
+  const simRelationshipIdMatch = path.match(ROUTE_SIM_RELATIONSHIP_ID);
+  if (method === "PUT" && simRelationshipIdMatch) {
+    return updateSimRelationship(
+      origin,
+      simRelationshipIdMatch[1],
+      simRelationshipIdMatch[2],
+      event?.body
+    );
+  }
+  if (method === "DELETE" && simRelationshipIdMatch) {
+    return removeSimRelationship(
+      origin,
+      simRelationshipIdMatch[1],
+      simRelationshipIdMatch[2]
+    );
+  }
+
   // DELETE /sims/:simId/traits/:traitId
   const simTraitIdMatch = path.match(ROUTE_SIM_TRAIT_ID);
   if (method === "DELETE" && simTraitIdMatch) {
@@ -218,6 +255,21 @@ const handler = async (event) => {
   }
 
   // --- Sim sub-resource collection routes (1 UUID) ---
+
+  // GET /sims/:simId/family-tree
+  const simFamilyTreeMatch = path.match(ROUTE_SIM_FAMILY_TREE);
+  if (method === "GET" && simFamilyTreeMatch) {
+    return getSimFamilyTree(origin, simFamilyTreeMatch[1]);
+  }
+
+  // GET|POST /sims/:simId/relationships
+  const simRelationshipsMatch = path.match(ROUTE_SIM_RELATIONSHIPS);
+  if (method === "GET" && simRelationshipsMatch) {
+    return getSimRelationships(origin, simRelationshipsMatch[1]);
+  }
+  if (method === "POST" && simRelationshipsMatch) {
+    return addSimRelationship(origin, simRelationshipsMatch[1], event?.body);
+  }
 
   // GET|POST /sims/:simId/traits
   const simTraitsMatch = path.match(ROUTE_SIM_TRAITS);
