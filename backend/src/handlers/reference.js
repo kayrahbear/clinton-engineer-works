@@ -19,7 +19,7 @@ const getSkills = async (origin) => {
 
 const getTraits = async (origin) => {
   const rows = await fetchRows(
-    `SELECT trait_id, trait_name, trait_type, related_aspiration_id, price,
+    `SELECT trait_id, trait_name, trait_type, related_aspiration_id, price, infant_only,
             toddler_only, child_only, pack_required
      FROM traits
      ORDER BY trait_name ASC`

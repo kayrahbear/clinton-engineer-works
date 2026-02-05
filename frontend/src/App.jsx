@@ -7,6 +7,7 @@ import SimDetail from './pages/SimDetail'
 import SimForm from './pages/SimForm'
 import FamilyTree from './pages/FamilyTree'
 import LegacyWizard from './pages/LegacyWizard'
+import LegacyDashboard from './pages/LegacyDashboard'
 
 function App() {
   return (
@@ -18,15 +19,7 @@ function App() {
         <Route path="/sims/:id/family-tree" element={<FamilyTree />} />
         <Route path="/sims/new" element={<SimForm />} />
         <Route path="/legacy/new" element={<LegacyWizard />} />
-        <Route
-          path="/legacy/:legacyId"
-          element={
-            <Placeholder
-              title="Legacy Dashboard"
-              description="Track generation progress, laws, and milestones from this view."
-            />
-          }
-        />
+        <Route path="/legacy/:legacyId" element={<LegacyDashboard />} />
         <Route
           path="/legacy"
           element={
