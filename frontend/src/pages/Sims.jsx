@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiClient } from '../api'
-import { TEST_CONFIG } from '../config'
 import LoadingSpinner from '../components/LoadingSpinner'
 import ErrorState from '../components/ErrorState'
+import { useActiveLegacy } from '../context/useActiveLegacy'
 
 const filters = [
   {
@@ -25,6 +25,7 @@ const filters = [
 ]
 
 export default function Sims() {
+  const { activeLegacyId, loading: legacyLoading } = useActiveLegacy()
   const [sims, setSims] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -40,7 +41,7 @@ export default function Sims() {
       try {
         setLoading(true)
         setError(null)
-        const response = await apiClient.get(`/legacies/${TEST_CONFIG.LEGACY_ID}/sims`)
+        const response = await apiClient.get(`/legacies/${activeLegacyId}/sims`)
         setSims(response.data || [])
       } catch (err) {
         console.error('Error fetching sims:', err)
@@ -50,13 +51,17 @@ export default function Sims() {
       }
     }
 
-    if (TEST_CONFIG.LEGACY_ID && TEST_CONFIG.LEGACY_ID !== 'REPLACE_WITH_LEGACY_ID') {
+    if (legacyLoading) {
+      return
+    }
+
+    if (activeLegacyId) {
       fetchSims()
     } else {
       setLoading(false)
-      setError('Config not set. Run seed-test-sims.js and update frontend/src/config.js')
+      setError('No active legacy selected. Pick one from the header or create a new legacy.')
     }
-  }, [])
+  }, [activeLegacyId, legacyLoading])
 
   const filteredSims = sims.filter((sim) => {
     if (selectedFilters.generation !== 'All') {

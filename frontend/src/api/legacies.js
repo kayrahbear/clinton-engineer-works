@@ -14,6 +14,8 @@ const buildQueryString = (params = {}) => {
 
 export const getLegacy = (legacyId) => apiClient.get(`/legacies/${legacyId}`)
 
+export const getLegacies = () => apiClient.get('/legacies')
+
 export const getLegacyStats = (legacyId) => apiClient.get(`/legacies/${legacyId}/stats`)
 
 export const getLegacyGenerations = (legacyId) => apiClient.get(`/legacies/${legacyId}/generations`)

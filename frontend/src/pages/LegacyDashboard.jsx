@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getLegacy, getLegacyStats, getLegacySims } from '../api'
-import { TEST_CONFIG } from '../config'
 import ErrorState from '../components/ErrorState'
 import LoadingSpinner from '../components/LoadingSpinner'
 import GoalProgressRing from '../components/GoalProgressRing'
 import StatCard from '../components/StatCard'
+import { useActiveLegacy } from '../context/useActiveLegacy'
 
 const SUCCESSION_LABELS = {
   gender_law: {
@@ -55,7 +55,8 @@ const formatCurrency = (value) => {
 
 export default function LegacyDashboard() {
   const { legacyId } = useParams()
-  const activeLegacyId = legacyId || TEST_CONFIG.LEGACY_ID
+  const { activeLegacyId: selectedLegacyId } = useActiveLegacy()
+  const activeLegacyId = legacyId || selectedLegacyId
 
   const [state, setState] = useState({
     loading: true,
@@ -96,13 +97,13 @@ export default function LegacyDashboard() {
       }
     }
 
-    if (activeLegacyId && activeLegacyId !== 'REPLACE_WITH_LEGACY_ID') {
+    if (activeLegacyId) {
       fetchData()
     } else {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: 'Config not set. Run seed-test-sims.js and update frontend/src/config.js',
+        error: 'No active legacy selected. Pick one from the header or create a new legacy.',
       }))
     }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../api'
+import { useActiveLegacy } from '../context/useActiveLegacy'
 
 const SUCCESSION_LAWS = {
   gender: [
@@ -115,6 +116,7 @@ function LawSelector({ title, options, value, onChange }) {
 
 export default function LegacyWizard() {
   const navigate = useNavigate()
+  const { setActiveLegacyId } = useActiveLegacy()
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -166,7 +168,10 @@ export default function LegacyWizard() {
     try {
       const response = await apiClient.post('/legacies', formData)
       const legacyId = response.data?.legacy_id
-      navigate(legacyId ? `/legacy/${legacyId}` : '/legacy')
+      if (legacyId) {
+        setActiveLegacyId(legacyId)
+      }
+      navigate('/sims/new', { state: { prefillHeir: true } })
     } catch (err) {
       setError(err.data?.error || 'Failed to create legacy. Please try again.')
       setIsSubmitting(false)
