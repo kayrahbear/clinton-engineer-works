@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { getLegacy, getLegacyStats, getLegacySims } from '../api'
+import { useParams, Link } from 'react-router-dom'
+import { getLegacy, getLegacyStats, getLegacySims, getLegacyGenerations } from '../api'
 import ErrorState from '../components/ErrorState'
 import LoadingSpinner from '../components/LoadingSpinner'
 import GoalProgressRing from '../components/GoalProgressRing'
@@ -64,6 +64,7 @@ export default function LegacyDashboard() {
     legacy: null,
     stats: null,
     household: [],
+    generations: [],
   })
 
   useEffect(() => {
@@ -72,10 +73,11 @@ export default function LegacyDashboard() {
     async function fetchData() {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }))
-        const [legacyRes, statsRes, householdRes] = await Promise.all([
+        const [legacyRes, statsRes, householdRes, generationsRes] = await Promise.all([
           getLegacy(activeLegacyId),
           getLegacyStats(activeLegacyId),
           getLegacySims(activeLegacyId, { current_household: true, status: 'alive' }),
+          getLegacyGenerations(activeLegacyId),
         ])
 
         if (!isMounted) return
@@ -86,6 +88,7 @@ export default function LegacyDashboard() {
           legacy: legacyRes.data,
           stats: statsRes.data,
           household: householdRes.data || [],
+          generations: generationsRes.data || [],
         })
       } catch (error) {
         if (!isMounted) return
@@ -142,6 +145,8 @@ export default function LegacyDashboard() {
   const currentGeneration = legacy?.current_generation ?? 1
   const packName = legacy?.current_pack_name || 'Unknown Pack'
   const backstory = legacy?.current_backstory || 'No backstory has been set for this generation yet.'
+  const activeGeneration = state.generations.find((g) => g.is_active)
+  const activeGenerationId = activeGeneration?.generation_id
 
   const successionLaws = [
     { label: 'Gender Law', value: SUCCESSION_LABELS.gender_law[legacy?.gender_law] },
@@ -160,11 +165,20 @@ export default function LegacyDashboard() {
             Track generation progress, succession laws, and household momentum.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="ff-chip text-xs text-ff-mint">
-            Generation {currentGeneration}
-          </span>
-          <span className="ff-chip text-xs text-ff-lilac2">{packName}</span>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            <span className="ff-chip text-xs text-ff-mint">
+              Generation {currentGeneration}
+            </span>
+            <span className="ff-chip text-xs text-ff-lilac2">{packName}</span>
+          </div>
+          {activeGenerationId ? (
+            <Link to={`/legacy/${activeLegacyId}/generations/${activeGenerationId}`} className="ff-btn">
+              Start Next Generation
+            </Link>
+          ) : (
+            <span className="ff-btn cursor-default opacity-50">Start Next Generation</span>
+          )}
         </div>
       </header>
 
@@ -181,12 +195,13 @@ export default function LegacyDashboard() {
               <p className="mt-2 text-sm text-ff-muted">{backstory}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <button type="button" className="ff-btn">
-                Continue Generation
-              </button>
-              <button type="button" className="ff-btn-secondary">
-                View goals
-              </button>
+              {activeGenerationId ? (
+                <Link to={`/legacy/${activeLegacyId}/generations/${activeGenerationId}`} className="ff-btn-secondary">
+                  View goals
+                </Link>
+              ) : (
+                <span className="ff-btn-secondary opacity-50 cursor-default">View goals</span>
+              )}
             </div>
             <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-xs text-ff-muted">
               Founder:{' '}

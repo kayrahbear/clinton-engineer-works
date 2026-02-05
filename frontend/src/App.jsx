@@ -8,6 +8,7 @@ import FamilyTree from './pages/FamilyTree'
 import LegacyWizard from './pages/LegacyWizard'
 import LegacyDashboard from './pages/LegacyDashboard'
 import LegacyLanding from './pages/LegacyLanding'
+import GenerationDetail from './pages/GenerationDetail'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/sims/new" element={<SimForm />} />
         <Route path="/legacy/new" element={<LegacyWizard />} />
         <Route path="/legacy/:legacyId" element={<LegacyDashboard />} />
+        <Route path="/legacy/:legacyId/generations/:generationId" element={<GenerationDetail />} />
         <Route path="/legacy" element={<LegacyLanding />} />
       </Route>
     </Routes>

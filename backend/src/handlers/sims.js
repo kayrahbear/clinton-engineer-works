@@ -186,9 +186,12 @@ const createSim = async (origin, body) => {
   }
 
   const pool = await getPool();
+  const client = await pool.connect();
 
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+
+    const result = await client.query(
       `INSERT INTO sims (
         legacy_id, generation_id, name, gender, pronouns, portrait,
         life_stage, occult_type, cause_of_death, death_date, buried_location,
@@ -223,12 +226,27 @@ const createSim = async (origin, body) => {
       ]
     );
 
-    return buildResponse(201, { data: result.rows[0] }, origin);
+    const newSim = result.rows[0];
+
+    // If this sim is the founder, link them to the legacy
+    if (newSim.is_founder) {
+      await client.query(
+        `UPDATE legacies SET founder_id = $1 WHERE legacy_id = $2`,
+        [newSim.sim_id, newSim.legacy_id]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    return buildResponse(201, { data: newSim }, origin);
   } catch (error) {
+    await client.query("ROLLBACK");
     if (error.code === "23503") {
       return buildResponse(400, { error: FK_ERROR_MESSAGE }, origin);
     }
     throw error;
+  } finally {
+    client.release();
   }
 };
 
@@ -442,9 +460,12 @@ const updateSim = async (origin, simId, body) => {
   }
 
   const pool = await getPool();
+  const client = await pool.connect();
 
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+
+    const result = await client.query(
       `UPDATE sims
        SET ${setClauses.join(", ")}
        WHERE sim_id = $1 AND status != 'deleted'
@@ -453,15 +474,39 @@ const updateSim = async (origin, simId, body) => {
     );
 
     if (result.rows.length === 0) {
+      await client.query("ROLLBACK");
       return buildResponse(404, { error: "Sim not found" }, origin);
     }
 
-    return buildResponse(200, { data: result.rows[0] }, origin);
+    const updatedSim = result.rows[0];
+
+    // If is_founder was changed, update the legacy's founder_id
+    if ("is_founder" in parsed) {
+      if (updatedSim.is_founder) {
+        await client.query(
+          `UPDATE legacies SET founder_id = $1 WHERE legacy_id = $2`,
+          [updatedSim.sim_id, updatedSim.legacy_id]
+        );
+      } else {
+        // Unset founder_id only if this sim was the current founder
+        await client.query(
+          `UPDATE legacies SET founder_id = NULL WHERE legacy_id = $1 AND founder_id = $2`,
+          [updatedSim.legacy_id, updatedSim.sim_id]
+        );
+      }
+    }
+
+    await client.query("COMMIT");
+
+    return buildResponse(200, { data: updatedSim }, origin);
   } catch (error) {
+    await client.query("ROLLBACK");
     if (error.code === "23503") {
       return buildResponse(400, { error: FK_ERROR_MESSAGE }, origin);
     }
     throw error;
+  } finally {
+    client.release();
   }
 };
 
