@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 
 const sideLinks = [
   { label: 'Legacy dashboard', to: '/legacy' },
@@ -9,6 +9,12 @@ const sideLinks = [
 export default function Sidebar() {
   return (
     <aside className="ff-card hidden w-full max-w-[220px] flex-col gap-4 p-5 text-sm text-ff-muted md:flex">
+      <Link
+        to="/legacy/new"
+        className="ff-btn w-full text-center"
+      >
+        + New Legacy
+      </Link>
       <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Workspace</p>
       <nav className="flex flex-col gap-2">
         {sideLinks.map((link) => (
@@ -28,9 +34,9 @@ export default function Sidebar() {
         ))}
       </nav>
       <div className="rounded-xl border border-dashed border-ff-border/70 bg-ff-surface2/40 p-3 text-xs text-ff-muted">
-        <p className="font-semibold text-ff-text">Phase 1 focus</p>
+        <p className="font-semibold text-ff-text">Phase 3</p>
         <p className="mt-1">
-          Routing, layout, and API integration.
+          Legacy & generation tracking.
         </p>
       </div>
     </aside>

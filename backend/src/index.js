@@ -7,6 +7,25 @@ const {
   getWorlds,
 } = require("./handlers/reference");
 const {
+  createLegacy,
+  getLegacyById,
+  getAllLegacies,
+  updateLegacy,
+  getLegacyStats,
+} = require("./handlers/legacies");
+const {
+  getGenerationsByLegacy,
+  getGenerationById,
+  startGeneration,
+  completeGeneration,
+  getGenerationGoals,
+  updateGoalCompletion,
+} = require("./handlers/generations");
+const {
+  getAllGenerationTemplates,
+  getGenerationTemplateByNumber,
+} = require("./handlers/generation-templates");
+const {
   createSim,
   getSimById,
   getSimsByLegacy,
@@ -54,6 +73,43 @@ const ROUTE_LEGACY_SIMS = new RegExp(
   `\\/legacies\\/(${UUID_PATTERN})\\/sims\\/?$`,
   "i"
 );
+
+// Legacy routes
+const ROUTE_LEGACIES_COLLECTION = /\/legacies\/?$/i;
+const ROUTE_LEGACY_ID = new RegExp(`\\/legacies\\/(${UUID_PATTERN})\\/?$`, "i");
+const ROUTE_LEGACY_GENERATIONS = new RegExp(
+  `\\/legacies\\/(${UUID_PATTERN})\\/generations\\/?$`,
+  "i"
+);
+const ROUTE_LEGACY_STATS = new RegExp(
+  `\\/legacies\\/(${UUID_PATTERN})\\/stats\\/?$`,
+  "i"
+);
+
+// Generation routes
+const ROUTE_GENERATION_ID = new RegExp(`\\/generations\\/(${UUID_PATTERN})\\/?$`, "i");
+const ROUTE_GENERATION_START = new RegExp(
+  `\\/generations\\/(${UUID_PATTERN})\\/start\\/?$`,
+  "i"
+);
+const ROUTE_GENERATION_COMPLETE = new RegExp(
+  `\\/generations\\/(${UUID_PATTERN})\\/complete\\/?$`,
+  "i"
+);
+const ROUTE_GENERATION_GOALS = new RegExp(
+  `\\/generations\\/(${UUID_PATTERN})\\/goals\\/?$`,
+  "i"
+);
+
+// Goal routes
+const ROUTE_GOAL_COMPLETE = new RegExp(
+  `\\/goals\\/(${UUID_PATTERN})\\/complete\\/?$`,
+  "i"
+);
+
+// Generation template routes
+const ROUTE_GENERATION_TEMPLATES = /\/generation-templates\/?$/i;
+const ROUTE_GENERATION_TEMPLATE_NUMBER = /\/generation-templates\/(\d+)\/?$/i;
 
 // Sub-resource ID routes (2 UUIDs) - checked before collection routes
 const ROUTE_SIM_RELATIONSHIP_ID = new RegExp(
@@ -173,6 +229,89 @@ const handler = async (event) => {
 
   if (method === "GET" && path.endsWith("/reference/worlds")) {
     return getWorlds(origin);
+  }
+
+  // Legacies CRUD
+
+  // GET /legacies (list all)
+  if (method === "GET" && ROUTE_LEGACIES_COLLECTION.test(path)) {
+    return getAllLegacies(origin);
+  }
+
+  // POST /legacies
+  if (method === "POST" && ROUTE_LEGACIES_COLLECTION.test(path)) {
+    return createLegacy(origin, event?.body);
+  }
+
+  // GET /legacies/:legacyId (must check before sub-resource routes)
+  const legacyIdMatch = path.match(ROUTE_LEGACY_ID);
+
+  // GET|PUT /legacies/:legacyId
+  if (method === "GET" && legacyIdMatch) {
+    return getLegacyById(origin, legacyIdMatch[1]);
+  }
+
+  if (method === "PUT" && legacyIdMatch) {
+    return updateLegacy(origin, legacyIdMatch[1], event?.body);
+  }
+
+  // Legacy sub-resources
+
+  // GET /legacies/:legacyId/generations
+  const legacyGenerationsMatch = path.match(ROUTE_LEGACY_GENERATIONS);
+  if (method === "GET" && legacyGenerationsMatch) {
+    return getGenerationsByLegacy(origin, legacyGenerationsMatch[1]);
+  }
+
+  // GET /legacies/:legacyId/stats
+  const legacyStatsMatch = path.match(ROUTE_LEGACY_STATS);
+  if (method === "GET" && legacyStatsMatch) {
+    return getLegacyStats(origin, legacyStatsMatch[1]);
+  }
+
+  // Generations
+
+  // Generation action routes (more specific, check first)
+  const genStartMatch = path.match(ROUTE_GENERATION_START);
+  if (method === "POST" && genStartMatch) {
+    return startGeneration(origin, genStartMatch[1], event?.body);
+  }
+
+  const genCompleteMatch = path.match(ROUTE_GENERATION_COMPLETE);
+  if (method === "PUT" && genCompleteMatch) {
+    return completeGeneration(origin, genCompleteMatch[1], event?.body);
+  }
+
+  const genGoalsMatch = path.match(ROUTE_GENERATION_GOALS);
+  if (method === "GET" && genGoalsMatch) {
+    return getGenerationGoals(origin, genGoalsMatch[1]);
+  }
+
+  // GET /generations/:generationId
+  const generationIdMatch = path.match(ROUTE_GENERATION_ID);
+  if (method === "GET" && generationIdMatch) {
+    return getGenerationById(origin, generationIdMatch[1]);
+  }
+
+  // Goals
+
+  // PUT /goals/:goalId/complete
+  const goalCompleteMatch = path.match(ROUTE_GOAL_COMPLETE);
+  if (method === "PUT" && goalCompleteMatch) {
+    return updateGoalCompletion(origin, goalCompleteMatch[1], event?.body);
+  }
+
+  // Generation Templates
+
+  // GET /generation-templates
+  if (method === "GET" && ROUTE_GENERATION_TEMPLATES.test(path)) {
+    return getAllGenerationTemplates(origin);
+  }
+
+  // GET /generation-templates/:number
+  const genTemplateMatch = path.match(ROUTE_GENERATION_TEMPLATE_NUMBER);
+  if (method === "GET" && genTemplateMatch) {
+    return getGenerationTemplateByNumber(origin, genTemplateMatch[1]);
   }
 
   // Sims CRUD
