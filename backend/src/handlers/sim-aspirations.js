@@ -6,10 +6,15 @@ const {
   isBoolean,
   parseBody,
 } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
-const getSimAspirations = async (origin, simId) => {
+const getSimAspirations = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -27,9 +32,13 @@ const getSimAspirations = async (origin, simId) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const addSimAspiration = async (origin, simId, body) => {
+const addSimAspiration = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -140,12 +149,16 @@ const addSimAspiration = async (origin, simId, body) => {
   }
 };
 
-const updateSimAspiration = async (origin, simId, aspirationId, body) => {
+const updateSimAspiration = async (origin, userId, simId, aspirationId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(aspirationId)) {
     return buildResponse(400, { error: "Invalid aspiration_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -238,12 +251,16 @@ const updateSimAspiration = async (origin, simId, aspirationId, body) => {
   return buildResponse(200, { data: result.rows[0] }, origin);
 };
 
-const removeSimAspiration = async (origin, simId, aspirationId) => {
+const removeSimAspiration = async (origin, userId, simId, aspirationId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(aspirationId)) {
     return buildResponse(400, { error: "Invalid aspiration_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

@@ -117,7 +117,7 @@ const cloneGenerationTemplates = async (pool, legacyId, startingGeneration = 1) 
 /**
  * POST /api/legacies - Create a new legacy
  */
-const createLegacy = async (origin, body) => {
+const createLegacy = async (origin, userId, body) => {
   const parsed = parseBody(body);
   if (!parsed) {
     return buildResponse(400, { error: "Invalid or missing JSON body" }, origin);
@@ -205,8 +205,8 @@ const createLegacy = async (origin, body) => {
     const result = await client.query(
       `INSERT INTO legacies (
         legacy_name, start_date, current_generation,
-        gender_law, bloodline_law, heir_law, species_law
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        gender_law, bloodline_law, heir_law, species_law, user_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *`,
       [
         legacy_name.trim(),
@@ -216,6 +216,7 @@ const createLegacy = async (origin, body) => {
         bloodlineLaw,
         heirLaw,
         speciesLaw,
+        userId,
       ]
     );
 
@@ -238,7 +239,7 @@ const createLegacy = async (origin, body) => {
 /**
  * GET /api/legacies/:legacyId - Get legacy details
  */
-const getLegacyById = async (origin, legacyId) => {
+const getLegacyById = async (origin, userId, legacyId) => {
   if (!isValidUuid(legacyId)) {
     return buildResponse(400, { error: "Invalid legacy_id format" }, origin);
   }
@@ -256,8 +257,9 @@ const getLegacyById = async (origin, legacyId) => {
      LEFT JOIN generations g ON l.legacy_id = g.legacy_id AND g.is_active = TRUE
      LEFT JOIN sims f ON l.founder_id = f.sim_id
      WHERE l.legacy_id = $1
+       AND l.user_id = $2
        AND l.legacy_name != 'Pack Legacy Challenge Template'`,
-    [legacyId]
+    [legacyId, userId]
   );
 
   if (result.rows.length === 0) {
@@ -270,7 +272,7 @@ const getLegacyById = async (origin, legacyId) => {
 /**
  * GET /api/legacies - Get all legacies (excludes template)
  */
-const getAllLegacies = async (origin) => {
+const getAllLegacies = async (origin, userId) => {
   const pool = await getPool();
 
   const result = await pool.query(
@@ -280,8 +282,10 @@ const getAllLegacies = async (origin) => {
      FROM legacies l
      LEFT JOIN generations g ON l.legacy_id = g.legacy_id AND g.is_active = TRUE
      LEFT JOIN sims f ON l.founder_id = f.sim_id
-     WHERE l.legacy_name != 'Pack Legacy Challenge Template'
-     ORDER BY l.created_at DESC`
+     WHERE l.user_id = $1
+       AND l.legacy_name != 'Pack Legacy Challenge Template'
+     ORDER BY l.created_at DESC`,
+    [userId]
   );
 
   return buildResponse(200, { data: result.rows }, origin);
@@ -290,7 +294,7 @@ const getAllLegacies = async (origin) => {
 /**
  * PUT /api/legacies/:legacyId - Update a legacy
  */
-const updateLegacy = async (origin, legacyId, body) => {
+const updateLegacy = async (origin, userId, legacyId, body) => {
   if (!isValidUuid(legacyId)) {
     return buildResponse(400, { error: "Invalid legacy_id format" }, origin);
   }
@@ -316,8 +320,8 @@ const updateLegacy = async (origin, legacyId, body) => {
   ];
 
   const setClauses = [];
-  const params = [legacyId];
-  let paramIndex = 2;
+  const params = [legacyId, userId];
+  let paramIndex = 3;
 
   for (const field of allowedFields) {
     if (!(field in parsed)) {
@@ -415,6 +419,7 @@ const updateLegacy = async (origin, legacyId, body) => {
       `UPDATE legacies
        SET ${setClauses.join(", ")}
        WHERE legacy_id = $1
+         AND user_id = $2
          AND legacy_name != 'Pack Legacy Challenge Template'
        RETURNING *`,
       params
@@ -436,20 +441,20 @@ const updateLegacy = async (origin, legacyId, body) => {
 /**
  * GET /api/legacies/:legacyId/stats - Get aggregated statistics for a legacy
  */
-const getLegacyStats = async (origin, legacyId) => {
+const getLegacyStats = async (origin, userId, legacyId) => {
   if (!isValidUuid(legacyId)) {
     return buildResponse(400, { error: "Invalid legacy_id format" }, origin);
   }
 
   const pool = await getPool();
 
-  // Verify legacy exists
+  // Verify legacy exists and belongs to user
   const legacyCheck = await pool.query(
     `SELECT legacy_id, legacy_name, current_household_wealth, total_wealth_accumulated,
             total_sims_born, total_deaths, current_generation
      FROM legacies
-     WHERE legacy_id = $1 AND legacy_name != 'Pack Legacy Challenge Template'`,
-    [legacyId]
+     WHERE legacy_id = $1 AND user_id = $2 AND legacy_name != 'Pack Legacy Challenge Template'`,
+    [legacyId, userId]
   );
 
   if (legacyCheck.rows.length === 0) {

@@ -7,10 +7,15 @@ const {
   isPositiveInteger,
   parseBody,
 } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
-const getSimSkills = async (origin, simId) => {
+const getSimSkills = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -27,9 +32,13 @@ const getSimSkills = async (origin, simId) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const upsertSimSkill = async (origin, simId, body) => {
+const upsertSimSkill = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -96,12 +105,16 @@ const upsertSimSkill = async (origin, simId, body) => {
   }
 };
 
-const removeSimSkill = async (origin, simId, skillId) => {
+const removeSimSkill = async (origin, userId, simId, skillId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(skillId)) {
     return buildResponse(400, { error: "Invalid skill_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

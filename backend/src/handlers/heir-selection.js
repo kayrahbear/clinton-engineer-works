@@ -1,6 +1,7 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
 const { isValidUuid, parseBody } = require("../utils/validation");
+const { verifyGenerationOwnership } = require("../utils/authorization");
 
 /**
  * Evaluate a sim's eligibility against gender law.
@@ -182,9 +183,13 @@ function sortByHeirLaw(candidates, heirLaw) {
  * GET /api/generations/:generationId/eligible-heirs
  * Returns candidate sims with eligibility evaluation based on succession laws.
  */
-const getEligibleHeirs = async (origin, generationId) => {
+const getEligibleHeirs = async (origin, userId, generationId) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
+  }
+
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
+    return buildResponse(404, { error: "Generation not found" }, origin);
   }
 
   const pool = await getPool();
@@ -299,9 +304,13 @@ const getEligibleHeirs = async (origin, generationId) => {
  * PUT /api/generations/:generationId/heir
  * Select an heir for a generation.
  */
-const selectHeir = async (origin, generationId, body) => {
+const selectHeir = async (origin, userId, generationId, body) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
+  }
+
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
+    return buildResponse(404, { error: "Generation not found" }, origin);
   }
 
   const parsed = parseBody(body);

@@ -6,6 +6,7 @@ const {
   isBoolean,
   parseBody,
 } = require("../utils/validation");
+const { verifyLegacyOwnership, verifySimOwnership } = require("../utils/authorization");
 
 const VALID_LIFE_STAGES = [
   "infant",
@@ -51,7 +52,7 @@ const validateTextLength = (field, value) => {
 const FK_ERROR_MESSAGE =
   "Referenced record does not exist. Verify legacy_id, generation_id, and parent IDs.";
 
-const createSim = async (origin, body) => {
+const createSim = async (origin, userId, body) => {
   const parsed = parseBody(body);
   if (!parsed) {
     return buildResponse(400, { error: "Invalid or missing JSON body" }, origin);
@@ -85,6 +86,10 @@ const createSim = async (origin, body) => {
       { error: "legacy_id is required and must be a valid UUID" },
       origin
     );
+  }
+
+  if (!(await verifyLegacyOwnership(legacy_id, userId))) {
+    return buildResponse(404, { error: "Legacy not found" }, origin);
   }
 
   if (!generation_id || !isValidUuid(generation_id)) {
@@ -250,9 +255,13 @@ const createSim = async (origin, body) => {
   }
 };
 
-const getSimById = async (origin, simId) => {
+const getSimById = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -276,9 +285,13 @@ const getSimById = async (origin, simId) => {
   return buildResponse(200, { data: result.rows[0] }, origin);
 };
 
-const getSimsByLegacy = async (origin, legacyId, queryParams) => {
+const getSimsByLegacy = async (origin, userId, legacyId, queryParams) => {
   if (!isValidUuid(legacyId)) {
     return buildResponse(400, { error: "Invalid legacy_id format" }, origin);
+  }
+
+  if (!(await verifyLegacyOwnership(legacyId, userId))) {
+    return buildResponse(404, { error: "Legacy not found" }, origin);
   }
 
   const conditions = ["s.legacy_id = $1", "s.status != 'deleted'"];
@@ -339,9 +352,13 @@ const getSimsByLegacy = async (origin, legacyId, queryParams) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const updateSim = async (origin, simId, body) => {
+const updateSim = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -512,9 +529,13 @@ const updateSim = async (origin, simId, body) => {
   }
 };
 
-const deleteSim = async (origin, simId) => {
+const deleteSim = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

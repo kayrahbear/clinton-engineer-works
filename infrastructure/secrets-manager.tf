@@ -23,3 +23,21 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
     engine   = "postgres"
   })
 }
+
+# Generate a random JWT signing secret
+resource "random_password" "jwt_secret" {
+  length  = 64
+  special = false
+}
+
+# Store JWT secret in Secrets Manager
+resource "aws_secretsmanager_secret" "jwt_secret" {
+  name                    = "${var.project_name}/${var.environment}/jwt-secret"
+  description             = "JWT signing secret for ${var.project_name} ${var.environment}"
+  recovery_window_in_days = var.environment == "prod" ? 30 : 0
+}
+
+resource "aws_secretsmanager_secret_version" "jwt_secret" {
+  secret_id     = aws_secretsmanager_secret.jwt_secret.id
+  secret_string = random_password.jwt_secret.result
+}

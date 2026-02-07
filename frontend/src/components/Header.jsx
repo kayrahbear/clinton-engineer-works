@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../context/useAuth'
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -7,6 +8,8 @@ const navItems = [
 ]
 
 export default function Header() {
+  const { user, logout } = useAuth()
+
   return (
     <header className="border-b border-ff-border/70 bg-ff-surface/70 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
@@ -16,23 +19,36 @@ export default function Header() {
           </p>
           <h1 className="text-2xl font-semibold text-ff-text">Your story timeline</h1>
         </div>
-        <nav className="flex items-center gap-3 text-sm">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `rounded-full px-3 py-1 font-medium transition ${
-                  isActive
-                    ? 'border border-ff-mint/40 bg-ff-mint/15 text-ff-mint'
-                    : 'text-ff-muted hover:text-ff-text'
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-3 text-sm">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-full px-3 py-1 font-medium transition ${
+                    isActive
+                      ? 'border border-ff-mint/40 bg-ff-mint/15 text-ff-mint'
+                      : 'text-ff-muted hover:text-ff-text'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+          {user && (
+            <div className="flex items-center gap-3 border-l border-ff-border/50 pl-4">
+              <span className="text-sm text-ff-muted">{user.display_name}</span>
+              <button
+                onClick={logout}
+                className="rounded-full px-3 py-1 text-sm text-ff-muted hover:text-ff-pink transition"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   )

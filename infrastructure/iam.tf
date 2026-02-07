@@ -94,7 +94,8 @@ resource "aws_iam_role_policy" "lambda_secrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          aws_secretsmanager_secret.db_credentials.arn
+          aws_secretsmanager_secret.db_credentials.arn,
+          aws_secretsmanager_secret.jwt_secret.arn,
         ]
       }
     ]

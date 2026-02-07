@@ -1,5 +1,12 @@
 const { healthHandler } = require("./handlers/health");
 const {
+  register,
+  login,
+  getMe,
+  refreshTokens,
+  logout,
+} = require("./handlers/auth");
+const {
   getSkills,
   getTraits,
   getAspirations,
@@ -75,6 +82,7 @@ const {
 } = require("./handlers/sim-relationships");
 const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
+const { withAuth } = require("./middleware/auth");
 
 const UUID_PATTERN =
   "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -238,6 +246,23 @@ const handler = async (event) => {
     return healthHandler(origin);
   }
 
+  // Auth routes
+  if (method === "POST" && /\/auth\/register\/?$/i.test(path)) {
+    return register(origin, event?.body);
+  }
+  if (method === "POST" && /\/auth\/login\/?$/i.test(path)) {
+    return login(origin, event?.body);
+  }
+  if (method === "GET" && /\/auth\/me\/?$/i.test(path)) {
+    return getMe(origin, event.userId);
+  }
+  if (method === "POST" && /\/auth\/refresh\/?$/i.test(path)) {
+    return refreshTokens(origin, event?.body);
+  }
+  if (method === "POST" && /\/auth\/logout\/?$/i.test(path)) {
+    return logout(origin, event.userId, event?.body);
+  }
+
   // Reference data
   if (method === "GET" && path.endsWith("/reference/skills")) {
     return getSkills(origin);
@@ -281,12 +306,12 @@ const handler = async (event) => {
 
   // GET /legacies (list all)
   if (method === "GET" && ROUTE_LEGACIES_COLLECTION.test(path)) {
-    return getAllLegacies(origin);
+    return getAllLegacies(origin, event.userId);
   }
 
   // POST /legacies
   if (method === "POST" && ROUTE_LEGACIES_COLLECTION.test(path)) {
-    return createLegacy(origin, event?.body);
+    return createLegacy(origin, event.userId, event?.body);
   }
 
   // GET /legacies/:legacyId (must check before sub-resource routes)
@@ -294,11 +319,11 @@ const handler = async (event) => {
 
   // GET|PUT /legacies/:legacyId
   if (method === "GET" && legacyIdMatch) {
-    return getLegacyById(origin, legacyIdMatch[1]);
+    return getLegacyById(origin, event.userId, legacyIdMatch[1]);
   }
 
   if (method === "PUT" && legacyIdMatch) {
-    return updateLegacy(origin, legacyIdMatch[1], event?.body);
+    return updateLegacy(origin, event.userId, legacyIdMatch[1], event?.body);
   }
 
   // Legacy sub-resources
@@ -306,13 +331,13 @@ const handler = async (event) => {
   // GET /legacies/:legacyId/generations
   const legacyGenerationsMatch = path.match(ROUTE_LEGACY_GENERATIONS);
   if (method === "GET" && legacyGenerationsMatch) {
-    return getGenerationsByLegacy(origin, legacyGenerationsMatch[1]);
+    return getGenerationsByLegacy(origin, event.userId, legacyGenerationsMatch[1]);
   }
 
   // GET /legacies/:legacyId/stats
   const legacyStatsMatch = path.match(ROUTE_LEGACY_STATS);
   if (method === "GET" && legacyStatsMatch) {
-    return getLegacyStats(origin, legacyStatsMatch[1]);
+    return getLegacyStats(origin, event.userId, legacyStatsMatch[1]);
   }
 
   // Generations
@@ -320,33 +345,33 @@ const handler = async (event) => {
   // Generation action routes (more specific, check first)
   const genStartMatch = path.match(ROUTE_GENERATION_START);
   if (method === "POST" && genStartMatch) {
-    return startGeneration(origin, genStartMatch[1], event?.body);
+    return startGeneration(origin, event.userId, genStartMatch[1], event?.body);
   }
 
   const genCompleteMatch = path.match(ROUTE_GENERATION_COMPLETE);
   if (method === "PUT" && genCompleteMatch) {
-    return completeGeneration(origin, genCompleteMatch[1], event?.body);
+    return completeGeneration(origin, event.userId, genCompleteMatch[1], event?.body);
   }
 
   const genGoalsMatch = path.match(ROUTE_GENERATION_GOALS);
   if (method === "GET" && genGoalsMatch) {
-    return getGenerationGoals(origin, genGoalsMatch[1]);
+    return getGenerationGoals(origin, event.userId, genGoalsMatch[1]);
   }
 
   const genEligibleHeirsMatch = path.match(ROUTE_GENERATION_ELIGIBLE_HEIRS);
   if (method === "GET" && genEligibleHeirsMatch) {
-    return getEligibleHeirs(origin, genEligibleHeirsMatch[1]);
+    return getEligibleHeirs(origin, event.userId, genEligibleHeirsMatch[1]);
   }
 
   const genHeirMatch = path.match(ROUTE_GENERATION_HEIR);
   if (method === "PUT" && genHeirMatch) {
-    return selectHeir(origin, genHeirMatch[1], event?.body);
+    return selectHeir(origin, event.userId, genHeirMatch[1], event?.body);
   }
 
   // GET /generations/:generationId
   const generationIdMatch = path.match(ROUTE_GENERATION_ID);
   if (method === "GET" && generationIdMatch) {
-    return getGenerationById(origin, generationIdMatch[1]);
+    return getGenerationById(origin, event.userId, generationIdMatch[1]);
   }
 
   // Goals
@@ -354,7 +379,7 @@ const handler = async (event) => {
   // PUT /goals/:goalId/complete
   const goalCompleteMatch = path.match(ROUTE_GOAL_COMPLETE);
   if (method === "PUT" && goalCompleteMatch) {
-    return updateGoalCompletion(origin, goalCompleteMatch[1], event?.body);
+    return updateGoalCompletion(origin, event.userId, goalCompleteMatch[1], event?.body);
   }
 
   // Generation Templates
@@ -374,7 +399,7 @@ const handler = async (event) => {
 
   // POST /sims
   if (method === "POST" && ROUTE_SIMS_COLLECTION.test(path)) {
-    return createSim(origin, event?.body);
+    return createSim(origin, event.userId, event?.body);
   }
 
   // GET /legacies/:legacyId/sims (checked before /sims/:id to avoid collision)
@@ -382,7 +407,7 @@ const handler = async (event) => {
   if (method === "GET" && legacySimsMatch) {
     const queryParams =
       event?.queryStringParameters || parseQueryString(rawPath);
-    return getSimsByLegacy(origin, legacySimsMatch[1], queryParams);
+    return getSimsByLegacy(origin, event.userId, legacySimsMatch[1], queryParams);
   }
 
   // --- Sim sub-resource ID routes (2 UUIDs) checked first ---
@@ -392,6 +417,7 @@ const handler = async (event) => {
   if (method === "PUT" && simRelationshipIdMatch) {
     return updateSimRelationship(
       origin,
+      event.userId,
       simRelationshipIdMatch[1],
       simRelationshipIdMatch[2],
       event?.body
@@ -400,6 +426,7 @@ const handler = async (event) => {
   if (method === "DELETE" && simRelationshipIdMatch) {
     return removeSimRelationship(
       origin,
+      event.userId,
       simRelationshipIdMatch[1],
       simRelationshipIdMatch[2]
     );
@@ -408,13 +435,13 @@ const handler = async (event) => {
   // DELETE /sims/:simId/traits/:traitId
   const simTraitIdMatch = path.match(ROUTE_SIM_TRAIT_ID);
   if (method === "DELETE" && simTraitIdMatch) {
-    return removeSimTrait(origin, simTraitIdMatch[1], simTraitIdMatch[2]);
+    return removeSimTrait(origin, event.userId, simTraitIdMatch[1], simTraitIdMatch[2]);
   }
 
   // DELETE /sims/:simId/skills/:skillId
   const simSkillIdMatch = path.match(ROUTE_SIM_SKILL_ID);
   if (method === "DELETE" && simSkillIdMatch) {
-    return removeSimSkill(origin, simSkillIdMatch[1], simSkillIdMatch[2]);
+    return removeSimSkill(origin, event.userId, simSkillIdMatch[1], simSkillIdMatch[2]);
   }
 
   // PUT|DELETE /sims/:simId/aspirations/:aspirationId
@@ -422,6 +449,7 @@ const handler = async (event) => {
   if (method === "PUT" && simAspirationIdMatch) {
     return updateSimAspiration(
       origin,
+      event.userId,
       simAspirationIdMatch[1],
       simAspirationIdMatch[2],
       event?.body
@@ -430,6 +458,7 @@ const handler = async (event) => {
   if (method === "DELETE" && simAspirationIdMatch) {
     return removeSimAspiration(
       origin,
+      event.userId,
       simAspirationIdMatch[1],
       simAspirationIdMatch[2]
     );
@@ -440,19 +469,20 @@ const handler = async (event) => {
   if (method === "PUT" && simCareerIdMatch) {
     return updateSimCareer(
       origin,
+      event.userId,
       simCareerIdMatch[1],
       simCareerIdMatch[2],
       event?.body
     );
   }
   if (method === "DELETE" && simCareerIdMatch) {
-    return removeSimCareer(origin, simCareerIdMatch[1], simCareerIdMatch[2]);
+    return removeSimCareer(origin, event.userId, simCareerIdMatch[1], simCareerIdMatch[2]);
   }
 
   // DELETE /sims/:simId/milestones/:milestoneId
   const simMilestoneIdMatch = path.match(ROUTE_SIM_MILESTONE_ID);
   if (method === "DELETE" && simMilestoneIdMatch) {
-    return removeSimMilestone(origin, simMilestoneIdMatch[1], simMilestoneIdMatch[2]);
+    return removeSimMilestone(origin, event.userId, simMilestoneIdMatch[1], simMilestoneIdMatch[2]);
   }
 
   // --- Sim sub-resource collection routes (1 UUID) ---
@@ -460,61 +490,61 @@ const handler = async (event) => {
   // GET /sims/:simId/family-tree
   const simFamilyTreeMatch = path.match(ROUTE_SIM_FAMILY_TREE);
   if (method === "GET" && simFamilyTreeMatch) {
-    return getSimFamilyTree(origin, simFamilyTreeMatch[1]);
+    return getSimFamilyTree(origin, event.userId, simFamilyTreeMatch[1]);
   }
 
   // GET|POST /sims/:simId/relationships
   const simRelationshipsMatch = path.match(ROUTE_SIM_RELATIONSHIPS);
   if (method === "GET" && simRelationshipsMatch) {
-    return getSimRelationships(origin, simRelationshipsMatch[1]);
+    return getSimRelationships(origin, event.userId, simRelationshipsMatch[1]);
   }
   if (method === "POST" && simRelationshipsMatch) {
-    return addSimRelationship(origin, simRelationshipsMatch[1], event?.body);
+    return addSimRelationship(origin, event.userId, simRelationshipsMatch[1], event?.body);
   }
 
   // GET|POST /sims/:simId/traits
   const simTraitsMatch = path.match(ROUTE_SIM_TRAITS);
   if (method === "GET" && simTraitsMatch) {
-    return getSimTraits(origin, simTraitsMatch[1]);
+    return getSimTraits(origin, event.userId, simTraitsMatch[1]);
   }
   if (method === "POST" && simTraitsMatch) {
-    return addSimTrait(origin, simTraitsMatch[1], event?.body);
+    return addSimTrait(origin, event.userId, simTraitsMatch[1], event?.body);
   }
 
   // GET|POST /sims/:simId/skills
   const simSkillsMatch = path.match(ROUTE_SIM_SKILLS);
   if (method === "GET" && simSkillsMatch) {
-    return getSimSkills(origin, simSkillsMatch[1]);
+    return getSimSkills(origin, event.userId, simSkillsMatch[1]);
   }
   if (method === "POST" && simSkillsMatch) {
-    return upsertSimSkill(origin, simSkillsMatch[1], event?.body);
+    return upsertSimSkill(origin, event.userId, simSkillsMatch[1], event?.body);
   }
 
   // GET|POST /sims/:simId/aspirations
   const simAspirationsMatch = path.match(ROUTE_SIM_ASPIRATIONS);
   if (method === "GET" && simAspirationsMatch) {
-    return getSimAspirations(origin, simAspirationsMatch[1]);
+    return getSimAspirations(origin, event.userId, simAspirationsMatch[1]);
   }
   if (method === "POST" && simAspirationsMatch) {
-    return addSimAspiration(origin, simAspirationsMatch[1], event?.body);
+    return addSimAspiration(origin, event.userId, simAspirationsMatch[1], event?.body);
   }
 
   // GET|POST /sims/:simId/careers
   const simCareersMatch = path.match(ROUTE_SIM_CAREERS);
   if (method === "GET" && simCareersMatch) {
-    return getSimCareers(origin, simCareersMatch[1]);
+    return getSimCareers(origin, event.userId, simCareersMatch[1]);
   }
   if (method === "POST" && simCareersMatch) {
-    return addSimCareer(origin, simCareersMatch[1], event?.body);
+    return addSimCareer(origin, event.userId, simCareersMatch[1], event?.body);
   }
 
   // GET|POST /sims/:simId/milestones
   const simMilestonesMatch = path.match(ROUTE_SIM_MILESTONES);
   if (method === "GET" && simMilestonesMatch) {
-    return getSimMilestones(origin, simMilestonesMatch[1]);
+    return getSimMilestones(origin, event.userId, simMilestonesMatch[1]);
   }
   if (method === "POST" && simMilestonesMatch) {
-    return addSimMilestone(origin, simMilestonesMatch[1], event?.body);
+    return addSimMilestone(origin, event.userId, simMilestonesMatch[1], event?.body);
   }
 
   // --- Sims by ID (after sub-resource routes to avoid collision) ---
@@ -523,22 +553,22 @@ const handler = async (event) => {
   const simIdMatch = path.match(ROUTE_SIMS_ID);
 
   if (method === "GET" && simIdMatch) {
-    return getSimById(origin, simIdMatch[1]);
+    return getSimById(origin, event.userId, simIdMatch[1]);
   }
 
   // PUT /sims/:simId
   if (method === "PUT" && simIdMatch) {
-    return updateSim(origin, simIdMatch[1], event?.body);
+    return updateSim(origin, event.userId, simIdMatch[1], event?.body);
   }
 
   // DELETE /sims/:simId
   if (method === "DELETE" && simIdMatch) {
-    return deleteSim(origin, simIdMatch[1]);
+    return deleteSim(origin, event.userId, simIdMatch[1]);
   }
 
   return notFound(origin);
 };
 
 module.exports = {
-  handler: withErrorHandling(handler),
+  handler: withErrorHandling(withAuth(handler)),
 };

@@ -1,6 +1,7 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
 const { isValidUuid, isValidDate, isBoolean, parseBody } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
 const VALID_RELATIONSHIP_TYPES = [
   "spouse",
@@ -12,9 +13,13 @@ const VALID_RELATIONSHIP_TYPES = [
   "sibling",
 ];
 
-const getSimRelationships = async (origin, simId) => {
+const getSimRelationships = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -34,9 +39,13 @@ const getSimRelationships = async (origin, simId) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const addSimRelationship = async (origin, simId, body) => {
+const addSimRelationship = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -120,12 +129,16 @@ const addSimRelationship = async (origin, simId, body) => {
   }
 };
 
-const updateSimRelationship = async (origin, simId, relationshipId, body) => {
+const updateSimRelationship = async (origin, userId, simId, relationshipId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(relationshipId)) {
     return buildResponse(400, { error: "Invalid relationship_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -188,12 +201,16 @@ const updateSimRelationship = async (origin, simId, relationshipId, body) => {
   return buildResponse(200, { data: result.rows[0] }, origin);
 };
 
-const removeSimRelationship = async (origin, simId, relationshipId) => {
+const removeSimRelationship = async (origin, userId, simId, relationshipId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(relationshipId)) {
     return buildResponse(400, { error: "Invalid relationship_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

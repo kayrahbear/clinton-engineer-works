@@ -7,10 +7,15 @@ const {
   isPositiveInteger,
   parseBody,
 } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
-const getSimCareers = async (origin, simId) => {
+const getSimCareers = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -30,9 +35,13 @@ const getSimCareers = async (origin, simId) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const addSimCareer = async (origin, simId, body) => {
+const addSimCareer = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -145,12 +154,16 @@ const addSimCareer = async (origin, simId, body) => {
   }
 };
 
-const updateSimCareer = async (origin, simId, simCareerId, body) => {
+const updateSimCareer = async (origin, userId, simId, simCareerId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(simCareerId)) {
     return buildResponse(400, { error: "Invalid sim_career_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -283,12 +296,16 @@ const updateSimCareer = async (origin, simId, simCareerId, body) => {
   }
 };
 
-const removeSimCareer = async (origin, simId, simCareerId) => {
+const removeSimCareer = async (origin, userId, simId, simCareerId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(simCareerId)) {
     return buildResponse(400, { error: "Invalid sim_career_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

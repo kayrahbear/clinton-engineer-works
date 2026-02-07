@@ -1,27 +1,21 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
 const { isValidUuid, isValidDate, parseBody } = require("../utils/validation");
+const { verifyLegacyOwnership, verifyGenerationOwnership, verifyGoalOwnership } = require("../utils/authorization");
 
 /**
  * GET /api/legacies/:legacyId/generations - Get all generations for a legacy
  */
-const getGenerationsByLegacy = async (origin, legacyId) => {
+const getGenerationsByLegacy = async (origin, userId, legacyId) => {
   if (!isValidUuid(legacyId)) {
     return buildResponse(400, { error: "Invalid legacy_id format" }, origin);
   }
 
-  const pool = await getPool();
-
-  // Check legacy exists and isn't the template
-  const legacyCheck = await pool.query(
-    `SELECT legacy_id FROM legacies
-     WHERE legacy_id = $1 AND legacy_name != 'Pack Legacy Challenge Template'`,
-    [legacyId]
-  );
-
-  if (legacyCheck.rows.length === 0) {
+  if (!(await verifyLegacyOwnership(legacyId, userId))) {
     return buildResponse(404, { error: "Legacy not found" }, origin);
   }
+
+  const pool = await getPool();
 
   const result = await pool.query(
     `SELECT g.*,
@@ -47,9 +41,13 @@ const getGenerationsByLegacy = async (origin, legacyId) => {
 /**
  * GET /api/generations/:generationId - Get generation details
  */
-const getGenerationById = async (origin, generationId) => {
+const getGenerationById = async (origin, userId, generationId) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
+  }
+
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
+    return buildResponse(404, { error: "Generation not found" }, origin);
   }
 
   const pool = await getPool();
@@ -131,9 +129,13 @@ const getGenerationById = async (origin, generationId) => {
 /**
  * POST /api/generations/:generationId/start - Start a generation (make it active)
  */
-const startGeneration = async (origin, generationId, body) => {
+const startGeneration = async (origin, userId, generationId, body) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
+  }
+
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
+    return buildResponse(404, { error: "Generation not found" }, origin);
   }
 
   const parsed = parseBody(body) || {};
@@ -233,9 +235,13 @@ const startGeneration = async (origin, generationId, body) => {
 /**
  * PUT /api/generations/:generationId/complete - Mark generation as complete
  */
-const completeGeneration = async (origin, generationId, body) => {
+const completeGeneration = async (origin, userId, generationId, body) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
+  }
+
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
+    return buildResponse(404, { error: "Generation not found" }, origin);
   }
 
   const parsed = parseBody(body) || {};
@@ -335,26 +341,16 @@ const completeGeneration = async (origin, generationId, body) => {
 /**
  * GET /api/generations/:generationId/goals - Get all goals for a generation
  */
-const getGenerationGoals = async (origin, generationId) => {
+const getGenerationGoals = async (origin, userId, generationId) => {
   if (!isValidUuid(generationId)) {
     return buildResponse(400, { error: "Invalid generation_id format" }, origin);
   }
 
-  const pool = await getPool();
-
-  // Verify generation exists and isn't from template
-  const genCheck = await pool.query(
-    `SELECT g.generation_id
-     FROM generations g
-     JOIN legacies l ON g.legacy_id = l.legacy_id
-     WHERE g.generation_id = $1
-       AND l.legacy_name != 'Pack Legacy Challenge Template'`,
-    [generationId]
-  );
-
-  if (genCheck.rows.length === 0) {
+  if (!(await verifyGenerationOwnership(generationId, userId))) {
     return buildResponse(404, { error: "Generation not found" }, origin);
   }
+
+  const pool = await getPool();
 
   const result = await pool.query(
     `SELECT gg.*,
@@ -391,9 +387,13 @@ const getGenerationGoals = async (origin, generationId) => {
 /**
  * PUT /api/goals/:goalId/complete - Mark a goal as complete (or incomplete)
  */
-const updateGoalCompletion = async (origin, goalId, body) => {
+const updateGoalCompletion = async (origin, userId, goalId, body) => {
   if (!isValidUuid(goalId)) {
     return buildResponse(400, { error: "Invalid goal_id format" }, origin);
+  }
+
+  if (!(await verifyGoalOwnership(goalId, userId))) {
+    return buildResponse(404, { error: "Goal not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -420,21 +420,6 @@ const updateGoalCompletion = async (origin, goalId, body) => {
   }
 
   const pool = await getPool();
-
-  // Verify goal exists and isn't from template
-  const goalCheck = await pool.query(
-    `SELECT gg.goal_id
-     FROM generation_goals gg
-     JOIN generations g ON gg.generation_id = g.generation_id
-     JOIN legacies l ON g.legacy_id = l.legacy_id
-     WHERE gg.goal_id = $1
-       AND l.legacy_name != 'Pack Legacy Challenge Template'`,
-    [goalId]
-  );
-
-  if (goalCheck.rows.length === 0) {
-    return buildResponse(404, { error: "Goal not found" }, origin);
-  }
 
   try {
     const result = await pool.query(

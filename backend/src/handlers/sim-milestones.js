@@ -1,10 +1,15 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
 const { isValidUuid, isValidDate, parseBody } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
-const getSimMilestones = async (origin, simId) => {
+const getSimMilestones = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
@@ -21,9 +26,13 @@ const getSimMilestones = async (origin, simId) => {
   return buildResponse(200, { data: result.rows }, origin);
 };
 
-const addSimMilestone = async (origin, simId, body) => {
+const addSimMilestone = async (origin, userId, simId, body) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const parsed = parseBody(body);
@@ -81,12 +90,16 @@ const addSimMilestone = async (origin, simId, body) => {
   }
 };
 
-const removeSimMilestone = async (origin, simId, milestoneId) => {
+const removeSimMilestone = async (origin, userId, simId, milestoneId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
   }
   if (!isValidUuid(milestoneId)) {
     return buildResponse(400, { error: "Invalid milestone_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();

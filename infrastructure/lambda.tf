@@ -27,6 +27,7 @@ resource "aws_lambda_function" "api" {
     variables = {
       NODE_ENV            = var.environment
       DB_SECRET_ARN       = aws_secretsmanager_secret.db_credentials.arn
+      JWT_SECRET_ARN      = aws_secretsmanager_secret.jwt_secret.arn
       CORS_ALLOWED_ORIGIN = var.environment == "prod" ? "https://your-domain.com" : "*"
     }
   }

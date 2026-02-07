@@ -68,6 +68,11 @@ output "s3_deployment_bucket" {
   value       = aws_s3_bucket.lambda_deployments.bucket
 }
 
+output "jwt_secret_arn" {
+  description = "ARN of the Secrets Manager secret containing the JWT signing key"
+  value       = aws_secretsmanager_secret.jwt_secret.arn
+}
+
 output "ops_instance_id" {
   description = "Ops EC2 instance ID (SSM managed)"
   value       = aws_instance.ops.id

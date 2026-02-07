@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Sims from './pages/Sims'
 import SimDetail from './pages/SimDetail'
@@ -9,20 +10,26 @@ import LegacyWizard from './pages/LegacyWizard'
 import LegacyDashboard from './pages/LegacyDashboard'
 import LegacyLanding from './pages/LegacyLanding'
 import GenerationDetail from './pages/GenerationDetail'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="/sims" element={<Sims />} />
-        <Route path="/sims/:id" element={<SimDetail />} />
-        <Route path="/sims/:id/family-tree" element={<FamilyTree />} />
-        <Route path="/sims/new" element={<SimForm />} />
-        <Route path="/legacy/new" element={<LegacyWizard />} />
-        <Route path="/legacy/:legacyId" element={<LegacyDashboard />} />
-        <Route path="/legacy/:legacyId/generations/:generationId" element={<GenerationDetail />} />
-        <Route path="/legacy" element={<LegacyLanding />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/sims" element={<Sims />} />
+          <Route path="/sims/:id" element={<SimDetail />} />
+          <Route path="/sims/:id/family-tree" element={<FamilyTree />} />
+          <Route path="/sims/new" element={<SimForm />} />
+          <Route path="/legacy/new" element={<LegacyWizard />} />
+          <Route path="/legacy/:legacyId" element={<LegacyDashboard />} />
+          <Route path="/legacy/:legacyId/generations/:generationId" element={<GenerationDetail />} />
+          <Route path="/legacy" element={<LegacyLanding />} />
+        </Route>
       </Route>
     </Routes>
   )

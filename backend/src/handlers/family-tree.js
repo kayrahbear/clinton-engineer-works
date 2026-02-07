@@ -1,12 +1,17 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
 const { isValidUuid } = require("../utils/validation");
+const { verifySimOwnership } = require("../utils/authorization");
 
 const MAX_DEPTH = 35;
 
-const getSimFamilyTree = async (origin, simId) => {
+const getSimFamilyTree = async (origin, userId, simId) => {
   if (!isValidUuid(simId)) {
     return buildResponse(400, { error: "Invalid sim_id format" }, origin);
+  }
+
+  if (!(await verifySimOwnership(simId, userId))) {
+    return buildResponse(404, { error: "Sim not found" }, origin);
   }
 
   const pool = await getPool();
