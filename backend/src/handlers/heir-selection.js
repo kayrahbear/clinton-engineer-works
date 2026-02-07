@@ -213,7 +213,7 @@ const getEligibleHeirs = async (origin, generationId) => {
   if (generation.founder_id) {
     simsResult = await pool.query(
       `SELECT s.sim_id, s.name, s.gender, s.life_stage, s.occult_type,
-              s.birth_date, s.is_heir, s.mother_id, s.father_id, s.status
+              s.birth_date, s.is_generation_heir, s.mother_id, s.father_id, s.status
        FROM sims s
        WHERE (s.mother_id = $1 OR s.father_id = $1)
          AND s.status != 'deleted'
@@ -224,7 +224,7 @@ const getEligibleHeirs = async (origin, generationId) => {
     // Fallback: no founder set, show all sims in this generation
     simsResult = await pool.query(
       `SELECT s.sim_id, s.name, s.gender, s.life_stage, s.occult_type,
-              s.birth_date, s.is_heir, s.mother_id, s.father_id, s.status
+              s.birth_date, s.is_generation_heir, s.mother_id, s.father_id, s.status
        FROM sims s
        WHERE s.generation_id = $1
          AND s.status != 'deleted'
@@ -261,7 +261,7 @@ const getEligibleHeirs = async (origin, generationId) => {
       life_stage: sim.life_stage,
       occult_type: sim.occult_type,
       birth_date: sim.birth_date,
-      is_heir: sim.is_heir,
+      is_generation_heir: sim.is_generation_heir,
       status: sim.status,
       mother_id: sim.mother_id,
       father_id: sim.father_id,
@@ -356,7 +356,7 @@ const selectHeir = async (origin, generationId, body) => {
     // Clear previous heir for this generation (if any)
     if (generation.old_heir_id) {
       await client.query(
-        `UPDATE sims SET is_heir = FALSE WHERE sim_id = $1`,
+        `UPDATE sims SET is_generation_heir = FALSE WHERE sim_id = $1`,
         [generation.old_heir_id]
       );
     }
@@ -369,7 +369,7 @@ const selectHeir = async (origin, generationId, body) => {
 
     // Mark sim as heir
     await client.query(
-      `UPDATE sims SET is_heir = TRUE WHERE sim_id = $1`,
+      `UPDATE sims SET is_generation_heir = TRUE WHERE sim_id = $1`,
       [heir_id]
     );
 

@@ -466,7 +466,7 @@ const getLegacyStats = async (origin, legacyId) => {
        COUNT(*) FILTER (WHERE status = 'dead') AS deceased_sims,
        COUNT(*) FILTER (WHERE status = 'moved_out') AS moved_out_sims,
        COUNT(*) FILTER (WHERE current_household = TRUE AND status = 'alive') AS household_members,
-       COUNT(*) FILTER (WHERE is_heir = TRUE) AS total_heirs
+       COUNT(*) FILTER (WHERE is_generation_heir = TRUE) AS total_heirs
      FROM sims
      WHERE legacy_id = $1 AND status != 'deleted'`,
     [legacyId]

@@ -296,7 +296,7 @@ export default function SimDetail() {
                 <img src={sim.portrait} alt={sim.name} className="h-full w-full object-cover" />
               ) : null}
             </div>
-            {sim.is_heir && (
+            {sim.is_generation_heir && (
               <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-ff-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-ff-mint">
                 Heir
               </span>

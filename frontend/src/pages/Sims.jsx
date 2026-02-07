@@ -230,7 +230,7 @@ export default function Sims() {
                           />
                         )}
                       </div>
-                      {sim.is_heir && (
+                      {sim.is_generation_heir && (
                         <span className="absolute -bottom-1 -right-1 rounded-full bg-ff-surface px-2 py-0.5 text-[10px] font-semibold text-ff-mint">
                           Gen {sim.generation_number} Heir
                         </span>

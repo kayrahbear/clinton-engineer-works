@@ -287,7 +287,7 @@ const completeGeneration = async (origin, generationId, body) => {
     // If heir_id provided, mark that sim as the heir
     if (heir_id) {
       await client.query(
-        `UPDATE sims SET is_heir = TRUE WHERE sim_id = $1`,
+        `UPDATE sims SET is_generation_heir = TRUE WHERE sim_id = $1`,
         [heir_id]
       );
     }

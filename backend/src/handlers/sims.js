@@ -74,7 +74,7 @@ const createSim = async (origin, body) => {
     birth_date,
     world_of_residence_id,
     current_household,
-    is_heir,
+    is_generation_heir,
     is_founder,
     notes,
   } = parsed;
@@ -177,8 +177,8 @@ const createSim = async (origin, body) => {
     return buildResponse(400, { error: "current_household must be a boolean" }, origin);
   }
 
-  if (is_heir !== undefined && is_heir !== null && !isBoolean(is_heir)) {
-    return buildResponse(400, { error: "is_heir must be a boolean" }, origin);
+  if (is_generation_heir !== undefined && is_generation_heir !== null && !isBoolean(is_generation_heir)) {
+    return buildResponse(400, { error: "is_generation_heir must be a boolean" }, origin);
   }
 
   if (is_founder !== undefined && is_founder !== null && !isBoolean(is_founder)) {
@@ -196,7 +196,7 @@ const createSim = async (origin, body) => {
         legacy_id, generation_id, name, gender, pronouns, portrait,
         life_stage, occult_type, cause_of_death, death_date, buried_location,
         mother_id, father_id, birth_date, world_of_residence_id,
-        current_household, is_heir, is_founder, notes
+        current_household, is_generation_heir, is_founder, notes
       ) VALUES (
         $1, $2, $3, $4, $5, $6,
         $7, $8, $9, $10, $11,
@@ -220,7 +220,7 @@ const createSim = async (origin, body) => {
         birth_date || null,
         world_of_residence_id || null,
         current_household ?? false,
-        is_heir ?? false,
+        is_generation_heir ?? false,
         is_founder ?? false,
         notes || null,
       ]
@@ -315,8 +315,8 @@ const getSimsByLegacy = async (origin, legacyId, queryParams) => {
     conditions.push("s.current_household = TRUE");
   }
 
-  if (queryParams.is_heir === "true") {
-    conditions.push("s.is_heir = TRUE");
+  if (queryParams.is_generation_heir === "true") {
+    conditions.push("s.is_generation_heir = TRUE");
   }
 
   const pool = await getPool();
@@ -365,7 +365,7 @@ const updateSim = async (origin, simId, body) => {
     "birth_date",
     "world_of_residence_id",
     "current_household",
-    "is_heir",
+    "is_generation_heir",
     "is_founder",
     "notes",
   ];
@@ -441,7 +441,7 @@ const updateSim = async (origin, simId, body) => {
     }
 
     if (
-      ["current_household", "is_heir", "is_founder"].includes(field) &&
+      ["current_household", "is_generation_heir", "is_founder"].includes(field) &&
       value !== null &&
       !isBoolean(value)
     ) {

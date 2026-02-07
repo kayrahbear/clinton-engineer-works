@@ -416,7 +416,7 @@ export default function LegacyDashboard() {
                       {sim.life_stage?.replace('_', ' ')}
                     </span>
                     <span className="ff-chip text-xs text-ff-pink">{sim.occult_type}</span>
-                    {sim.is_heir && (
+                    {sim.is_generation_heir && (
                       <span className="ff-chip text-xs text-ff-mint">Heir</span>
                     )}
                   </div>

@@ -294,7 +294,7 @@ export default function SimForm() {
         occult_type: formData.occultType,
         world_of_residence_id: formData.worldId || null,
         current_household: formData.currentHousehold,
-        is_heir: formData.isHeir,
+        is_generation_heir: formData.isHeir,
         notes: formData.notes.trim() || null,
       }
 
