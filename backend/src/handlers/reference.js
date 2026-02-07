@@ -61,6 +61,79 @@ const getWorlds = async (origin) => {
   return buildResponse(200, { data: rows }, origin);
 };
 
+const getMilestones = async (origin) => {
+  const rows = await fetchRows(
+    `SELECT milestone_id, milestone_name, description, category, min_age_group, max_age_group, pack_required, icon_path
+     FROM milestones
+     ORDER BY milestone_name ASC`
+  );
+
+  return buildResponse(200, { data: rows }, origin);
+};
+
+const VALID_AGE_GROUPS = ["infant", "toddler", "child", "teen", "young_adult", "adult", "elder"];
+
+const getMilestonesByAge = async (origin, lifeStage) => {
+  if (!VALID_AGE_GROUPS.includes(lifeStage)) {
+    return buildResponse(
+      400,
+      { error: `lifeStage must be one of: ${VALID_AGE_GROUPS.join(", ")}` },
+      origin
+    );
+  }
+
+  const rows = await fetchRows(
+    `SELECT milestone_id, milestone_name, description, category, min_age_group, max_age_group, pack_required, icon_path
+     FROM milestones
+     WHERE
+       CASE min_age_group
+         WHEN 'infant' THEN 1
+         WHEN 'toddler' THEN 2
+         WHEN 'child' THEN 3
+         WHEN 'teen' THEN 4
+         WHEN 'young_adult' THEN 5
+         WHEN 'adult' THEN 6
+         WHEN 'elder' THEN 7
+       END
+       <=
+       CASE $1
+         WHEN 'infant' THEN 1
+         WHEN 'toddler' THEN 2
+         WHEN 'child' THEN 3
+         WHEN 'teen' THEN 4
+         WHEN 'young_adult' THEN 5
+         WHEN 'adult' THEN 6
+         WHEN 'elder' THEN 7
+       END
+       AND (
+         max_age_group IS NULL OR
+         CASE max_age_group
+           WHEN 'infant' THEN 1
+           WHEN 'toddler' THEN 2
+           WHEN 'child' THEN 3
+           WHEN 'teen' THEN 4
+           WHEN 'young_adult' THEN 5
+           WHEN 'adult' THEN 6
+           WHEN 'elder' THEN 7
+         END
+         >=
+         CASE $1
+           WHEN 'infant' THEN 1
+           WHEN 'toddler' THEN 2
+           WHEN 'child' THEN 3
+           WHEN 'teen' THEN 4
+           WHEN 'young_adult' THEN 5
+           WHEN 'adult' THEN 6
+           WHEN 'elder' THEN 7
+         END
+       )
+     ORDER BY milestone_name ASC`,
+    [lifeStage]
+  );
+
+  return buildResponse(200, { data: rows }, origin);
+};
+
 const getCareerBranches = async (origin, careerId) => {
   if (!isValidUuid(careerId)) {
     return buildResponse(400, { error: "Invalid career_id format" }, origin);
@@ -84,4 +157,6 @@ module.exports = {
   getCareers,
   getCareerBranches,
   getWorlds,
+  getMilestones,
+  getMilestonesByAge,
 };

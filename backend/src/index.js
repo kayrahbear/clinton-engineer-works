@@ -6,6 +6,8 @@ const {
   getCareers,
   getCareerBranches,
   getWorlds,
+  getMilestones,
+  getMilestonesByAge,
 } = require("./handlers/reference");
 const {
   createLegacy,
@@ -59,6 +61,11 @@ const {
   updateSimCareer,
   removeSimCareer,
 } = require("./handlers/sim-careers");
+const {
+  getSimMilestones,
+  addSimMilestone,
+  removeSimMilestone,
+} = require("./handlers/sim-milestones");
 const { getSimFamilyTree } = require("./handlers/family-tree");
 const {
   getSimRelationships,
@@ -145,6 +152,10 @@ const ROUTE_SIM_CAREER_ID = new RegExp(
   `\\/sims\\/(${UUID_PATTERN})\\/careers\\/(${UUID_PATTERN})\\/?$`,
   "i"
 );
+const ROUTE_SIM_MILESTONE_ID = new RegExp(
+  `\\/sims\\/(${UUID_PATTERN})\\/milestones\\/(${UUID_PATTERN})\\/?$`,
+  "i"
+);
 
 // Sub-resource collection routes (1 UUID)
 const ROUTE_SIM_FAMILY_TREE = new RegExp(
@@ -169,6 +180,10 @@ const ROUTE_SIM_ASPIRATIONS = new RegExp(
 );
 const ROUTE_SIM_CAREERS = new RegExp(
   `\\/sims\\/(${UUID_PATTERN})\\/careers\\/?$`,
+  "i"
+);
+const ROUTE_SIM_MILESTONES = new RegExp(
+  `\\/sims\\/(${UUID_PATTERN})\\/milestones\\/?$`,
   "i"
 );
 
@@ -249,6 +264,17 @@ const handler = async (event) => {
 
   if (method === "GET" && path.endsWith("/reference/worlds")) {
     return getWorlds(origin);
+  }
+
+  if (method === "GET" && path.endsWith("/reference/milestones")) {
+    return getMilestones(origin);
+  }
+
+  const milestonesByAgeMatch = path.match(
+    /\\/reference\\/milestones\\/by-age\\/([a-z_]+)\\/?$/i
+  );
+  if (method === "GET" && milestonesByAgeMatch) {
+    return getMilestonesByAge(origin, milestonesByAgeMatch[1].toLowerCase());
   }
 
   // Legacies CRUD
@@ -423,6 +449,12 @@ const handler = async (event) => {
     return removeSimCareer(origin, simCareerIdMatch[1], simCareerIdMatch[2]);
   }
 
+  // DELETE /sims/:simId/milestones/:milestoneId
+  const simMilestoneIdMatch = path.match(ROUTE_SIM_MILESTONE_ID);
+  if (method === "DELETE" && simMilestoneIdMatch) {
+    return removeSimMilestone(origin, simMilestoneIdMatch[1], simMilestoneIdMatch[2]);
+  }
+
   // --- Sim sub-resource collection routes (1 UUID) ---
 
   // GET /sims/:simId/family-tree
@@ -474,6 +506,15 @@ const handler = async (event) => {
   }
   if (method === "POST" && simCareersMatch) {
     return addSimCareer(origin, simCareersMatch[1], event?.body);
+  }
+
+  // GET|POST /sims/:simId/milestones
+  const simMilestonesMatch = path.match(ROUTE_SIM_MILESTONES);
+  if (method === "GET" && simMilestonesMatch) {
+    return getSimMilestones(origin, simMilestonesMatch[1]);
+  }
+  if (method === "POST" && simMilestonesMatch) {
+    return addSimMilestone(origin, simMilestonesMatch[1], event?.body);
   }
 
   // --- Sims by ID (after sub-resource routes to avoid collision) ---
