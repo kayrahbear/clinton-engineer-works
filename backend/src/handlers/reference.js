@@ -1,5 +1,6 @@
 const { getPool } = require("../db/pool");
 const { buildResponse } = require("../utils/response");
+const { isValidUuid } = require("../utils/validation");
 
 const fetchRows = async (query, params = []) => {
   const pool = await getPool();
@@ -60,10 +61,27 @@ const getWorlds = async (origin) => {
   return buildResponse(200, { data: rows }, origin);
 };
 
+const getCareerBranches = async (origin, careerId) => {
+  if (!isValidUuid(careerId)) {
+    return buildResponse(400, { error: "Invalid career_id format" }, origin);
+  }
+
+  const rows = await fetchRows(
+    `SELECT branch_id, career_id, branch_name, levels_in_branch
+     FROM career_branches
+     WHERE career_id = $1
+     ORDER BY branch_name ASC`,
+    [careerId]
+  );
+
+  return buildResponse(200, { data: rows }, origin);
+};
+
 module.exports = {
   getSkills,
   getTraits,
   getAspirations,
   getCareers,
+  getCareerBranches,
   getWorlds,
 };

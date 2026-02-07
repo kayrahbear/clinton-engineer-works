@@ -4,6 +4,7 @@ const {
   getTraits,
   getAspirations,
   getCareers,
+  getCareerBranches,
   getWorlds,
 } = require("./handlers/reference");
 const {
@@ -225,6 +226,13 @@ const handler = async (event) => {
 
   if (method === "GET" && path.endsWith("/reference/careers")) {
     return getCareers(origin);
+  }
+
+  const careerBranchesMatch = path.match(
+    new RegExp(`\\/reference\\/careers\\/(${UUID_PATTERN})\\/branches\\/?$`, "i")
+  );
+  if (method === "GET" && careerBranchesMatch) {
+    return getCareerBranches(origin, careerBranchesMatch[1]);
   }
 
   if (method === "GET" && path.endsWith("/reference/worlds")) {

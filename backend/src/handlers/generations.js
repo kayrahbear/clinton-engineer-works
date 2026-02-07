@@ -402,7 +402,7 @@ const updateGoalCompletion = async (origin, goalId, body) => {
       `UPDATE generation_goals
        SET is_completed = $2,
            completion_date = CASE WHEN $2 = TRUE THEN COALESCE($3, CURRENT_DATE) ELSE NULL END,
-           completed_by_sim_id = CASE WHEN $2 = TRUE THEN $4 ELSE NULL END
+           completed_by_sim_id = CASE WHEN $2 = TRUE THEN $4::uuid ELSE NULL END
        WHERE goal_id = $1
        RETURNING *`,
       [goalId, is_completed, completion_date || null, completed_by_sim_id || null]

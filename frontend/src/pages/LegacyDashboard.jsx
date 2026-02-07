@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getLegacy, getLegacyStats, getLegacySims, getLegacyGenerations } from '../api'
+import { getLegacy, getLegacyStats, getLegacySims, getLegacyGenerations, updateLegacy, getGenerationGoals } from '../api'
 import ErrorState from '../components/ErrorState'
 import LoadingSpinner from '../components/LoadingSpinner'
 import GoalProgressRing from '../components/GoalProgressRing'
+import Modal from '../components/Modal'
 import StatCard from '../components/StatCard'
 import { useActiveLegacy } from '../context/useActiveLegacy'
 
@@ -58,6 +59,12 @@ export default function LegacyDashboard() {
   const { activeLegacyId: selectedLegacyId } = useActiveLegacy()
   const activeLegacyId = legacyId || selectedLegacyId
 
+  const [founderModal, setFounderModal] = useState(false)
+  const [allSims, setAllSims] = useState([])
+  const [loadingAllSims, setLoadingAllSims] = useState(false)
+  const [wealthModal, setWealthModal] = useState(false)
+  const [wealthForm, setWealthForm] = useState({ current_household_wealth: 0, total_wealth_accumulated: 0 })
+
   const [state, setState] = useState({
     loading: true,
     error: null,
@@ -65,6 +72,7 @@ export default function LegacyDashboard() {
     stats: null,
     household: [],
     generations: [],
+    generationGoals: null,
   })
 
   useEffect(() => {
@@ -82,6 +90,18 @@ export default function LegacyDashboard() {
 
         if (!isMounted) return
 
+        // Fetch generation-level goals for the active generation
+        const activeGen = (generationsRes.data || []).find((g) => g.is_active)
+        let genGoals = null
+        if (activeGen) {
+          try {
+            const goalsRes = await getGenerationGoals(activeGen.generation_id)
+            genGoals = goalsRes.data?.summary || null
+          } catch {
+            // Non-critical — dashboard still works without generation goals
+          }
+        }
+
         setState({
           loading: false,
           error: null,
@@ -89,6 +109,7 @@ export default function LegacyDashboard() {
           stats: statsRes.data,
           household: householdRes.data || [],
           generations: generationsRes.data || [],
+          generationGoals: genGoals,
         })
       } catch (error) {
         if (!isMounted) return
@@ -115,11 +136,77 @@ export default function LegacyDashboard() {
     }
   }, [activeLegacyId])
 
-  const goalProgress = useMemo(() => {
-    const total = Number(state.stats?.goals?.total_goals || 0)
-    const completed = Number(state.stats?.goals?.completed_goals || 0)
-    if (total === 0) return 0
-    return (completed / total) * 100
+  const openFounderModal = async () => {
+    setFounderModal(true)
+    setLoadingAllSims(true)
+    try {
+      const res = await getLegacySims(activeLegacyId)
+      setAllSims(res.data || [])
+    } catch {
+      setAllSims([])
+    } finally {
+      setLoadingAllSims(false)
+    }
+  }
+
+  const openWealthModal = () => {
+    setWealthForm({
+      current_household_wealth: stats?.wealth?.current_household || 0,
+      total_wealth_accumulated: stats?.wealth?.total_accumulated || 0,
+    })
+    setWealthModal(true)
+  }
+
+  const handleUpdateWealth = async () => {
+    try {
+      await updateLegacy(activeLegacyId, {
+        current_household_wealth: Number(wealthForm.current_household_wealth) || 0,
+        total_wealth_accumulated: Number(wealthForm.total_wealth_accumulated) || 0,
+      })
+      const [refreshedLegacy, refreshedStats] = await Promise.all([
+        getLegacy(activeLegacyId),
+        getLegacyStats(activeLegacyId),
+      ])
+      setState((prev) => ({ ...prev, legacy: refreshedLegacy.data, stats: refreshedStats.data }))
+      setWealthModal(false)
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to update wealth')
+    }
+  }
+
+  const handleSetFounder = async (simId) => {
+    try {
+      await updateLegacy(activeLegacyId, { founder_id: simId })
+      const refreshed = await getLegacy(activeLegacyId)
+      setState((prev) => ({ ...prev, legacy: refreshed.data }))
+      setFounderModal(false)
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to set founder')
+    }
+  }
+
+  const genGoalProgress = useMemo(() => {
+    const summary = state.generationGoals
+    if (!summary) return { percent: 0, completed: 0, total: 0 }
+    const total = Number(summary.required_total || 0) + Number(summary.optional_total || 0)
+    const completed = Number(summary.required_completed || 0) + Number(summary.optional_completed || 0)
+    return { percent: total === 0 ? 0 : (completed / total) * 100, completed, total }
+  }, [state.generationGoals])
+
+  const legacyGoalProgress = useMemo(() => {
+    const goals = state.stats?.goals
+    if (!goals) return { percent: 0, completed: 0, total: 0, requiredCompleted: 0, requiredTotal: 0, optionalCompleted: 0, optionalTotal: 0 }
+    const total = Number(goals.total_goals || 0)
+    const completed = Number(goals.completed_goals || 0)
+    return {
+      percent: total === 0 ? 0 : (completed / total) * 100,
+      completed,
+      total,
+      requiredCompleted: Number(goals.completed_required_goals || 0),
+      requiredTotal: Number(goals.required_goals || 0),
+      optionalCompleted: Number(goals.completed_optional_goals || 0),
+      optionalTotal: Number(goals.optional_goals || 0),
+    }
   }, [state.stats])
 
   if (state.loading) {
@@ -203,22 +290,32 @@ export default function LegacyDashboard() {
                 <span className="ff-btn-secondary opacity-50 cursor-default">View goals</span>
               )}
             </div>
-            <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-xs text-ff-muted">
-              Founder:{' '}
-              <span className="font-semibold text-ff-text">{legacy?.founder_name ?? 'Not selected'}</span>
-            </div>
           </div>
 
           <div className="flex items-center justify-center">
             <GoalProgressRing
-              percent={goalProgress}
-              label={`${stats?.goals?.completed_goals ?? 0}/${stats?.goals?.total_goals ?? 0} goals`}
+              percent={genGoalProgress.percent}
+              label={`${genGoalProgress.completed}/${genGoalProgress.total} goals`}
               sublabel="Required + optional"
             />
           </div>
         </div>
 
         <div className="grid gap-4">
+          <button
+            onClick={openFounderModal}
+            className="ff-card ff-card-hover flex items-center gap-4 p-5 text-left transition hover:border-ff-mint/40 hover:shadow-glowMint"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-ff-mint/40 bg-ff-surface text-sm text-ff-muted">
+              {legacy?.founder_name?.slice(0, 1) || '?'}
+            </div>
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Founder</p>
+              <p className="mt-1 text-sm font-semibold text-ff-text">{legacy?.founder_name ?? 'Not selected'}</p>
+            </div>
+            <span className="text-xs text-ff-subtle">Change</span>
+          </button>
+
           <div className="ff-card ff-card-hover p-5">
             <h3 className="text-sm font-semibold text-ff-pink">Succession Laws</h3>
             <div className="mt-4 grid gap-3">
@@ -246,13 +343,15 @@ export default function LegacyDashboard() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          title="Wealth"
-          value={formatCurrency(stats?.wealth?.current_household)}
-          detail={`Total earned ${formatCurrency(stats?.wealth?.total_accumulated)}`}
-          badge="⭐"
-          accent="yellow"
-        />
+        <button onClick={openWealthModal} className="text-left">
+          <StatCard
+            title="Wealth"
+            value={formatCurrency(stats?.wealth?.current_household)}
+            detail={`Total earned ${formatCurrency(stats?.wealth?.total_accumulated)}`}
+            badge="⭐"
+            accent="yellow"
+          />
+        </button>
         <StatCard
           title="Sims Born"
           value={formatNumber(stats?.sims?.total_born)}
@@ -328,15 +427,24 @@ export default function LegacyDashboard() {
         </div>
 
         <div className="ff-card ff-card-hover p-5">
-          <h3 className="text-sm font-semibold text-ff-lilac2">Generation Snapshot</h3>
+          <h3 className="text-sm font-semibold text-ff-lilac2">Legacy Progress</h3>
           <div className="mt-4 grid gap-3">
             <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-sm text-ff-muted">
-              <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Goals</p>
+              <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Legacy Goals</p>
               <p className="mt-2 text-lg font-semibold text-ff-text">
-                {stats?.goals?.completed_required_goals ?? 0}/{stats?.goals?.required_goals ?? 0} required
+                {legacyGoalProgress.requiredCompleted}/{legacyGoalProgress.requiredTotal} required
               </p>
               <p className="text-xs text-ff-muted">
-                {stats?.goals?.completed_optional_goals ?? 0}/{stats?.goals?.optional_goals ?? 0} optional
+                {legacyGoalProgress.optionalCompleted}/{legacyGoalProgress.optionalTotal} optional
+              </p>
+            </div>
+            <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-sm text-ff-muted">
+              <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Generations</p>
+              <p className="mt-2 text-lg font-semibold text-ff-text">
+                {formatNumber(stats?.generations?.completed_generations)} completed
+              </p>
+              <p className="text-xs text-ff-muted">
+                {formatNumber(stats?.generations?.total_generations)} total · {formatNumber(stats?.generations?.active_generations)} active
               </p>
             </div>
             <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-sm text-ff-muted">
@@ -348,18 +456,93 @@ export default function LegacyDashboard() {
                 {formatNumber(stats?.sims?.moved_out_sims)} moved out
               </p>
             </div>
-            <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-sm text-ff-muted">
-              <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Generations</p>
-              <p className="mt-2 text-lg font-semibold text-ff-text">
-                {formatNumber(stats?.generations?.completed_generations)} completed
-              </p>
-              <p className="text-xs text-ff-muted">
-                {formatNumber(stats?.generations?.active_generations)} active now
-              </p>
-            </div>
           </div>
         </div>
       </section>
+
+      <Modal
+        title="Select founder"
+        description="Choose the sim who founded this legacy."
+        isOpen={founderModal}
+        onClose={() => setFounderModal(false)}
+      >
+        {loadingAllSims ? (
+          <div className="flex justify-center py-6">
+            <LoadingSpinner label="Loading sims" />
+          </div>
+        ) : allSims.length === 0 ? (
+          <p className="py-4 text-center text-sm text-ff-muted">
+            No sims found. Create a sim first, then set them as founder.
+          </p>
+        ) : (
+          <div className="grid max-h-80 gap-2 overflow-y-auto">
+            {allSims.map((sim) => (
+              <button
+                key={sim.sim_id}
+                onClick={() => handleSetFounder(sim.sim_id)}
+                className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition hover:border-ff-mint/40 hover:shadow-glowMint ${
+                  legacy?.founder_id === sim.sim_id
+                    ? 'border-ff-mint/50 bg-ff-mint/10'
+                    : 'border-ff-border/70 bg-ff-surface2/40'
+                }`}
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-full border border-ff-mint/40 bg-ff-surface text-xs text-ff-muted">
+                  {sim.name?.slice(0, 1)}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-ff-text">{sim.name}</p>
+                  <p className="text-xs text-ff-muted">
+                    {sim.life_stage?.replaceAll('_', ' ')} · {sim.occult_type}
+                  </p>
+                </div>
+                {legacy?.founder_id === sim.sim_id && (
+                  <span className="text-xs text-ff-mint">Current</span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        title="Update wealth"
+        description="Set the current household funds and lifetime earnings."
+        isOpen={wealthModal}
+        onClose={() => setWealthModal(false)}
+      >
+        <div className="grid gap-4">
+          <div>
+            <label className="mb-1 block text-xs uppercase tracking-[0.2em] text-ff-subtle">
+              Current Household Wealth
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={wealthForm.current_household_wealth}
+              onChange={(e) => setWealthForm((prev) => ({ ...prev, current_household_wealth: e.target.value }))}
+              className="w-full rounded-xl border border-ff-border/70 bg-ff-surface2/40 px-3 py-2 text-sm text-ff-text focus:border-ff-yellow/50 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs uppercase tracking-[0.2em] text-ff-subtle">
+              Total Wealth Accumulated
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={wealthForm.total_wealth_accumulated}
+              onChange={(e) => setWealthForm((prev) => ({ ...prev, total_wealth_accumulated: e.target.value }))}
+              className="w-full rounded-xl border border-ff-border/70 bg-ff-surface2/40 px-3 py-2 text-sm text-ff-text focus:border-ff-yellow/50 focus:outline-none"
+            />
+          </div>
+          <button
+            onClick={handleUpdateWealth}
+            className="ff-btn mt-2"
+          >
+            Save
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

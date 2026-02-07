@@ -167,66 +167,22 @@ export default function GenerationDetail() {
         </div>
       </header>
 
-      {/* 3-column grid */}
-      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        {/* Column 1 - Backstory */}
-        <div className="ff-card ff-card-hover p-5">
-          <h3 className="text-sm font-semibold text-ff-pink">Backstory</h3>
-          <div className="mt-3 max-h-80 overflow-y-auto text-sm leading-relaxed text-ff-muted">
-            {gen?.backstory || 'No backstory has been set for this generation yet.'}
-          </div>
-          {gen?.pack_name && (
-            <div className="mt-4">
-              <span className="ff-chip text-xs text-ff-lilac2">{gen.pack_name}</span>
+      {/* 2-column grid */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+        {/* Left column - Backstory + Requirements + Heir */}
+        <div className="grid gap-6 content-start">
+          <div className="ff-card ff-card-hover p-5">
+            <h3 className="text-sm font-semibold text-ff-pink">Backstory</h3>
+            <div className="mt-3 max-h-80 overflow-y-auto text-sm leading-relaxed text-ff-muted">
+              {gen?.backstory || 'No backstory has been set for this generation yet.'}
             </div>
-          )}
-        </div>
-
-        {/* Column 2 - Goals checklist */}
-        <div className="ff-card ff-card-hover p-5">
-          <h3 className="text-sm font-semibold text-ff-mint">Goals</h3>
-
-          {requiredGoals.length > 0 && (
-            <div className="mt-4">
-              <p className="mb-2 text-xs uppercase tracking-[0.3em] text-ff-subtle">Required</p>
-              <div className="grid gap-2">
-                {requiredGoals.map((goal) => (
-                  <GoalCheckItem key={goal.goal_id} goal={goal} onToggle={handleToggleGoal} />
-                ))}
+            {gen?.pack_name && (
+              <div className="mt-4">
+                <span className="ff-chip text-xs text-ff-lilac2">{gen.pack_name}</span>
               </div>
-            </div>
-          )}
-
-          {optionalGoals.length > 0 && (
-            <div className="mt-4">
-              <p className="mb-2 text-xs uppercase tracking-[0.3em] text-ff-subtle">Optional</p>
-              <div className="grid gap-2">
-                {optionalGoals.map((goal) => (
-                  <GoalCheckItem key={goal.goal_id} goal={goal} onToggle={handleToggleGoal} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {requiredGoals.length === 0 && optionalGoals.length === 0 && (
-            <div className="mt-4 rounded-xl border border-dashed border-ff-border/70 bg-ff-surface2/30 p-6 text-center text-sm text-ff-muted">
-              No goals defined for this generation.
-            </div>
-          )}
-        </div>
-
-        {/* Column 3 - Requirements + Heir + Progress */}
-        <div className="grid gap-6 lg:col-span-2 xl:col-span-1">
-          {/* Progress ring */}
-          <div className="ff-card ff-card-hover flex items-center justify-center p-5">
-            <GoalProgressRing
-              percent={goalProgress}
-              label={goalLabel}
-              sublabel="Required + optional"
-            />
+            )}
           </div>
 
-          {/* Required traits */}
           {gen?.required_traits?.length > 0 && (
             <div className="ff-card ff-card-hover p-5">
               <h3 className="text-sm font-semibold text-ff-lilac2">Required Traits</h3>
@@ -240,7 +196,6 @@ export default function GenerationDetail() {
             </div>
           )}
 
-          {/* Required career */}
           {gen?.required_careers?.length > 0 && (
             <div className="ff-card ff-card-hover p-5">
               <h3 className="text-sm font-semibold text-ff-lilac2">Required Career</h3>
@@ -255,7 +210,6 @@ export default function GenerationDetail() {
             </div>
           )}
 
-          {/* Heir card */}
           {gen?.heir_sim_id && (
             <div className="ff-card ff-card-hover p-5">
               <h3 className="text-sm font-semibold text-ff-lilac2">Heir</h3>
@@ -273,6 +227,49 @@ export default function GenerationDetail() {
               </Link>
             </div>
           )}
+        </div>
+
+        {/* Right column - Progress + Goals checklist */}
+        <div className="grid gap-6 content-start">
+          <div className="ff-card ff-card-hover flex items-center justify-center p-5">
+            <GoalProgressRing
+              percent={goalProgress}
+              label={goalLabel}
+              sublabel="Required + optional"
+            />
+          </div>
+
+          <div className="ff-card ff-card-hover p-5">
+            <h3 className="text-sm font-semibold text-ff-mint">Goals</h3>
+
+            {requiredGoals.length > 0 && (
+              <div className="mt-4">
+                <p className="mb-2 text-xs uppercase tracking-[0.3em] text-ff-subtle">Required</p>
+                <div className="grid gap-2">
+                  {requiredGoals.map((goal) => (
+                    <GoalCheckItem key={goal.goal_id} goal={goal} onToggle={handleToggleGoal} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {optionalGoals.length > 0 && (
+              <div className="mt-4">
+                <p className="mb-2 text-xs uppercase tracking-[0.3em] text-ff-subtle">Optional</p>
+                <div className="grid gap-2">
+                  {optionalGoals.map((goal) => (
+                    <GoalCheckItem key={goal.goal_id} goal={goal} onToggle={handleToggleGoal} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {requiredGoals.length === 0 && optionalGoals.length === 0 && (
+              <div className="mt-4 rounded-xl border border-dashed border-ff-border/70 bg-ff-surface2/30 p-6 text-center text-sm text-ff-muted">
+                No goals defined for this generation.
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -22,3 +22,5 @@ export const getLegacyGenerations = (legacyId) => apiClient.get(`/legacies/${leg
 
 export const getLegacySims = (legacyId, params) =>
   apiClient.get(`/legacies/${legacyId}/sims${buildQueryString(params)}`)
+
+export const updateLegacy = (legacyId, body) => apiClient.put(`/legacies/${legacyId}`, body)

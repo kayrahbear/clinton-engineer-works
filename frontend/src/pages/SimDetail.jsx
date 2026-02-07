@@ -28,6 +28,20 @@ export default function SimDetail() {
   const [activeTab, setActiveTab] = useState('Overview')
   const [activeModal, setActiveModal] = useState(null)
   const [newSkillLevel, setNewSkillLevel] = useState(1)
+  const [selectedTraitId, setSelectedTraitId] = useState('')
+  const [selectedSkillId, setSelectedSkillId] = useState('')
+  const [selectedAspirationId, setSelectedAspirationId] = useState('')
+  const [selectedCareerId, setSelectedCareerId] = useState('')
+  const [selectedBranchId, setSelectedBranchId] = useState('')
+  const [availableBranches, setAvailableBranches] = useState([])
+  const [loadingBranches, setLoadingBranches] = useState(false)
+  const [updateCareerForm, setUpdateCareerForm] = useState({
+    current_level: 1,
+    branch_id: '',
+    is_current: true,
+    is_completed: false,
+    completion_date: '',
+  })
 
   const [state, setState] = useState({
     loading: true,
@@ -117,6 +131,134 @@ export default function SimDetail() {
       isMounted = false
     }
   }, [id])
+
+  const fetchBranches = async (careerId) => {
+    if (!careerId) {
+      setAvailableBranches([])
+      return
+    }
+    const career = state.referenceCareers.find((c) => c.career_id === careerId)
+    if (!career?.has_branches) {
+      setAvailableBranches([])
+      return
+    }
+    setLoadingBranches(true)
+    try {
+      const response = await apiClient.get(`/reference/careers/${careerId}/branches`)
+      setAvailableBranches(response.data || [])
+    } catch {
+      setAvailableBranches([])
+    } finally {
+      setLoadingBranches(false)
+    }
+  }
+
+  useEffect(() => {
+    setSelectedBranchId('')
+    fetchBranches(selectedCareerId)
+  }, [selectedCareerId])
+
+  const handleAddTrait = async () => {
+    if (!selectedTraitId) return
+    try {
+      await apiClient.post(`/sims/${id}/traits`, { trait_id: selectedTraitId })
+      const refreshed = await apiClient.get(`/sims/${id}/traits`)
+      setState((prev) => ({ ...prev, traits: refreshed.data || [] }))
+      setActiveModal(null)
+      setSelectedTraitId('')
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add trait')
+    }
+  }
+
+  const handleAddSkill = async () => {
+    if (!selectedSkillId) return
+    try {
+      await apiClient.post(`/sims/${id}/skills`, { skill_id: selectedSkillId, current_level: newSkillLevel })
+      const refreshed = await apiClient.get(`/sims/${id}/skills`)
+      setState((prev) => ({ ...prev, skills: refreshed.data || [] }))
+      setActiveModal(null)
+      setSelectedSkillId('')
+      setNewSkillLevel(1)
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add skill')
+    }
+  }
+
+  const handleAddAspiration = async () => {
+    if (!selectedAspirationId) return
+    try {
+      await apiClient.post(`/sims/${id}/aspirations`, { aspiration_id: selectedAspirationId })
+      const refreshed = await apiClient.get(`/sims/${id}/aspirations`)
+      setState((prev) => ({ ...prev, aspirations: refreshed.data || [] }))
+      setActiveModal(null)
+      setSelectedAspirationId('')
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add aspiration')
+    }
+  }
+
+  const handleAddCareer = async () => {
+    if (!selectedCareerId) return
+    try {
+      const body = { career_id: selectedCareerId }
+      if (selectedBranchId) body.branch_id = selectedBranchId
+      await apiClient.post(`/sims/${id}/careers`, body)
+      const refreshed = await apiClient.get(`/sims/${id}/careers`)
+      setState((prev) => ({ ...prev, careers: refreshed.data || [] }))
+      setActiveModal(null)
+      setSelectedCareerId('')
+      setSelectedBranchId('')
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add career')
+    }
+  }
+
+  const openUpdateCareerModal = async (career) => {
+    setUpdateCareerForm({
+      sim_career_id: career.sim_career_id,
+      career_id: career.career_id,
+      current_level: career.current_level || 1,
+      branch_id: career.branch_id || '',
+      is_current: career.is_current ?? true,
+      is_completed: career.is_completed ?? false,
+      completion_date: career.completion_date ? career.completion_date.split('T')[0] : '',
+    })
+    const ref = state.referenceCareers.find((c) => c.career_id === career.career_id)
+    if (ref?.has_branches) {
+      setLoadingBranches(true)
+      try {
+        const response = await apiClient.get(`/reference/careers/${career.career_id}/branches`)
+        setAvailableBranches(response.data || [])
+      } catch {
+        setAvailableBranches([])
+      } finally {
+        setLoadingBranches(false)
+      }
+    } else {
+      setAvailableBranches([])
+    }
+    setActiveModal('updateCareer')
+  }
+
+  const handleUpdateCareer = async () => {
+    try {
+      const body = {}
+      if (updateCareerForm.current_level !== undefined) body.current_level = updateCareerForm.current_level
+      if (updateCareerForm.branch_id) body.branch_id = updateCareerForm.branch_id
+      body.is_current = updateCareerForm.is_current
+      body.is_completed = updateCareerForm.is_completed
+      body.completion_date = updateCareerForm.is_completed && updateCareerForm.completion_date
+        ? updateCareerForm.completion_date
+        : null
+      await apiClient.put(`/sims/${id}/careers/${updateCareerForm.sim_career_id}`, body)
+      const refreshed = await apiClient.get(`/sims/${id}/careers`)
+      setState((prev) => ({ ...prev, careers: refreshed.data || [] }))
+      setActiveModal(null)
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to update career')
+    }
+  }
 
   const relationshipCount = useMemo(() => state.relationships.length, [state.relationships])
 
@@ -251,7 +393,7 @@ export default function SimDetail() {
                     <p className="mt-2 text-xs text-ff-muted">
                       {currentCareer ? `Level ${currentCareer.current_level} · ${currentCareer.branch_name || 'No branch selected'}` : 'No active career yet'}
                     </p>
-                    <button className="mt-3 ff-btn-secondary">Update career</button>
+                    <button className="mt-3 ff-btn-secondary" disabled={!currentCareer} onClick={() => openUpdateCareerModal(currentCareer)}>Update career</button>
                   </div>
                   <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Relationships</p>
@@ -391,7 +533,12 @@ export default function SimDetail() {
                         )}
                       </div>
                     </div>
-                    <div className="text-3xl">💼</div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="text-3xl">💼</div>
+                      {currentCareer && (
+                        <button className="ff-btn-secondary text-xs" onClick={() => openUpdateCareerModal(currentCareer)}>Update</button>
+                      )}
+                    </div>
                   </div>
                   <div className="mt-6 space-y-3">
                     <div className="flex items-center justify-between text-sm">
@@ -554,18 +701,19 @@ export default function SimDetail() {
         title="Add a new trait"
         description="Search for a personality trait to add to this sim."
         isOpen={activeModal === 'trait'}
-        onClose={() => setActiveModal(null)}
+        onClose={() => { setActiveModal(null); setSelectedTraitId('') }}
       >
         <div className="grid gap-4">
           <label className="grid gap-2 text-xs text-ff-muted">
             <span className="uppercase tracking-[0.2em] text-ff-subtle">Trait</span>
-            <select className="ff-input text-sm">
+            <select className="ff-input text-sm" value={selectedTraitId} onChange={(e) => setSelectedTraitId(e.target.value)}>
+              <option value="">Select a trait</option>
               {state.referenceTraits.map((trait) => (
-                <option key={trait.trait_id}>{trait.trait_name}</option>
+                <option key={trait.trait_id} value={trait.trait_id}>{trait.trait_name}</option>
               ))}
             </select>
           </label>
-          <button className="ff-btn">Add selected trait</button>
+          <button className="ff-btn" disabled={!selectedTraitId} onClick={handleAddTrait}>Add selected trait</button>
         </div>
       </Modal>
 
@@ -573,14 +721,15 @@ export default function SimDetail() {
         title="Add a skill"
         description="Pick a skill and set a starting level."
         isOpen={activeModal === 'skill'}
-        onClose={() => setActiveModal(null)}
+        onClose={() => { setActiveModal(null); setSelectedSkillId(''); setNewSkillLevel(1) }}
       >
         <div className="grid gap-4">
           <label className="grid gap-2 text-xs text-ff-muted">
             <span className="uppercase tracking-[0.2em] text-ff-subtle">Skill</span>
-            <select className="ff-input text-sm">
+            <select className="ff-input text-sm" value={selectedSkillId} onChange={(e) => setSelectedSkillId(e.target.value)}>
+              <option value="">Select a skill</option>
               {state.referenceSkills.map((skill) => (
-                <option key={skill.skill_id}>{skill.skill_name}</option>
+                <option key={skill.skill_id} value={skill.skill_id}>{skill.skill_name}</option>
               ))}
             </select>
           </label>
@@ -598,7 +747,7 @@ export default function SimDetail() {
               onChange={(event) => setNewSkillLevel(parseInt(event.target.value, 10))}
             />
           </label>
-          <button className="ff-btn">Add skill</button>
+          <button className="ff-btn" disabled={!selectedSkillId} onClick={handleAddSkill}>Add skill</button>
         </div>
       </Modal>
 
@@ -606,41 +755,121 @@ export default function SimDetail() {
         title="Add an aspiration"
         description="Select a new aspiration to track."
         isOpen={activeModal === 'aspiration'}
-        onClose={() => setActiveModal(null)}
+        onClose={() => { setActiveModal(null); setSelectedAspirationId('') }}
       >
         <div className="grid gap-4">
           <label className="grid gap-2 text-xs text-ff-muted">
             <span className="uppercase tracking-[0.2em] text-ff-subtle">Aspiration</span>
-            <select className="ff-input text-sm">
+            <select className="ff-input text-sm" value={selectedAspirationId} onChange={(e) => setSelectedAspirationId(e.target.value)}>
+              <option value="">Select an aspiration</option>
               {state.referenceAspirations.map((aspiration) => (
-                <option key={aspiration.aspiration_id}>{aspiration.aspiration_name}</option>
+                <option key={aspiration.aspiration_id} value={aspiration.aspiration_id}>{aspiration.aspiration_name}</option>
               ))}
             </select>
           </label>
-          <button className="ff-btn">Add aspiration</button>
+          <button className="ff-btn" disabled={!selectedAspirationId} onClick={handleAddAspiration}>Add aspiration</button>
         </div>
       </Modal>
 
       <Modal
         title="Add a career"
-        description="Choose a career track and branch."
+        description="Choose a career track and optional branch."
         isOpen={activeModal === 'career'}
-        onClose={() => setActiveModal(null)}
+        onClose={() => { setActiveModal(null); setSelectedCareerId(''); setSelectedBranchId(''); setAvailableBranches([]) }}
       >
         <div className="grid gap-4">
           <label className="grid gap-2 text-xs text-ff-muted">
             <span className="uppercase tracking-[0.2em] text-ff-subtle">Career</span>
-            <select className="ff-input text-sm">
+            <select className="ff-input text-sm" value={selectedCareerId} onChange={(e) => setSelectedCareerId(e.target.value)}>
+              <option value="">Select a career</option>
               {state.referenceCareers.map((career) => (
-                <option key={career.career_id}>{career.career_name}</option>
+                <option key={career.career_id} value={career.career_id}>{career.career_name}</option>
               ))}
             </select>
           </label>
+          {availableBranches.length > 0 && (
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Branch</span>
+              <select className="ff-input text-sm" value={selectedBranchId} onChange={(e) => setSelectedBranchId(e.target.value)}>
+                <option value="">Select a branch</option>
+                {availableBranches.map((branch) => (
+                  <option key={branch.branch_id} value={branch.branch_id}>{branch.branch_name}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          {loadingBranches && <p className="text-xs text-ff-muted">Loading branches...</p>}
+          <button className="ff-btn" disabled={!selectedCareerId} onClick={handleAddCareer}>Add career</button>
+        </div>
+      </Modal>
+
+      <Modal
+        title="Update career"
+        description="Edit career progression, branch, and completion status."
+        isOpen={activeModal === 'updateCareer'}
+        onClose={() => { setActiveModal(null); setAvailableBranches([]) }}
+      >
+        <div className="grid gap-4">
           <label className="grid gap-2 text-xs text-ff-muted">
-            <span className="uppercase tracking-[0.2em] text-ff-subtle">Branch</span>
-            <input className="ff-input text-sm" placeholder="e.g. Public Relations" />
+            <div className="flex items-center justify-between">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Current Level</span>
+              <span className="text-ff-text">Level {updateCareerForm.current_level}</span>
+            </div>
+            <input
+              className="ff-input text-sm"
+              type="range"
+              min="1"
+              max={state.referenceCareers.find((c) => c.career_id === updateCareerForm.career_id)?.max_level || 10}
+              value={updateCareerForm.current_level}
+              onChange={(e) => setUpdateCareerForm((prev) => ({ ...prev, current_level: parseInt(e.target.value, 10) }))}
+            />
           </label>
-          <button className="ff-btn">Add career</button>
+          {availableBranches.length > 0 && (
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Branch</span>
+              <select
+                className="ff-input text-sm"
+                value={updateCareerForm.branch_id}
+                onChange={(e) => setUpdateCareerForm((prev) => ({ ...prev, branch_id: e.target.value }))}
+              >
+                <option value="">No branch selected</option>
+                {availableBranches.map((branch) => (
+                  <option key={branch.branch_id} value={branch.branch_id}>{branch.branch_name}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          {loadingBranches && <p className="text-xs text-ff-muted">Loading branches...</p>}
+          <label className="flex items-center gap-3 text-xs text-ff-muted">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-ff-border accent-ff-mint"
+              checked={updateCareerForm.is_current}
+              onChange={(e) => setUpdateCareerForm((prev) => ({ ...prev, is_current: e.target.checked }))}
+            />
+            <span>Active career</span>
+          </label>
+          <label className="flex items-center gap-3 text-xs text-ff-muted">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-ff-border accent-ff-mint"
+              checked={updateCareerForm.is_completed}
+              onChange={(e) => setUpdateCareerForm((prev) => ({ ...prev, is_completed: e.target.checked }))}
+            />
+            <span>Completed</span>
+          </label>
+          {updateCareerForm.is_completed && (
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Completion Date</span>
+              <input
+                type="date"
+                className="ff-input text-sm"
+                value={updateCareerForm.completion_date}
+                onChange={(e) => setUpdateCareerForm((prev) => ({ ...prev, completion_date: e.target.value }))}
+              />
+            </label>
+          )}
+          <button className="ff-btn" onClick={handleUpdateCareer}>Save changes</button>
         </div>
       </Modal>
     </div>
