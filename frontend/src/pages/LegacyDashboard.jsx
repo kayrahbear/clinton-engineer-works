@@ -347,7 +347,6 @@ export default function LegacyDashboard() {
           <StatCard
             title="Wealth"
             value={formatCurrency(stats?.wealth?.current_household)}
-            detail={`Total earned ${formatCurrency(stats?.wealth?.total_accumulated)}`}
             badge="⭐"
             accent="yellow"
           />

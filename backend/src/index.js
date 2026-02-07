@@ -271,7 +271,7 @@ const handler = async (event) => {
   }
 
   const milestonesByAgeMatch = path.match(
-    /\\/reference\\/milestones\\/by-age\\/([a-z_]+)\\/?$/i
+    /\/reference\/milestones\/by-age\/([a-z_]+)\/?$/i
   );
   if (method === "GET" && milestonesByAgeMatch) {
     return getMilestonesByAge(origin, milestonesByAgeMatch[1].toLowerCase());

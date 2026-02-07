@@ -5,7 +5,20 @@ import ErrorState from '../components/ErrorState'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Modal from '../components/Modal'
 
-const tabs = ['Overview', 'Traits', 'Skills', 'Career', 'Relationships', 'Story']
+const tabs = ['Overview', 'Traits', 'Skills', 'Career', 'Relationships', 'Life Story']
+
+const MILESTONE_CATEGORIES = [
+  { id: 'fine_motor', label: 'Fine Motor', color: 'text-ff-mint' },
+  { id: 'gross_motor', label: 'Gross Motor', color: 'text-ff-lilac2' },
+  { id: 'cognitive', label: 'Cognitive', color: 'text-ff-yellow' },
+  { id: 'motor', label: 'Motor', color: 'text-ff-pink' },
+  { id: 'firsts', label: 'Firsts', color: 'text-ff-mint' },
+  { id: 'life', label: 'Life', color: 'text-ff-lilac2' },
+  { id: 'social', label: 'Social', color: 'text-ff-yellow' },
+]
+
+const AGE_ORDER = ['infant', 'toddler', 'child', 'teen', 'young_adult', 'adult', 'elder']
+const AGE_INDEX = new Map(AGE_ORDER.map((age, index) => [age, index]))
 
 const toLabel = (value) => {
   if (!value) return 'Unknown'
@@ -23,6 +36,21 @@ const formatDate = (value) => {
   return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(date)
 }
 
+const isMilestoneAgeAppropriate = (milestone, lifeStage) => {
+  if (!lifeStage) return true
+  const minAge = milestone.min_age_group
+  const maxAge = milestone.max_age_group
+  if (!minAge) return true
+  const lifeIndex = AGE_INDEX.get(lifeStage)
+  const minIndex = AGE_INDEX.get(minAge)
+  if (lifeIndex === undefined || minIndex === undefined) return true
+  if (lifeIndex < minIndex) return false
+  if (!maxAge) return true
+  const maxIndex = AGE_INDEX.get(maxAge)
+  if (maxIndex === undefined) return true
+  return lifeIndex <= maxIndex
+}
+
 export default function SimDetail() {
   const { id } = useParams()
   const [activeTab, setActiveTab] = useState('Overview')
@@ -33,6 +61,13 @@ export default function SimDetail() {
   const [selectedAspirationId, setSelectedAspirationId] = useState('')
   const [selectedCareerId, setSelectedCareerId] = useState('')
   const [selectedBranchId, setSelectedBranchId] = useState('')
+  const [selectedMilestoneId, setSelectedMilestoneId] = useState('')
+  const [milestoneSearch, setMilestoneSearch] = useState('')
+  const [milestoneCategoryFilter, setMilestoneCategoryFilter] = useState('all')
+  const [milestoneShowAllAges, setMilestoneShowAllAges] = useState(false)
+  const [milestoneAchievedDate, setMilestoneAchievedDate] = useState('')
+  const [milestoneNotes, setMilestoneNotes] = useState('')
+  const [milestoneRelatedSimId, setMilestoneRelatedSimId] = useState('')
   const [availableBranches, setAvailableBranches] = useState([])
   const [loadingBranches, setLoadingBranches] = useState(false)
   const [updateCareerForm, setUpdateCareerForm] = useState({
@@ -53,10 +88,13 @@ export default function SimDetail() {
     aspirations: [],
     careers: [],
     relationships: [],
+    milestones: [],
     referenceTraits: [],
     referenceSkills: [],
     referenceAspirations: [],
     referenceCareers: [],
+    referenceMilestones: [],
+    legacySims: [],
   })
 
   useEffect(() => {
@@ -69,6 +107,10 @@ export default function SimDetail() {
         const simResponse = await apiClient.get(`/sims/${id}`)
         const sim = simResponse.data
 
+        const legacySimsPromise = sim?.legacy_id
+          ? apiClient.get(`/legacies/${sim.legacy_id}/sims`).catch(() => ({ data: [] }))
+          : Promise.resolve({ data: [] })
+
         const [
           generationResponse,
           traitsResponse,
@@ -76,10 +118,13 @@ export default function SimDetail() {
           aspirationsResponse,
           careersResponse,
           relationshipsResponse,
+          milestonesResponse,
           referenceTraitsResponse,
           referenceSkillsResponse,
           referenceAspirationsResponse,
           referenceCareersResponse,
+          referenceMilestonesResponse,
+          legacySimsResponse,
         ] = await Promise.all([
           sim?.generation_id ? apiClient.get(`/generations/${sim.generation_id}`).catch(() => null) : null,
           apiClient.get(`/sims/${id}/traits`),
@@ -87,10 +132,13 @@ export default function SimDetail() {
           apiClient.get(`/sims/${id}/aspirations`),
           apiClient.get(`/sims/${id}/careers`),
           apiClient.get(`/sims/${id}/relationships`),
+          apiClient.get(`/sims/${id}/milestones`),
           apiClient.get('/reference/traits').catch(() => ({ data: [] })),
           apiClient.get('/reference/skills').catch(() => ({ data: [] })),
           apiClient.get('/reference/aspirations').catch(() => ({ data: [] })),
           apiClient.get('/reference/careers').catch(() => ({ data: [] })),
+          apiClient.get('/reference/milestones').catch(() => ({ data: [] })),
+          legacySimsPromise,
         ])
 
         if (!isMounted) return
@@ -105,10 +153,13 @@ export default function SimDetail() {
           aspirations: aspirationsResponse.data || [],
           careers: careersResponse.data || [],
           relationships: relationshipsResponse.data || [],
+          milestones: milestonesResponse.data || [],
           referenceTraits: referenceTraitsResponse.data || [],
           referenceSkills: referenceSkillsResponse.data || [],
           referenceAspirations: referenceAspirationsResponse.data || [],
           referenceCareers: referenceCareersResponse.data || [],
+          referenceMilestones: referenceMilestonesResponse.data || [],
+          legacySims: legacySimsResponse.data || [],
         })
       } catch (error) {
         if (!isMounted) return
@@ -214,6 +265,51 @@ export default function SimDetail() {
     }
   }
 
+  const refreshMilestones = async () => {
+    const refreshed = await apiClient.get(`/sims/${id}/milestones`)
+    setState((prev) => ({ ...prev, milestones: refreshed.data || [] }))
+  }
+
+  const resetMilestoneModal = () => {
+    setActiveModal(null)
+    setSelectedMilestoneId('')
+    setMilestoneSearch('')
+    setMilestoneCategoryFilter('all')
+    setMilestoneShowAllAges(false)
+    setMilestoneAchievedDate('')
+    setMilestoneNotes('')
+    setMilestoneRelatedSimId('')
+  }
+
+  const handleAddMilestone = async () => {
+    if (!selectedMilestoneId) return
+    try {
+      const payload = {
+        milestone_id: selectedMilestoneId,
+      }
+      if (milestoneAchievedDate) payload.achieved_date = milestoneAchievedDate
+      if (milestoneRelatedSimId) payload.related_sim_id = milestoneRelatedSimId
+      if (milestoneNotes) payload.notes = milestoneNotes
+      await apiClient.post(`/sims/${id}/milestones`, payload)
+      await refreshMilestones()
+      resetMilestoneModal()
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add milestone')
+    }
+  }
+
+  const handleRemoveMilestone = async (milestoneId) => {
+    if (!milestoneId) return
+    const confirmed = window.confirm('Remove this milestone? This cannot be undone.')
+    if (!confirmed) return
+    try {
+      await apiClient.delete(`/sims/${id}/milestones/${milestoneId}`)
+      await refreshMilestones()
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to remove milestone')
+    }
+  }
+
   const openUpdateCareerModal = async (career) => {
     setUpdateCareerForm({
       sim_career_id: career.sim_career_id,
@@ -261,6 +357,53 @@ export default function SimDetail() {
   }
 
   const relationshipCount = useMemo(() => state.relationships.length, [state.relationships])
+  const achievedMilestoneIds = useMemo(
+    () => new Set(state.milestones.map((milestone) => milestone.milestone_id)),
+    [state.milestones]
+  )
+  const milestoneCategories = useMemo(
+    () => MILESTONE_CATEGORIES.map((category) => ({
+      ...category,
+      count: state.milestones.filter((milestone) => milestone.category === category.id).length,
+    })),
+    [state.milestones]
+  )
+  const milestoneTimeline = useMemo(() => {
+    return [...state.milestones].sort((a, b) => {
+      const aTime = a.achieved_date ? new Date(a.achieved_date).getTime() : 0
+      const bTime = b.achieved_date ? new Date(b.achieved_date).getTime() : 0
+      return bTime - aTime
+    })
+  }, [state.milestones])
+  const filteredTimeline = useMemo(() => {
+    if (milestoneCategoryFilter === 'all') return milestoneTimeline
+    return milestoneTimeline.filter((milestone) => milestone.category === milestoneCategoryFilter)
+  }, [milestoneCategoryFilter, milestoneTimeline])
+  const availableMilestones = useMemo(() => {
+    let list = state.referenceMilestones.filter(
+      (milestone) => !achievedMilestoneIds.has(milestone.milestone_id)
+    )
+    if (!milestoneShowAllAges) {
+      list = list.filter((milestone) => isMilestoneAgeAppropriate(milestone, state.sim?.life_stage))
+    }
+    if (milestoneCategoryFilter !== 'all') {
+      list = list.filter((milestone) => milestone.category === milestoneCategoryFilter)
+    }
+    if (milestoneSearch.trim()) {
+      const term = milestoneSearch.trim().toLowerCase()
+      list = list.filter((milestone) =>
+        `${milestone.milestone_name} ${milestone.description}`.toLowerCase().includes(term)
+      )
+    }
+    return list.sort((a, b) => a.milestone_name.localeCompare(b.milestone_name))
+  }, [
+    state.referenceMilestones,
+    achievedMilestoneIds,
+    milestoneShowAllAges,
+    milestoneCategoryFilter,
+    milestoneSearch,
+    state.sim?.life_stage,
+  ])
 
   if (state.loading) {
     return (
@@ -333,7 +476,10 @@ export default function SimDetail() {
           <button className="ff-btn-secondary" onClick={() => setActiveModal('career')}>
             + Add Career
           </button>
-          <button className="ff-btn">✨ Ask AI about this Sim</button>
+          <button className="ff-btn-secondary" onClick={() => setActiveModal('milestone')}>
+            + Add Milestone
+          </button>
+          {/* <button className="ff-btn">✨ Ask AI about this Sim</button> */}
         </div>
       </header>
 
@@ -626,39 +772,134 @@ export default function SimDetail() {
             </div>
           )}
 
-          {activeTab === 'Story' && (
+          {activeTab === 'Life Story' && (
             <div className="ff-card p-5">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-semibold text-ff-text">Story Journal</h3>
+                  <h3 className="text-base font-semibold text-ff-text">{sim.name}'s Life Story</h3>
                   <p className="mt-1 text-sm text-ff-muted">Chronicle your sim's adventures, memories, and narrative moments.</p>
                 </div>
-                <button className="ff-btn">✨ Generate a scene</button>
+                {/* <button className="ff-btn">✨ Generate a scene</button> */}
               </div>
               <div className="mt-6 space-y-6">
                 <div className="rounded-2xl border border-ff-border/70 bg-gradient-to-br from-ff-yellow/5 via-ff-surface2/60 to-ff-mint/5 p-6">
                   <div className="flex items-start gap-4">
-                    <span className="text-3xl">📖</span>
                     <div className="flex-1">
-                      <h4 className="text-base font-semibold text-ff-text">Current Chapter</h4>
-                      <p className="mt-3 text-sm leading-relaxed text-ff-text">{storyText}</p>
-                      <div className="mt-4 flex items-center gap-2 text-xs text-ff-muted">
-                        <span>Last updated {formatDate(updatedAt)}</span>
+                        <button className="ff-btn-secondary" onClick={() => setActiveModal('milestone')}>
+                          + Add Milestone
+                        </button>
+                        {/* <p className="mt-2 text-m font-semibold text-ff-text">Current life stage</p>
+                        <p className="mt-2 text-sm text-ff-text">{toLabel(state.sim?.life_stage)}</p>
+                        <p className="mt-2 text-xs text-ff-muted">Filtered milestones are tuned to this stage by default.</p> */}
                       </div>
-                    </div>
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Story Tools</p>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <button className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4 text-left transition hover:border-ff-mint/40 hover:shadow-glowMint">
-                      <p className="text-sm font-semibold text-ff-text">Add a memory</p>
-                      <p className="mt-1 text-xs text-ff-muted">Document a special moment or event</p>
-                    </button>
-                    <button className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4 text-left transition hover:border-ff-mint/40 hover:shadow-glowMint">
-                      <p className="text-sm font-semibold text-ff-text">Write a note</p>
-                      <p className="mt-1 text-xs text-ff-muted">Capture thoughts or reminders</p>
-                    </button>
+                <div className="rounded-2xl border border-ff-border/70 bg-ff-surface2/60 p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <h4 className="text-base font-semibold text-ff-text">Milestone Memories</h4>
+                      <p className="mt-1 text-sm text-ff-muted">Log major life events, firsts, and growth moments.</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-4 lg:grid-cols-[2fr_1fr]">
+                    <div className="space-y-6">
+                      <div>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Achieved by category</p>
+                          <div className="flex items-center gap-2 text-xs text-ff-muted">
+                            <span>Total: </span>
+                            <span className="text-ff-text">{state.milestones.length}</span>
+                          </div>
+                        </div>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          {milestoneCategories.map((category) => (
+                            <div
+                              key={category.id}
+                              className="rounded-2xl border border-ff-border/70 bg-ff-surface2/60 p-4"
+                            >
+                              <div className="flex items-center justify-between">
+                                <p className={`text-sm font-semibold ${category.color}`}>{category.label}</p>
+                                <span className="ff-chip text-xs">{category.count}</span>
+                              </div>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {state.milestones
+                                  .filter((milestone) => milestone.category === category.id)
+                                  .slice(0, 6)
+                                  .map((milestone) => (
+                                    <span key={milestone.milestone_id} className="ff-chip text-xs">
+                                      {milestone.milestone_name}
+                                    </span>
+                                  ))}
+                                {state.milestones.filter((milestone) => milestone.category === category.id).length === 0 && (
+                                  <span className="text-xs text-ff-muted">No milestones yet</span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Timeline</p>
+                          <label className="text-xs text-ff-muted">
+                            <span className="uppercase tracking-[0.2em] text-ff-subtle">Filter</span>
+                            <select
+                              className="ml-2 rounded-full border border-ff-border/70 bg-ff-surface2/70 px-3 py-1 text-xs text-ff-text"
+                              value={milestoneCategoryFilter}
+                              onChange={(e) => setMilestoneCategoryFilter(e.target.value)}
+                            >
+                              <option value="all">All categories</option>
+                              {MILESTONE_CATEGORIES.map((category) => (
+                                <option key={category.id} value={category.id}>{category.label}</option>
+                              ))}
+                            </select>
+                          </label>
+                        </div>
+                        <div className="mt-4 space-y-3">
+                          {filteredTimeline.length === 0 && (
+                            <div className="rounded-2xl border border-ff-border/70 bg-ff-surface2/60 p-4 text-sm text-ff-muted">
+                              No milestones logged yet. Add your first memory to start the timeline.
+                            </div>
+                          )}
+                          {filteredTimeline.map((milestone) => (
+                            <div
+                              key={`${milestone.milestone_id}-${milestone.achieved_date}`}
+                              className="rounded-2xl border border-ff-border/70 bg-gradient-to-br from-ff-surface2/60 via-ff-surface/60 to-ff-mint/5 p-4"
+                            >
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <p className="text-sm font-semibold text-ff-text">{milestone.milestone_name}</p>
+                                    <span className="ff-chip text-xs">{toLabel(milestone.category)}</span>
+                                  </div>
+                                  <p className="mt-2 text-xs text-ff-muted">{milestone.description}</p>
+                                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-ff-muted">
+                                    <span>{formatDate(milestone.achieved_date)}</span>
+                                    {milestone.related_sim_id && (
+                                      <span>
+                                        Linked to{' '}
+                                        {state.legacySims.find((simItem) => simItem.sim_id === milestone.related_sim_id)?.name || 'related sim'}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {milestone.notes && (
+                                    <p className="mt-3 text-xs text-ff-text">{milestone.notes}</p>
+                                  )}
+                                </div>
+                                <button
+                                  className="ff-btn-secondary text-xs"
+                                  onClick={() => handleRemoveMilestone(milestone.milestone_id)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -670,7 +911,7 @@ export default function SimDetail() {
           <div className="ff-card p-5">
             <h3 className="text-base font-semibold text-ff-text">Story journal</h3>
             <p className="mt-3 text-sm text-ff-muted">{storyText}</p>
-            <button className="mt-4 ff-btn">✨ Generate a scene</button>
+            {/* <button className="mt-4 ff-btn">✨ Generate a scene</button> */}
           </div>
 
           <div className="ff-card p-5">
@@ -696,6 +937,131 @@ export default function SimDetail() {
           </div>
         </aside>
       </section>
+
+      <Modal
+        title="Add a milestone"
+        description="Pick a milestone, add optional notes, and log the date it was achieved."
+        isOpen={activeModal === 'milestone'}
+        onClose={resetMilestoneModal}
+      >
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Search</span>
+              <input
+                className="ff-input text-sm"
+                placeholder="Search milestones"
+                value={milestoneSearch}
+                onChange={(e) => setMilestoneSearch(e.target.value)}
+              />
+            </label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <label className="grid gap-2 text-xs text-ff-muted">
+                <span className="uppercase tracking-[0.2em] text-ff-subtle">Category</span>
+                <select
+                  className="ff-input text-sm"
+                  value={milestoneCategoryFilter}
+                  onChange={(e) => setMilestoneCategoryFilter(e.target.value)}
+                >
+                  <option value="all">All categories</option>
+                  {MILESTONE_CATEGORIES.map((category) => (
+                    <option key={category.id} value={category.id}>{category.label}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex items-center gap-3 text-xs text-ff-muted">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-ff-border accent-ff-mint"
+                  checked={milestoneShowAllAges}
+                  onChange={(e) => setMilestoneShowAllAges(e.target.checked)}
+                />
+                <span>Show all milestones (override age)</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-ff-border/70 bg-ff-surface2/60 p-3">
+            <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Select milestone</p>
+            <div className="mt-3 max-h-60 space-y-2 overflow-y-auto pr-2">
+              {availableMilestones.map((milestone) => {
+                const isSelected = selectedMilestoneId === milestone.milestone_id
+                const ageLabel = milestone.max_age_group
+                  ? `${toLabel(milestone.min_age_group)} - ${toLabel(milestone.max_age_group)}`
+                  : `From ${toLabel(milestone.min_age_group)}`
+                return (
+                  <button
+                    key={milestone.milestone_id}
+                    type="button"
+                    onClick={() => setSelectedMilestoneId(milestone.milestone_id)}
+                    className={`w-full rounded-xl border px-3 py-2 text-left text-sm transition ${
+                      isSelected
+                        ? 'border-ff-mint/60 bg-ff-surface'
+                        : 'border-ff-border/70 bg-transparent hover:border-ff-mint/40'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-semibold text-ff-text">{milestone.milestone_name}</p>
+                        <p className="mt-1 text-xs text-ff-muted">{milestone.description}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-ff-muted">
+                          <span className="ff-chip text-[10px]">{toLabel(milestone.category)}</span>
+                          <span>{ageLabel}</span>
+                        </div>
+                      </div>
+                      {isSelected && <span className="text-ff-mint">✓</span>}
+                    </div>
+                  </button>
+                )
+              })}
+              {availableMilestones.length === 0 && (
+                <p className="text-xs text-ff-muted">No milestones match the current filters.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Achieved date</span>
+              <input
+                type="date"
+                className="ff-input text-sm"
+                value={milestoneAchievedDate}
+                onChange={(e) => setMilestoneAchievedDate(e.target.value)}
+              />
+            </label>
+            <label className="grid gap-2 text-xs text-ff-muted">
+              <span className="uppercase tracking-[0.2em] text-ff-subtle">Related sim (optional)</span>
+              <select
+                className="ff-input text-sm"
+                value={milestoneRelatedSimId}
+                onChange={(e) => setMilestoneRelatedSimId(e.target.value)}
+              >
+                <option value="">None</option>
+                {state.legacySims
+                  .filter((simItem) => simItem.sim_id !== id)
+                  .map((simItem) => (
+                    <option key={simItem.sim_id} value={simItem.sim_id}>{simItem.name}</option>
+                  ))}
+              </select>
+            </label>
+          </div>
+
+          <label className="grid gap-2 text-xs text-ff-muted">
+            <span className="uppercase tracking-[0.2em] text-ff-subtle">Notes</span>
+            <textarea
+              className="ff-input text-sm"
+              rows="3"
+              placeholder="Add story notes or context"
+              value={milestoneNotes}
+              onChange={(e) => setMilestoneNotes(e.target.value)}
+            />
+          </label>
+          <button className="ff-btn" disabled={!selectedMilestoneId} onClick={handleAddMilestone}>
+            Add milestone
+          </button>
+        </div>
+      </Modal>
 
       <Modal
         title="Add a new trait"
