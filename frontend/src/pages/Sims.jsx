@@ -232,15 +232,12 @@ export default function Sims() {
                       </div>
                       {sim.is_heir && (
                         <span className="absolute -bottom-1 -right-1 rounded-full bg-ff-surface px-2 py-0.5 text-[10px] font-semibold text-ff-mint">
-                          Heir
+                          Gen {sim.generation_number} Heir
                         </span>
                       )}
                     </div>
                     <div>
                       <h3 className="text-base font-semibold text-ff-text">{sim.name}</h3>
-                      <p className="text-xs text-ff-muted">
-                        {sim.life_stage?.replace('_', ' ')} · {sim.occult_type}
-                      </p>
                     </div>
                   </div>
 

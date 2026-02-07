@@ -5,3 +5,7 @@ export const getGeneration = (generationId) => apiClient.get(`/generations/${gen
 export const getGenerationGoals = (generationId) => apiClient.get(`/generations/${generationId}/goals`)
 
 export const updateGoalCompletion = (goalId, body) => apiClient.put(`/goals/${goalId}/complete`, body)
+
+export const getEligibleHeirs = (generationId) => apiClient.get(`/generations/${generationId}/eligible-heirs`)
+
+export const selectHeir = (generationId, body) => apiClient.put(`/generations/${generationId}/heir`, body)

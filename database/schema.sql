@@ -230,7 +230,8 @@ CREATE TABLE generations (
     legacy_id UUID NOT NULL REFERENCES legacies(legacy_id) ON DELETE CASCADE,
     generation_number INTEGER NOT NULL CHECK (generation_number BETWEEN 1 AND 35),
     pack_name VARCHAR(200), -- thematic pack/expansion for this generation
-    heir_id UUID, -- FK added after sims table is created
+    founder_id UUID, -- FK added after sims table is created (sim who leads this generation)
+    heir_id UUID, -- FK added after sims table is created (sim selected to lead the next generation)
     start_date DATE,
     completion_date DATE,
     is_active BOOLEAN NOT NULL DEFAULT FALSE,
@@ -245,6 +246,7 @@ COMMENT ON COLUMN generations.pack_name IS 'The themed expansion/game pack for t
 COMMENT ON COLUMN generations.backstory IS 'Narrative backstory or theme for this generation';
 
 CREATE INDEX idx_generations_legacy_id ON generations(legacy_id);
+CREATE INDEX idx_generations_founder_id ON generations(founder_id);
 
 -- Sims (the core entity)
 CREATE TABLE sims (
@@ -288,6 +290,10 @@ CREATE INDEX idx_sims_is_heir ON sims(is_heir) WHERE is_heir = TRUE;
 -- Now add deferred foreign keys from legacies and generations to sims
 ALTER TABLE legacies
     ADD CONSTRAINT fk_legacies_founder
+    FOREIGN KEY (founder_id) REFERENCES sims(sim_id) ON DELETE SET NULL;
+
+ALTER TABLE generations
+    ADD CONSTRAINT fk_generations_founder
     FOREIGN KEY (founder_id) REFERENCES sims(sim_id) ON DELETE SET NULL;
 
 ALTER TABLE generations

@@ -25,12 +25,16 @@ const getGenerationsByLegacy = async (origin, legacyId) => {
 
   const result = await pool.query(
     `SELECT g.*,
+            f.name AS founder_name,
+            f.sim_id AS founder_sim_id,
             s.name AS heir_name,
+            s.sim_id AS heir_sim_id,
             (SELECT COUNT(*) FROM generation_goals gg WHERE gg.generation_id = g.generation_id AND gg.is_completed = TRUE) AS completed_goals,
             (SELECT COUNT(*) FROM generation_goals gg WHERE gg.generation_id = g.generation_id) AS total_goals,
             (SELECT COUNT(*) FROM generation_goals gg WHERE gg.generation_id = g.generation_id AND gg.is_optional = FALSE AND gg.is_completed = TRUE) AS completed_required_goals,
             (SELECT COUNT(*) FROM generation_goals gg WHERE gg.generation_id = g.generation_id AND gg.is_optional = FALSE) AS total_required_goals
      FROM generations g
+     LEFT JOIN sims f ON g.founder_id = f.sim_id
      LEFT JOIN sims s ON g.heir_id = s.sim_id
      WHERE g.legacy_id = $1
      ORDER BY g.generation_number`,
@@ -58,10 +62,13 @@ const getGenerationById = async (origin, generationId) => {
             l.bloodline_law,
             l.heir_law,
             l.species_law,
+            f.name AS founder_name,
+            f.sim_id AS founder_sim_id,
             s.name AS heir_name,
             s.sim_id AS heir_sim_id
      FROM generations g
      JOIN legacies l ON g.legacy_id = l.legacy_id
+     LEFT JOIN sims f ON g.founder_id = f.sim_id
      LEFT JOIN sims s ON g.heir_id = s.sim_id
      WHERE g.generation_id = $1
        AND l.legacy_name != 'Pack Legacy Challenge Template'`,
@@ -130,10 +137,14 @@ const startGeneration = async (origin, generationId, body) => {
   }
 
   const parsed = parseBody(body) || {};
-  const { start_date } = parsed;
+  const { start_date, founder_id } = parsed;
 
   if (start_date && !isValidDate(start_date)) {
     return buildResponse(400, { error: "start_date must be a valid date" }, origin);
+  }
+
+  if (founder_id && !isValidUuid(founder_id)) {
+    return buildResponse(400, { error: "founder_id must be a valid UUID" }, origin);
   }
 
   const pool = await getPool();
@@ -144,7 +155,8 @@ const startGeneration = async (origin, generationId, body) => {
 
     // Get the generation and its legacy
     const genResult = await client.query(
-      `SELECT g.generation_id, g.legacy_id, g.generation_number, g.is_active, l.legacy_name
+      `SELECT g.generation_id, g.legacy_id, g.generation_number, g.is_active,
+              g.founder_id, l.legacy_name, l.founder_id AS legacy_founder_id
        FROM generations g
        JOIN legacies l ON g.legacy_id = l.legacy_id
        WHERE g.generation_id = $1
@@ -164,19 +176,41 @@ const startGeneration = async (origin, generationId, body) => {
       return buildResponse(400, { error: "Generation is already active" }, origin);
     }
 
+    // Determine the founder for this generation
+    let resolvedFounderId = founder_id || generation.founder_id || null;
+
+    if (!resolvedFounderId) {
+      if (generation.generation_number === 1) {
+        // Gen 1: founder is the legacy's founder
+        resolvedFounderId = generation.legacy_founder_id;
+      } else {
+        // Gen N: founder is the previous generation's heir
+        const prevGenResult = await client.query(
+          `SELECT heir_id FROM generations
+           WHERE legacy_id = $1 AND generation_number = $2`,
+          [generation.legacy_id, generation.generation_number - 1]
+        );
+        if (prevGenResult.rows.length > 0 && prevGenResult.rows[0].heir_id) {
+          resolvedFounderId = prevGenResult.rows[0].heir_id;
+        }
+      }
+    }
+
     // Deactivate any currently active generation for this legacy
     await client.query(
       `UPDATE generations SET is_active = FALSE WHERE legacy_id = $1 AND is_active = TRUE`,
       [generation.legacy_id]
     );
 
-    // Activate this generation
+    // Activate this generation and set founder
     const updateResult = await client.query(
       `UPDATE generations
-       SET is_active = TRUE, start_date = COALESCE($2, start_date, CURRENT_DATE)
+       SET is_active = TRUE,
+           start_date = COALESCE($2, start_date, CURRENT_DATE),
+           founder_id = COALESCE($3, founder_id)
        WHERE generation_id = $1
        RETURNING *`,
-      [generationId, start_date || null]
+      [generationId, start_date || null, resolvedFounderId]
     );
 
     // Update the legacy's current_generation
@@ -223,7 +257,8 @@ const completeGeneration = async (origin, generationId, body) => {
 
     // Get the generation
     const genResult = await client.query(
-      `SELECT g.generation_id, g.legacy_id, g.generation_number, g.is_active, l.legacy_name
+      `SELECT g.generation_id, g.legacy_id, g.generation_number, g.is_active,
+              g.heir_id AS current_heir_id, l.legacy_name
        FROM generations g
        JOIN legacies l ON g.legacy_id = l.legacy_id
        WHERE g.generation_id = $1
@@ -257,6 +292,9 @@ const completeGeneration = async (origin, generationId, body) => {
       );
     }
 
+    // Determine the heir that will become the next generation's founder
+    const nextFounderId = heir_id || generation.current_heir_id || null;
+
     // Auto-start the next generation if it exists
     const nextGenNumber = generation.generation_number + 1;
     const nextGenResult = await client.query(
@@ -268,9 +306,10 @@ const completeGeneration = async (origin, generationId, body) => {
     if (nextGenResult.rows.length > 0) {
       await client.query(
         `UPDATE generations
-         SET is_active = TRUE, start_date = CURRENT_DATE
+         SET is_active = TRUE, start_date = CURRENT_DATE,
+             founder_id = COALESCE($2, founder_id)
          WHERE generation_id = $1`,
-        [nextGenResult.rows[0].generation_id]
+        [nextGenResult.rows[0].generation_id, nextFounderId]
       );
 
       await client.query(

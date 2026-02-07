@@ -324,13 +324,15 @@ const getSimsByLegacy = async (origin, legacyId, queryParams) => {
     `SELECT s.*,
             w.world_name,
             m.name AS mother_name,
-            f.name AS father_name
+            f.name AS father_name,
+            g.generation_number
      FROM sims s
      LEFT JOIN worlds w ON s.world_of_residence_id = w.world_id
      LEFT JOIN sims m ON s.mother_id = m.sim_id
      LEFT JOIN sims f ON s.father_id = f.sim_id
+     LEFT JOIN generations g ON s.generation_id = g.generation_id
      WHERE ${conditions.join(" AND ")}
-     ORDER BY s.created_at ASC`,
+     ORDER BY g.generation_number ASC, s.created_at ASC`,
     params
   );
 

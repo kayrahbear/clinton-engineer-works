@@ -23,6 +23,10 @@ const {
   updateGoalCompletion,
 } = require("./handlers/generations");
 const {
+  getEligibleHeirs,
+  selectHeir,
+} = require("./handlers/heir-selection");
+const {
   getAllGenerationTemplates,
   getGenerationTemplateByNumber,
 } = require("./handlers/generation-templates");
@@ -99,6 +103,14 @@ const ROUTE_GENERATION_COMPLETE = new RegExp(
 );
 const ROUTE_GENERATION_GOALS = new RegExp(
   `\\/generations\\/(${UUID_PATTERN})\\/goals\\/?$`,
+  "i"
+);
+const ROUTE_GENERATION_ELIGIBLE_HEIRS = new RegExp(
+  `\\/generations\\/(${UUID_PATTERN})\\/eligible-heirs\\/?$`,
+  "i"
+);
+const ROUTE_GENERATION_HEIR = new RegExp(
+  `\\/generations\\/(${UUID_PATTERN})\\/heir\\/?$`,
   "i"
 );
 
@@ -293,6 +305,16 @@ const handler = async (event) => {
   const genGoalsMatch = path.match(ROUTE_GENERATION_GOALS);
   if (method === "GET" && genGoalsMatch) {
     return getGenerationGoals(origin, genGoalsMatch[1]);
+  }
+
+  const genEligibleHeirsMatch = path.match(ROUTE_GENERATION_ELIGIBLE_HEIRS);
+  if (method === "GET" && genEligibleHeirsMatch) {
+    return getEligibleHeirs(origin, genEligibleHeirsMatch[1]);
+  }
+
+  const genHeirMatch = path.match(ROUTE_GENERATION_HEIR);
+  if (method === "PUT" && genHeirMatch) {
+    return selectHeir(origin, genHeirMatch[1], event?.body);
   }
 
   // GET /generations/:generationId
