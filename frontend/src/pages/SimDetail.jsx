@@ -408,7 +408,7 @@ export default function SimDetail() {
                   </div>
                   <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Skills</p>
-                    <p className="mt-2 text-sm font-semibold text-ff-text">{state.skills.length} showcased skills</p>
+                    <p className="mt-2 text-sm font-semibold text-ff-text">{state.skills.length} skills</p>
                     <div className="mt-3 space-y-2 text-xs text-ff-muted">
                       {state.skills.map((skill) => (
                         <div key={skill.skill_id} className="flex items-center justify-between">

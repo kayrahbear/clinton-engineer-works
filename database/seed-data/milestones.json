@@ -1,0 +1,1433 @@
+[
+  {
+    "milestone_name": "Learned to Reach",
+    "description": "Work those tiny muscles! <Sim name> reached their arm out.",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Grab",
+    "description": "Who knew tiny hands could be this strong? <Sim name> used their hands to grab with all their might!",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Put Toe In Mouth",
+    "description": "<Sim name> is getting stronger every day. What a momentous occasion when they can wiggle around, bend over, and even stick their toe in their mouth. How flexible!",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned Pincer Grasp",
+    "description": "<Sim name>'s powerful fingers are now able to perform the Pincer Grasp! Nothing will escape from their fingers unless they will it!",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Clap",
+    "description": "<Sim name> made their first sounds with their hands!",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Wave",
+    "description": "Sul Sul! <Sim name> learned a new way to say hello by waving their hand!",
+    "category": "fine_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Slept Through the Night",
+    "description": "Ah, the sweet sound of silence. Those living with <Sim name> will never forget the first time they finally slept a full rest without interruption.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Bath",
+    "description": "<Sim name> was squeaky clean after receiving their first ever bath.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Bubble Bath",
+    "description": "Bubbles bubbles bubbles! <Sim name> loved their very first bubble bath!",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Baby Food",
+    "description": "Mmm, yummy! <Sim name> had their very first baby food.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Finger Food",
+    "description": "<Sim name> managed to pick up and eat food all by themself.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Trip to a Park",
+    "description": "The world got a little bigger for <Sim name> when they visited a park for the first time!",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Vacation",
+    "description": "The sights, sounds, and smells of a new place mesmerized <Sim name> on their very first vacation.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Visit to a Family Member's Home",
+    "description": "<Sim name> went on a trip to visit their relatives.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Visitors",
+    "description": "A new face! <Sim name> had their first encounter meeting someone from outside their household.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Diaper Blowout",
+    "description": "<Sim name> experienced their first diaper blowout. That foul stench won't be forgotten by those who were unfortunately present.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Peed on Caregiver",
+    "description": "<Sim name> will never know it happened, but others will surely remember the first time they peed on someone during a diaper change.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Funeral",
+    "description": "<Sim name> attended their first Funeral.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Loss",
+    "description": "<Sim name> lost someone close to them for the first time.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Survived Seven Nights in a Haunted House",
+    "description": "The paranormal was no match for <Sim name>!",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Paranormal Stuff",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Burglar Visit",
+    "description": "<Sim name> experienced a burglary at <lot name>.",
+    "category": "firsts",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Lifted Head",
+    "description": "<Sim name> developed the ability to lift their head all on their own. There's a whole world to look at!",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Rolled Over to Back",
+    "description": "A bad move for a turtle, but a great move for an Infant... <Sim name> rolled themself onto their back!",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Rolled Over to Tummy",
+    "description": "<Sim name> mastered the ability to roll from their back to tummy and back again! It's a critical step to help them orient themself within their world.",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Creep",
+    "description": "There's nothing creepy about an Infant that's creeping! Using their newfound strength and coordination, <Sim name> pushed themself up off the floor to creep about.",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Sit Up",
+    "description": "Having learned how to support themself by sitting up, <Sim name> is just an awkward butt scoot away from getting their grubby little hands on nearby objects.",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Crawl",
+    "description": "Watch out world, <Sim name> is on the loose! Having learned to crawl, there's no shortage of mischief they'll be able to get up to.",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Pulled to Stand",
+    "description": "Despite literally learning to stand on their own two feet, <Sim name> will still need care and guidance for some time to come. In the meantime, look how tall <Sim name> has grown!",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Dance",
+    "description": "Wave those hands! <Sim name> learned to dance. Once they become a toddler, they'll be able to use their feet to tap to the beat!",
+    "category": "gross_motor",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Born",
+    "description": "Every journey has a first step; let's welcome <Sim name> into the world!",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Born at a Hospital",
+    "description": "Every journey has a first step; let's welcome <Sim name> into the world!",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Get to Work",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Born at Home",
+    "description": "Every journey has a first step; let's welcome <Sim name> into the world!",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Adopted",
+    "description": "<Sim name> was adopted. Welcome to the family!",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": "child",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Adopted Pet",
+    "description": "A new friend joined the family.",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Cats & Dogs",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Rebirth!",
+    "description": "<Sim name> has been reborn into a new life!",
+    "category": "life",
+    "min_age_group": "infant",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Smiled",
+    "description": "The world just got a bit brighter with <Sim name>'s very first smile!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Coo",
+    "description": "<Sim name> started making the most adorable cooing sounds!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Laugh",
+    "description": "Eyes sparkling with joy, <Sim name> laughed at something funny!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Blow Raspberry",
+    "description": "With an adorably tiny sputter, <Sim name> attempted to communicate by blowing a raspberry.",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Babble",
+    "description": "<Sim name> learned to happily babble away at the world around them. What will their first word be...?",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Blow Kiss",
+    "description": "Aww, <Sim name> showed their love by blowing kisses!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned Peek-A-Boo",
+    "description": "<Sim name> played their first game of Peek-A-Boo... And would you believe it, <Sim name> won!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Said First Word",
+    "description": "<Sim name> uttered their very first word! Write that down!",
+    "category": "social",
+    "min_age_group": "infant",
+    "max_age_group": "infant",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Studied Letters",
+    "description": "<Sim name>'s world expanded to include the realm of written language.",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Studied Numbers",
+    "description": "One, two, three... <Sim name>'s counting prowess is limitless.",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Studied Shapes",
+    "description": "Circle, triangle, square... <Sim name>'s genius knows no bounds!",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Asked 'Why?' for the First Time",
+    "description": "<Sim name> started asking one of life's important questions.",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Art Appreciation",
+    "description": "Now able to view art, <Sim name> has quite the discerning eye for a Toddler.",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Maxed Imagination Skill",
+    "description": "<Sim name> maxed the Imagination Skill!",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Maxed Thinking Skill",
+    "description": "<Sim name> maxed the Thinking Skill!",
+    "category": "cognitive",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Time at Daycare",
+    "description": "<Sim name> went to daycare for the first time.",
+    "category": "firsts",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Read First Book",
+    "description": "<Sim name> read a book all by themself for the first time!",
+    "category": "firsts",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Mastered Potty Training",
+    "description": "<Sim name> learned the ways of the loo.",
+    "category": "firsts",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Nightmare",
+    "description": "Life's not all fun and games, not even when <Sim name> is asleep. Scary stuff!",
+    "category": "firsts",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Threw a Tantrum",
+    "description": "Their frustration reached its boiling point! <Sim name> threw a tantrum.",
+    "category": "firsts",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Celebrated a Birthday",
+    "description": "<Sim name> celebrated a birthday!",
+    "category": "life",
+    "min_age_group": "toddler",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got Evicted",
+    "description": "<Sim name> got served with an Eviction Notice!",
+    "category": "life",
+    "min_age_group": "toddler",
+    "max_age_group": null,
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Walk",
+    "description": "Oh, the places <Sim name> will go!",
+    "category": "motor",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Climb Stairs",
+    "description": "<Sim name> can now reach new heights, literally.",
+    "category": "motor",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Dance",
+    "description": "Those hips don't lie, <Sim name> can't stop shaking to the beat and learned how to dance!",
+    "category": "motor",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Run",
+    "description": "Zoom, zoom! <Sim name> learned to run.",
+    "category": "motor",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Maxed Movement Skill",
+    "description": "<Sim name> maxed the Movement Skill!",
+    "category": "motor",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Talk",
+    "description": "No longer limited to babbling with the occasional word interspersed, <Sim name> learned to talk!",
+    "category": "social",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Played with Others",
+    "description": "<Sim name> played with others for the first time.",
+    "category": "social",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Childhood Friend",
+    "description": "<Sim name> made a friend outside the family!",
+    "category": "social",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Maxed Communication Skill",
+    "description": "<Sim name> maxed the Communication Skill!",
+    "category": "social",
+    "min_age_group": "toddler",
+    "max_age_group": "toddler",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Day of School",
+    "description": "<Sim name> had their first day of grade school.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": "child",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Object Possession",
+    "description": "<Sim name> completed their first ghostly possession of an object!",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Marbles Win",
+    "description": "The path to being a champion is paved with wins, and <Sim name> is well on their way!",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": "child",
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Hopscotch Win",
+    "description": "<Sim name> hopped to the top!",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": "child",
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Lost First Tooth",
+    "description": "Where did <Sim name>'s tooth go?",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": "child",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Learned to Ride a Bike",
+    "description": "<Sim name> learned how to ride a bike! Look at them go.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": "child",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Mold Exposure",
+    "description": "Yuck! <Sim name> found mold growing at <lot name> and got sick.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Energy Failure",
+    "description": "<Sim name> passed out from exhaustion for the first time.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Bladder Failure",
+    "description": "<Sim name> suffered a great embarrassment.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Fight",
+    "description": "Catch these hands! <Sim name> got into a fight.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Fire",
+    "description": "<Sim name> experienced their first fire.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First WooHoo",
+    "description": "<Sim name>'s first WooHoo partner was <Sim 2 name>",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Time Burning Out",
+    "description": "<Sim name> experienced burnout for the first time. Take a break!",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Eaten by Cowplant",
+    "description": "That was a close call just for some cake! <Sim name> saw the insides of a Cowplant.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Found the Forgotten Grotto",
+    "description": "<Sim name> visited the beautiful Forgotten Grotto for the first time.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Found the Sylvan Glade",
+    "description": "<Sim name> visited the enchanting Sylvan Glade for the first time.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Found the Hermit of Granite Falls",
+    "description": "<Sim name> found the Hermit of Granite Falls for the first time.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Outdoor Retreat",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Explored Sixam",
+    "description": "<Sim name> made it to the curious world of Sixam. What a feat!",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Get to Work",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Explored Deep into the Omiscan Temple",
+    "description": "<Sim name> found the ultimate treasure of an Omiscan Temple in Selvadorada.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Jungle Adventure",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Gave First Tattoo",
+    "description": "<Sim name> gave someone a tattoo for the first time!",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Businesses and Hobbies",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got First Tattoo",
+    "description": "<Sim name> got their first tattoo.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Businesses and Hobbies",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Achieved Maximum Romantic Satisfaction",
+    "description": "<Sim name> reached Maximum Romantic Satisfaction.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Lovestruck",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Achieved Minimum Romantic Satisfaction",
+    "description": "<Sim name> reached Minimum Romantic Satisfaction.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Lovestruck",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Defeated the Mother Plant",
+    "description": "<Sim name>'s a hero of Strangerville!",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "StrangerVille",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Experienced the Call of the Mother",
+    "description": "ŦĦ€ ΜØŦĦ€Ř ĆΔŁŁ€Đ ŦĦ€ ΜØŦĦ€Ř ĆΔŁŁ€Đ ŦĦ€ ΜØŦĦ€Ř ĆΔŁŁ€Đ",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "StrangerVille",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Break-In Committed",
+    "description": "What a rush! <Sim name> broke into <lot name> to snoop around.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Reached the Peak of Stardom",
+    "description": "<Sim name> became a five-star celebrity!",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Get Famous",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Reached Mount Komorebi Summit",
+    "description": "A pinnacle of achievement! <Sim name> reached the top of Mount Komorebi.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Snowy Escape",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Crumplebottomed!",
+    "description": "Can you ever really forget the first time that purse hits you?",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Cottage Living",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Finchwick Fair Winner",
+    "description": "Winner winner winner chicken dinner! <Sim name> won a Finchwick Fair competition.",
+    "category": "firsts",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Cottage Living",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Beat Greg in a Fight",
+    "description": "The first time <Sim name> showed Greg what's what.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Werewolves",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Won First Horse Competition",
+    "description": "<Sim name> won their first Horse Competition.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Horse Ranch",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Placed in the Ultimate Horse Championship",
+    "description": "Hold your horses, <Sim name> placed in the Ultimate Horse Championship! Not just any Horse and rider duo can do that.",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Horse Ranch",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Mark of Edith!",
+    "description": "<Sim name> was awarded the Mark of Edith!",
+    "category": "firsts",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Childhood Phase",
+    "description": "<Sim name> had a <phase name> phase.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": "teen",
+    "pack_required": "Parenthood",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Made a Friend in the Crypt!",
+    "description": "While exploring the Crypt, <Sim name>, made a new friend! Although the friend is a bit strange...",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Unlocked The Ultimate Evil Ghost Power!",
+    "description": "<Sim name> unlocked their ultimate evil Ghost Power!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Unlocked The Ultimate Good Ghost Power!",
+    "description": "<Sim name> unlocked their ultimate good Ghost Power!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Abducted by Aliens",
+    "description": "Aliens hovering over <lot name> decided to give <Sim name> an out of this world experience, literally.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Get to Work",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Sold a Small Business",
+    "description": "<Sim name> sold their Small Business named .",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Businesses and Hobbies",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Small Business Simoleon",
+    "description": "<Sim name> earned their first Simoleon at !",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Businesses and Hobbies",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Registered a Small Business",
+    "description": "<Sim name> registered a new Small Business named .",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Businesses and Hobbies",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Achieved a Pristine Reputation",
+    "description": "<Sim name>'s a paragon of virtue.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Get Famous",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Achieved an Atrocious Reputation",
+    "description": "<Sim name>'s officially the worst of the worst.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Get Famous",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Adopted a Tiger",
+    "description": "<Sim name> sponsored a tiger at the Sulea Tiger Sanctuary in Tomarang.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "For Rent",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got a Horse",
+    "description": "A new Horse joined the family.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Horse Ranch",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Witnessed the Birth of a Foal",
+    "description": "<Sim name> was filled with joy when a foal was born!",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Horse Ranch",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Enjoyed Too Much Nectar",
+    "description": "<Sim name> had a bit too much Nectar and paid the price.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Horse Ranch",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Expelled from High School",
+    "description": "<Sim name> was expelled from High School.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": "teen",
+    "pack_required": "High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Graduated from High School",
+    "description": "Time to celebrate! <Sim name> graduated from High School.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": "teen",
+    "pack_required": "High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Dropped Out of High School",
+    "description": "<Sim name> dropped out of High School.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": "teen",
+    "pack_required": "High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Prom Royalty",
+    "description": "<Sim name> won the crown at prom!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": "teen",
+    "pack_required": "High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Began Puberty",
+    "description": "<Sim name> started puberty. Everyone goes through it!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": "teen",
+    "pack_required": "High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Earned a Degree",
+    "description": "<Sim name> studied hard and earned their degree!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Discover University",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Reached Top of After School Activity",
+    "description": "<Sim name> became <level> in the <activity>.",
+    "category": "life",
+    "min_age_group": "child",
+    "max_age_group": "teen",
+    "pack_required": "Seasons | Get Famous | High School Years",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got a Job",
+    "description": "<Sim name> started as <level> in the <career> Career.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "First Promotion",
+    "description": "<Sim name> was promoted to <level> in the <career> Career.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Reached the Top of Career",
+    "description": "<Sim name> was promoted to <level> in the <career> Career.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Quit",
+    "description": "<Sim name> quit the <career> Career.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got Fired",
+    "description": "<Sim name> was fired from the <career> Career.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Struck by Lightning",
+    "description": "<Sim name> didn't heed the weather in <lot name>",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Seasons",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Became a Plant Sim",
+    "description": "<Sim name> experienced the botanical side of life.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Manifested as a Mermaid",
+    "description": "How mermazing! <Sim name> manifested as a Mermaid.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Island Living",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Manifested as a Spellcaster",
+    "description": "Making magic happen! <Sim name> manifested as a Spellcaster.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Realm of Magic",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Manifested as a Vampire",
+    "description": "A life of immortality calls. <Sim name> manifested as a Vampire!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Vampires",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Manifested as a Werewolf",
+    "description": "Awooo! <Sim name> manifested as a werewolf.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Werewolves",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Manifested as a Fairy",
+    "description": "<Sim name> manifested as a Fairy!",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Enchanted by Nature",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Became Leader of the Moonwood Collective/Wildfangs",
+    "description": "<Sim name> climbed their way to the top of the pack.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Werewolves",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Became Non-Occult",
+    "description": "<Sim name> said goodbye to the occult.",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Island Living | Realm of Magic | Vampires | Werewolves | Enchanted by Nature",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Died",
+    "description": "What a way to go: (cause of death).",
+    "category": "life",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Made a Best Friend",
+    "description": "<Sim 1 name> and <Sim 2 name> became Best Friends.",
+    "category": "social",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Made an Enemy",
+    "description": "<Sim 1 name> and <Sim 2 name> became enemies.",
+    "category": "social",
+    "min_age_group": "child",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Fell in Love",
+    "description": "<Sim 1 name> fell in love with <Sim 2 name>.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Started a Romantic Relationship",
+    "description": "<Sim 1 name> and <Sim 2 name> started a romantic relationship.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Ended a Romantic Relationship",
+    "description": "Not everything works out. <Sim 1 name> and <Sim 2 name> ended their romantic relationship.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Caught Partner Cheating",
+    "description": "<Sim 1 name> caught <Sim 2 name> cheating on them.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Caught Cheating",
+    "description": "Yikes. <Sim 2 name> caught <Sim 1 name> cheating on them.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Resurrected",
+    "description": "Another Sim <Sim 1 name> brought <Sim 2 name> back to life!",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Saved from Death",
+    "description": "<Sim 2 name> saved <Sim 1 name> from the Grim Reaper.",
+    "category": "social",
+    "min_age_group": "teen",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Finished Bucket List!",
+    "description": "<Sim name> finished their Bucket List!",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Finished Unfinished Business!",
+    "description": "<Sim name> finished their Unfinished Business!",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Had a Descendant of Grim!",
+    "description": "<Sim name> gave birth to a descendant of the Grim Reaper!",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Adopted a New Family Member",
+    "description": "<Sim name> joined the family!",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Had a Baby",
+    "description": "<Sim name> joined the family!",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got Laid Off",
+    "description": "<Sim name> lost their job.",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Had a Mid-Life Crisis",
+    "description": "<Sim name>'s desire to be more creative/for adventure/for stronger social connections/for greater success led them through a life changing experience.",
+    "category": "life",
+    "min_age_group": "adult",
+    "max_age_group": "adult",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Made a Self Discovery",
+    "description": "<Sim name> discovered their new trait: <Trait>",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Won the Lottery",
+    "description": "<Sim name> won the big bucks.",
+    "category": "life",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Seasons",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Retired",
+    "description": "<Sim name> retired from their career.",
+    "category": "life",
+    "min_age_group": "elder",
+    "max_age_group": "elder",
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "WooHoo'd with Grim!",
+    "description": "<Sim name> WooHoo'd with the Grim Reaper. This is an interesting choice, but good for them!",
+    "category": "social",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Life & Death",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Got Engaged",
+    "description": "<Sim 1 name> got engaged to <Sim 2 name>.",
+    "category": "social",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Proposal Rejected",
+    "description": "Ouch. It didn't go the way <Sim 1 name> imagined. <Sim 2 name> rejected their proposal.",
+    "category": "social",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  },
+  {
+    "milestone_name": "Widowed",
+    "description": "Few things are sadder than when spouses are separated by death.",
+    "category": "social",
+    "min_age_group": "young_adult",
+    "max_age_group": null,
+    "pack_required": "Growing Together",
+    "icon_path": null
+  }
+]

@@ -7,12 +7,13 @@
  *   1. skills
  *   2. aspirations
  *   3. traits (references aspirations)
- *   4. careers
- *   5. career_branches (references careers)
- *   6. worlds
- *   7. collections
- *   8. collection_items (references collections)
- *   9. career_skills (references careers + skills)
+ *   4. milestones
+ *   5. careers
+ *   6. career_branches (references careers)
+ *   7. worlds
+ *   8. collections
+ *   9. collection_items (references collections)
+ *   10. career_skills (references careers + skills)
  *
  * Idempotent: uses ON CONFLICT DO NOTHING so re-runs are safe.
  *
@@ -21,7 +22,7 @@
 
 const { Pool } = require('pg')
 const path = require('path')
-require('dotenv').config()
+require('dotenv').config({ path: '../backend/.env' })
 
 const SEED_DIR = path.resolve(__dirname, '..', 'seed-data')
 
@@ -32,6 +33,37 @@ const SEED_DIR = path.resolve(__dirname, '..', 'seed-data')
  */
 function loadSeedFile(filename) {
   return require(path.join(SEED_DIR, filename))
+}
+
+/**
+ * Inserts rows into a table with a conflict target.
+ * @param {import('pg').PoolClient} client
+ * @param {string} table
+ * @param {string[]} columns
+ * @param {Array<Object>} rows
+ * @param {string[]} conflictColumns
+ * @returns {Promise<number>} count of inserted rows
+ */
+async function insertRowsWithConflict(client, table, columns, rows, conflictColumns) {
+  if (rows.length === 0) return 0
+
+  const placeholderGroups = rows.map((_, rowIdx) => {
+    const offset = rowIdx * columns.length
+    const placeholders = columns.map((_, colIdx) => `$${offset + colIdx + 1}`)
+    return `(${placeholders.join(', ')})`
+  })
+
+  const values = rows.flatMap(row => columns.map(col => row[col] ?? null))
+  const conflictTarget = conflictColumns.join(', ')
+
+  const sql = `
+    INSERT INTO ${table} (${columns.join(', ')})
+    VALUES ${placeholderGroups.join(',\n           ')}
+    ON CONFLICT (${conflictTarget}) DO NOTHING
+  `
+
+  const result = await client.query(sql, values)
+  return result.rowCount
 }
 
 /**
@@ -94,6 +126,31 @@ async function insertRows(client, table, columns, rows, nameColumn, idColumn) {
 }
 
 /**
+ * Seeds milestones from milestones.json.
+ * @param {import('pg').PoolClient} client
+ * @returns {Promise<number>} count of inserted milestones
+ */
+async function seedMilestones(client) {
+  const milestonesData = loadSeedFile('milestones.json')
+  const inserted = await insertRowsWithConflict(
+    client,
+    'milestones',
+    [
+      'milestone_name',
+      'description',
+      'category',
+      'min_age_group',
+      'max_age_group',
+      'pack_required',
+      'icon_path',
+    ],
+    milestonesData,
+    ['milestone_name', 'min_age_group', 'max_age_group']
+  )
+  return inserted
+}
+
+/**
  * Seeds all reference data and returns lookup maps for FK linking.
  * @param {import('pg').PoolClient} client
  * @returns {Promise<Object>} lookup maps keyed by table name
@@ -128,7 +185,11 @@ async function seedReferenceData(client) {
   )
   console.log(`  Inserted ${lookups.traits.size} traits`)
 
-  // 4. Careers
+  // 4. Milestones
+  const milestonesInserted = await seedMilestones(client)
+  console.log(`  ✅ Inserted ${milestonesInserted} milestones`)
+
+  // 5. Careers
   const careersData = loadSeedFile('careers.json')
   lookups.careers = await insertRows(
     client, 'careers',
@@ -137,7 +198,7 @@ async function seedReferenceData(client) {
   )
   console.log(`  Inserted ${lookups.careers.size} careers`)
 
-  // 5. Career Branches
+  // 6. Career Branches
   const branchesData = loadSeedFile('career_branches.json')
   const branchRows = branchesData.map(b => ({
     ...b,
@@ -146,7 +207,7 @@ async function seedReferenceData(client) {
   lookups.branches = await insertBranches(client, branchRows)
   console.log(`  Inserted ${lookups.branches.size} career branches`)
 
-  // 6. Worlds
+  // 7. Worlds
   const worldsData = loadSeedFile('worlds.json')
   lookups.worlds = await insertRows(
     client, 'worlds',
@@ -155,7 +216,7 @@ async function seedReferenceData(client) {
   )
   console.log(`  Inserted ${lookups.worlds.size} worlds`)
 
-  // 7. Collections
+  // 8. Collections
   const collectionsData = loadSeedFile('collections.json')
   lookups.collections = await insertRows(
     client, 'collections',
@@ -164,7 +225,7 @@ async function seedReferenceData(client) {
   )
   console.log(`  Inserted ${lookups.collections.size} collections`)
 
-  // 8. Collection Items
+  // 9. Collection Items
   const itemsData = loadSeedFile('collection_items.json')
   const itemRows = itemsData.map(item => ({
     ...item,
@@ -173,7 +234,7 @@ async function seedReferenceData(client) {
   const itemCount = await insertCollectionItems(client, itemRows)
   console.log(`  Inserted ${itemCount} collection items`)
 
-  // 9. Career Skills
+  // 10. Career Skills
   const careerSkillsData = loadSeedFile('career_skills.json')
   const csCount = await insertCareerSkills(client, careerSkillsData, lookups)
   console.log(`  Inserted ${csCount} career-skill relationships`)
@@ -268,12 +329,12 @@ async function insertCareerSkills(client, data, lookups) {
 // Allow standalone execution
 if (require.main === module) {
   const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    database: process.env.DB_NAME || 'sims_legacy',
-    user: process.env.DB_USER || 'sims_admin',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    max: 5,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
   })
 
   ;(async () => {

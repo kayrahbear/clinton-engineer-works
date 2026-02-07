@@ -14,7 +14,8 @@
     "seed": "node ../database/scripts/seed.js",
     "seed:reference": "node ../database/scripts/seed-reference-data.js",
     "seed:legacy": "node ../database/scripts/seed-pack-legacy.js",
-    "db:clear": "node ../database/scripts/clear-database.js"
+    "db:clear": "node ../database/scripts/clear-database.js",
+    "validate:milestones": "node ../database/scripts/validate-milestones.js"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.465.0",
