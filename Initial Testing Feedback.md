@@ -1,0 +1,31 @@
+
+- [x] Can't update career 
+- [x] Add skill modal does not actually add a skill
+- [x] Generation founder doesn't get set
+- [x] Checking off a generation objection throws a 500 error
+	`client.js:18  PUT https://aqenhmjz5m.execute-api.us-east-1.amazonaws.com/dev/api/v1/goals/2d9915e1-6d64-47ce-8115-85491c737699/complete 500`
+- [ ] ~~required career is wrong for gen 3?~~
+- [x] I dont like the 3 column layout on the gereration goals page
+- [ ] Is the user flow weird? it feels weird
+- [ ] no way to manage collections
+- [x] the total goals count is wrong on the generation overview
+- [x] there should be a total goals count on the legacy pages
+- [x] the /sims list should flag heirs as {gen_num} heir. maybe flag other sims with their generation for easy viewing?
+- [ ] ~~Maybe the 100 baby challenge next or that berry one. Something popular~~
+- [ ] need photo uploads
+- [x] Add Trait modal needs to be filtered to only show eligible traits, skills and aspirations probably do too. 
+- [x] changing the active legacy should take a user to the /sims route ✅ 2026-02-08
+- [ ] Would like to be able to add notes to a sim
+- [x] In the Legacy Dashboard, you should be able to click on a sim in household members and go there ✅ 2026-02-08
+- [ ] there is no place to manage aspirations
+- [ ] the skills card needs to scroll, remove 'showcased'
+- [x] there should be a place to get to generation goals 
+- [x] milestone tracking
+- [x] need a way to add non-household/family sims for relationship purposes ✅ 2026-02-08
+- [ ] need a way to keep track of household animals/pets/livestock
+- [x] User Authentication!!! ✅ 2026-02-08
+- [ ] A user needs to be able to identify what expansions,packs,ect that they own in their profile so they don't have to do it everytime when using the generator
+- [ ] need a way to update skills that have already been added
+- [ ] branches on careers not clear? The entertainer career is the problem but there are probably more
+- [ ] don't need the 'career type' box
+- [ ] 
