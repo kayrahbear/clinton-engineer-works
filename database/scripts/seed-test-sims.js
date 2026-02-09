@@ -69,7 +69,7 @@ async function seedTestSims() {
     const juniperResult = await client.query(
       `INSERT INTO sims (
         legacy_id, generation_id, name, gender, life_stage, occult_type,
-        status, is_founder, is_generation_heir, current_household, world_of_residence_id
+        status, is_legacy_founder, is_generation_heir, current_household, world_of_residence_id
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING sim_id`,
       [

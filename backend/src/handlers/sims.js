@@ -76,7 +76,7 @@ const createSim = async (origin, userId, body) => {
     world_of_residence_id,
     current_household,
     is_generation_heir,
-    is_founder,
+    is_legacy_founder,
     is_townie,
     notes,
   } = parsed;
@@ -197,8 +197,8 @@ const createSim = async (origin, userId, body) => {
     return buildResponse(400, { error: "is_generation_heir must be a boolean" }, origin);
   }
 
-  if (is_founder !== undefined && is_founder !== null && !isBoolean(is_founder)) {
-    return buildResponse(400, { error: "is_founder must be a boolean" }, origin);
+  if (is_legacy_founder !== undefined && is_legacy_founder !== null && !isBoolean(is_legacy_founder)) {
+    return buildResponse(400, { error: "is_legacy_founder must be a boolean" }, origin);
   }
 
   if (is_townie !== undefined && is_townie !== null && !isBoolean(is_townie)) {
@@ -216,7 +216,7 @@ const createSim = async (origin, userId, body) => {
         legacy_id, generation_id, name, gender, pronouns, portrait,
         life_stage, occult_type, cause_of_death, death_date, buried_location,
         mother_id, father_id, birth_date, world_of_residence_id,
-        current_household, is_generation_heir, is_founder, is_townie, notes
+        current_household, is_generation_heir, is_legacy_founder, is_townie, notes
       ) VALUES (
         $1, $2, $3, $4, $5, $6,
         $7, $8, $9, $10, $11,
@@ -241,7 +241,7 @@ const createSim = async (origin, userId, body) => {
         world_of_residence_id || null,
         current_household ?? false,
         is_generation_heir ?? false,
-        is_founder ?? false,
+        is_legacy_founder ?? false,
         townie,
         notes || null,
       ]
@@ -250,7 +250,7 @@ const createSim = async (origin, userId, body) => {
     const newSim = result.rows[0];
 
     // If this sim is the founder, link them to the legacy
-    if (newSim.is_founder) {
+    if (newSim.is_legacy_founder) {
       await client.query(
         `UPDATE legacies SET founder_id = $1 WHERE legacy_id = $2`,
         [newSim.sim_id, newSim.legacy_id]
@@ -429,7 +429,7 @@ const updateSim = async (origin, userId, simId, body) => {
     "world_of_residence_id",
     "current_household",
     "is_generation_heir",
-    "is_founder",
+    "is_legacy_founder",
     "is_townie",
     "generation_id",
     "notes",
@@ -506,7 +506,7 @@ const updateSim = async (origin, userId, simId, body) => {
     }
 
     if (
-      ["current_household", "is_generation_heir", "is_founder", "is_townie"].includes(field) &&
+      ["current_household", "is_generation_heir", "is_legacy_founder", "is_townie"].includes(field) &&
       value !== null &&
       !isBoolean(value)
     ) {
@@ -547,9 +547,9 @@ const updateSim = async (origin, userId, simId, body) => {
 
     const updatedSim = result.rows[0];
 
-    // If is_founder was changed, update the legacy's founder_id
-    if ("is_founder" in parsed) {
-      if (updatedSim.is_founder) {
+    // If is_legacy_founder was changed, update the legacy's founder_id
+    if ("is_legacy_founder" in parsed) {
+      if (updatedSim.is_legacy_founder) {
         await client.query(
           `UPDATE legacies SET founder_id = $1 WHERE legacy_id = $2`,
           [updatedSim.sim_id, updatedSim.legacy_id]
