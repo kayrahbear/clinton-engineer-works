@@ -252,7 +252,7 @@ CREATE INDEX idx_generations_founder_id ON generations(founder_id);
 CREATE TABLE sims (
     sim_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     legacy_id UUID NOT NULL REFERENCES legacies(legacy_id) ON DELETE CASCADE,
-    generation_id UUID NOT NULL REFERENCES generations(generation_id) ON DELETE CASCADE,
+    generation_id UUID REFERENCES generations(generation_id) ON DELETE CASCADE,
     name VARCHAR(200) NOT NULL,
     gender VARCHAR(50) NOT NULL,
     pronouns VARCHAR(50),
@@ -270,6 +270,7 @@ CREATE TABLE sims (
     current_household BOOLEAN NOT NULL DEFAULT FALSE,
     is_heir BOOLEAN NOT NULL DEFAULT FALSE,
     is_founder BOOLEAN NOT NULL DEFAULT FALSE,
+    is_townie BOOLEAN NOT NULL DEFAULT FALSE,
     notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -286,6 +287,7 @@ CREATE INDEX idx_sims_father_id ON sims(father_id);
 CREATE INDEX idx_sims_world_of_residence_id ON sims(world_of_residence_id);
 CREATE INDEX idx_sims_status ON sims(status);
 CREATE INDEX idx_sims_is_heir ON sims(is_heir) WHERE is_heir = TRUE;
+CREATE INDEX idx_sims_is_townie ON sims(is_townie) WHERE is_townie = TRUE;
 
 -- Now add deferred foreign keys from legacies and generations to sims
 ALTER TABLE legacies

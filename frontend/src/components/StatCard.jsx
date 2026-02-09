@@ -5,11 +5,11 @@ const ACCENT_CLASS = {
   lilac: 'text-ff-lilac2',
 }
 
-export default function StatCard({ title, value, detail, badge, accent = 'mint' }) {
+export default function StatCard({ title, value, detail, badge, accent = 'mint', hoverable = false }) {
   const accentClass = ACCENT_CLASS[accent] ?? ACCENT_CLASS.mint
 
   return (
-    <div className="ff-card ff-card-hover relative overflow-hidden p-4">
+    <div className={`ff-card${hoverable ? ' ff-card-hover' : ''} relative overflow-hidden p-4`}>
       <span
         className={`absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-ff-surface2/80 text-sm shadow-soft ${accentClass}`}
       >

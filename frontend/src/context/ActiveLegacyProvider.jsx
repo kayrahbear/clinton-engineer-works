@@ -1,16 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getLegacies } from '../api'
 import ActiveLegacyContext from './activeLegacyContext'
+import { useAuth } from './useAuth'
 
 const STORAGE_KEY = 'active_legacy_id'
 
 export function ActiveLegacyProvider({ children }) {
+  const { isAuthenticated } = useAuth()
   const [legacies, setLegacies] = useState([])
   const [activeLegacyId, setActiveLegacyId] = useState(localStorage.getItem(STORAGE_KEY) || '')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setLegacies([])
+      setActiveLegacyId('')
+      localStorage.removeItem(STORAGE_KEY)
+      setLoading(false)
+      return
+    }
+
     let isMounted = true
 
     async function loadLegacies() {
@@ -49,7 +59,7 @@ export function ActiveLegacyProvider({ children }) {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [isAuthenticated])
 
   const updateActiveLegacyId = (nextLegacyId) => {
     setActiveLegacyId(nextLegacyId)

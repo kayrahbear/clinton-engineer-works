@@ -270,7 +270,7 @@ export default function LegacyDashboard() {
       </header>
 
       <section className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="ff-card ff-card-hover grid gap-6 p-6 md:grid-cols-[1.1fr_0.9fr]">
+        <div className="ff-card grid gap-6 p-6 md:grid-cols-[1.1fr_0.9fr]">
           <div className="grid gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">
@@ -284,10 +284,10 @@ export default function LegacyDashboard() {
             <div className="flex flex-wrap items-center gap-3">
               {activeGenerationId ? (
                 <Link to={`/legacy/${activeLegacyId}/generations/${activeGenerationId}`} className="ff-btn-secondary">
-                  View goals
+                  View Generation
                 </Link>
               ) : (
-                <span className="ff-btn-secondary opacity-50 cursor-default">View goals</span>
+                <span className="ff-btn-secondary opacity-50 cursor-default">View Generation</span>
               )}
             </div>
           </div>
@@ -316,7 +316,7 @@ export default function LegacyDashboard() {
             <span className="text-xs text-ff-subtle">Change</span>
           </button>
 
-          <div className="ff-card ff-card-hover p-5">
+          <div className="ff-card p-5">
             <h3 className="text-sm font-semibold text-ff-pink">Succession Laws</h3>
             <div className="mt-4 grid gap-3">
               {successionLaws.map((law) => (
@@ -331,7 +331,7 @@ export default function LegacyDashboard() {
             </div>
           </div>
 
-          <div className="ff-card ff-card-hover p-5">
+          <div className="ff-card p-5">
             <h3 className="text-sm font-semibold text-ff-yellow">Activity Feed</h3>
             <div className="mt-4 grid gap-3 text-sm text-ff-muted">
               <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 px-3 py-2">
@@ -349,6 +349,7 @@ export default function LegacyDashboard() {
             value={formatCurrency(stats?.wealth?.current_household)}
             badge="⭐"
             accent="yellow"
+            hoverable
           />
         </button>
         <StatCard
@@ -377,7 +378,7 @@ export default function LegacyDashboard() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
-        <div className="ff-card ff-card-hover p-5">
+        <div className="ff-card p-5">
           <h3 className="text-sm font-semibold text-ff-mint">Household Members</h3>
           <p className="mt-2 text-xs text-ff-muted">
             Active sims living on the lot right now.
@@ -389,9 +390,10 @@ export default function LegacyDashboard() {
           ) : (
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {state.household.map((sim) => (
-                <article
+                <Link
                   key={sim.sim_id}
-                  className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3"
+                  to={`/sims/${sim.sim_id}`}
+                  className="group rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 transition hover:border-ff-mint/40 hover:shadow-glowMint"
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 overflow-hidden rounded-full border border-ff-mint/40 bg-ff-surface">
@@ -418,14 +420,17 @@ export default function LegacyDashboard() {
                     {sim.is_generation_heir && (
                       <span className="ff-chip text-xs text-ff-mint">Heir</span>
                     )}
+                    {sim.spouse_name && (
+                      <span className="ff-chip text-xs text-ff-pink">Married to {sim.spouse_name}</span>
+                    )}
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}
         </div>
 
-        <div className="ff-card ff-card-hover p-5">
+        <div className="ff-card p-5">
           <h3 className="text-sm font-semibold text-ff-lilac2">Legacy Progress</h3>
           <div className="mt-4 grid gap-3">
             <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/40 p-3 text-sm text-ff-muted">

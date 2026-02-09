@@ -17,6 +17,16 @@ const MILESTONE_CATEGORIES = [
   { id: 'social', label: 'Social', color: 'text-ff-yellow' },
 ]
 
+const RELATIONSHIP_TYPES = [
+  { value: 'spouse', label: 'Spouse' },
+  { value: 'romantic_interest', label: 'Romantic Interest' },
+  { value: 'friend', label: 'Friend' },
+  { value: 'enemy', label: 'Enemy' },
+  { value: 'parent', label: 'Parent' },
+  { value: 'child', label: 'Child' },
+  { value: 'sibling', label: 'Sibling' },
+]
+
 const AGE_ORDER = ['infant', 'toddler', 'child', 'teen', 'young_adult', 'adult', 'elder']
 const AGE_INDEX = new Map(AGE_ORDER.map((age, index) => [age, index]))
 
@@ -68,6 +78,9 @@ export default function SimDetail() {
   const [milestoneAchievedDate, setMilestoneAchievedDate] = useState('')
   const [milestoneNotes, setMilestoneNotes] = useState('')
   const [milestoneRelatedSimId, setMilestoneRelatedSimId] = useState('')
+  const [selectedRelSimId, setSelectedRelSimId] = useState('')
+  const [selectedRelType, setSelectedRelType] = useState('')
+  const [relStartedDate, setRelStartedDate] = useState('')
   const [availableBranches, setAvailableBranches] = useState([])
   const [loadingBranches, setLoadingBranches] = useState(false)
   const [updateCareerForm, setUpdateCareerForm] = useState({
@@ -310,6 +323,30 @@ export default function SimDetail() {
     }
   }
 
+  const resetRelationshipModal = () => {
+    setActiveModal(null)
+    setSelectedRelSimId('')
+    setSelectedRelType('')
+    setRelStartedDate('')
+  }
+
+  const handleAddRelationship = async () => {
+    if (!selectedRelSimId || !selectedRelType) return
+    try {
+      const payload = {
+        sim_id_2: selectedRelSimId,
+        relationship_type: selectedRelType,
+      }
+      if (relStartedDate) payload.started_date = relStartedDate
+      await apiClient.post(`/sims/${id}/relationships`, payload)
+      const refreshed = await apiClient.get(`/sims/${id}/relationships`)
+      setState((prev) => ({ ...prev, relationships: refreshed.data || [] }))
+      resetRelationshipModal()
+    } catch (error) {
+      window.alert(error?.data?.error || error?.message || 'Failed to add relationship')
+    }
+  }
+
   const openUpdateCareerModal = async (career) => {
     setUpdateCareerForm({
       sim_career_id: career.sim_career_id,
@@ -426,6 +463,7 @@ export default function SimDetail() {
   const sim = state.sim
   const currentAspiration = state.aspirations.find((aspiration) => aspiration.is_current) || state.aspirations[0]
   const currentCareer = state.careers.find((career) => career.is_current) || state.careers[0]
+  const activeSpouse = state.relationships.find((r) => r.relationship_type === 'spouse' && r.is_active)
   const storyText = sim.notes || 'No story notes yet. Add details to build this sim\'s legacy journal.'
   const updatedAt = sim.updated_at || sim.created_at
 
@@ -449,9 +487,12 @@ export default function SimDetail() {
             <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Sim profile</p>
             <h2 className="text-3xl font-semibold text-ff-text">{sim.name}</h2>
             <p className="mt-2 text-sm text-ff-muted">
-              Gen {state.generation?.generation_number ?? '?'} · {toLabel(sim.life_stage)} · {toLabel(sim.occult_type)}
+              {sim.is_townie ? 'Townie' : `Gen ${state.generation?.generation_number ?? '?'}`} · {toLabel(sim.life_stage)} · {toLabel(sim.occult_type)}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
+              {sim.is_townie && (
+                <span className="ff-chip text-xs text-ff-subtle">Townie</span>
+              )}
               {state.traits.map((trait) => (
                 <span key={trait.trait_id} className="ff-chip text-xs">
                   {trait.trait_name}
@@ -460,6 +501,14 @@ export default function SimDetail() {
               <span className="ff-chip text-xs text-ff-pink">{toLabel(sim.occult_type)}</span>
               <span className="ff-chip text-xs text-ff-lilac2">{toLabel(sim.life_stage)}</span>
             </div>
+            {activeSpouse && (
+              <p className="mt-2 text-sm text-ff-muted">
+                Married to{' '}
+                <Link to={`/sims/${activeSpouse.related_sim_id}`} className="font-semibold text-ff-pink hover:underline">
+                  {activeSpouse.related_sim_name}
+                </Link>
+              </p>
+            )}
           </div>
         </div>
 
@@ -544,7 +593,7 @@ export default function SimDetail() {
                   <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Relationships</p>
                     <p className="mt-2 text-sm font-semibold text-ff-text">{relationshipCount} key bonds</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-3 flex max-h-[160px] flex-wrap gap-2 overflow-y-auto">
                       {state.relationships.map((relation) => (
                         <span key={relation.relationship_id} className="ff-chip text-xs">
                           {toLabel(relation.relationship_type)}
@@ -555,7 +604,7 @@ export default function SimDetail() {
                   <div className="rounded-xl border border-ff-border/70 bg-ff-surface2/60 p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-ff-subtle">Skills</p>
                     <p className="mt-2 text-sm font-semibold text-ff-text">{state.skills.length} skills</p>
-                    <div className="mt-3 space-y-2 text-xs text-ff-muted">
+                    <div className="mt-3 max-h-[160px] space-y-2 overflow-y-auto pr-2 text-xs text-ff-muted">
                       {state.skills.map((skill) => (
                         <div key={skill.skill_id} className="flex items-center justify-between">
                           <span>{skill.skill_name}</span>
@@ -730,7 +779,7 @@ export default function SimDetail() {
                   <h3 className="text-base font-semibold text-ff-text">Relationships</h3>
                   <p className="mt-1 text-sm text-ff-muted">Family bonds, friendships, and social connections.</p>
                 </div>
-                <button className="ff-btn-secondary">+ Add Relationship</button>
+                <button className="ff-btn-secondary" onClick={() => setActiveModal('relationship')}>+ Add Relationship</button>
               </div>
               <div className="mt-6 space-y-6">
                 <div>
@@ -1236,6 +1285,48 @@ export default function SimDetail() {
             </label>
           )}
           <button className="ff-btn" onClick={handleUpdateCareer}>Save changes</button>
+        </div>
+      </Modal>
+
+      <Modal
+        title="Add a relationship"
+        description="Connect this sim to another sim in the legacy."
+        isOpen={activeModal === 'relationship'}
+        onClose={resetRelationshipModal}
+      >
+        <div className="grid gap-4">
+          <label className="grid gap-2 text-xs text-ff-muted">
+            <span className="uppercase tracking-[0.2em] text-ff-subtle">Related sim</span>
+            <select className="ff-input text-sm" value={selectedRelSimId} onChange={(e) => setSelectedRelSimId(e.target.value)}>
+              <option value="">Select a sim</option>
+              {state.legacySims
+                .filter((simItem) => simItem.sim_id !== id)
+                .map((simItem) => (
+                  <option key={simItem.sim_id} value={simItem.sim_id}>{simItem.name}</option>
+                ))}
+            </select>
+          </label>
+          <label className="grid gap-2 text-xs text-ff-muted">
+            <span className="uppercase tracking-[0.2em] text-ff-subtle">Relationship type</span>
+            <select className="ff-input text-sm" value={selectedRelType} onChange={(e) => setSelectedRelType(e.target.value)}>
+              <option value="">Select a type</option>
+              {RELATIONSHIP_TYPES.map((type) => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </label>
+          <label className="grid gap-2 text-xs text-ff-muted">
+            <span className="uppercase tracking-[0.2em] text-ff-subtle">Started date (optional)</span>
+            <input
+              type="date"
+              className="ff-input text-sm"
+              value={relStartedDate}
+              onChange={(e) => setRelStartedDate(e.target.value)}
+            />
+          </label>
+          <button className="ff-btn" disabled={!selectedRelSimId || !selectedRelType} onClick={handleAddRelationship}>
+            Add relationship
+          </button>
         </div>
       </Modal>
     </div>

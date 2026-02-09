@@ -121,7 +121,7 @@ export default function Sims() {
           <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Sims roster</p>
           <h2 className="text-2xl font-semibold text-ff-text">Your legacy cast</h2>
           <p className="mt-2 text-sm text-ff-muted">
-            Filter by generation, life stage, or occult. Each card surfaces key vibes at a glance.
+            Filter by generation, life stage, or occult.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export default function Sims() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {filteredSims.map((sim) => (
               <Link key={sim.sim_id} to={`/sims/${sim.sim_id}`} className="group">
-                <article className="ff-card ff-card-hover flex h-full flex-col gap-4 p-5 transition hover:-translate-y-0.5">
+                <article className="ff-card ff-card-hover flex flex-col gap-4 p-5 transition hover:-translate-y-0.5">
                   <div className="flex items-center gap-4">
                     <div className="relative">
                       <div className="h-14 w-14 rounded-full border border-ff-mint/40 bg-gradient-to-br from-ff-pink/40 via-ff-mint/40 to-ff-lilac/50 overflow-hidden">
@@ -246,8 +246,14 @@ export default function Sims() {
                     <span className="ff-chip text-xs text-ff-lilac2">
                       {sim.life_stage?.replace('_', ' ')}
                     </span>
+                    {sim.is_townie && (
+                      <span className="ff-chip text-xs text-ff-subtle">Townie</span>
+                    )}
                     {sim.status !== 'alive' && (
                       <span className="ff-chip text-xs text-ff-subtle">{sim.status}</span>
+                    )}
+                    {sim.spouse_name && (
+                      <span className="ff-chip text-xs text-ff-pink">Married to {sim.spouse_name}</span>
                     )}
                   </div>
 

@@ -77,6 +77,7 @@ const createSim = async (origin, userId, body) => {
     current_household,
     is_generation_heir,
     is_founder,
+    is_townie,
     notes,
   } = parsed;
 
@@ -92,10 +93,20 @@ const createSim = async (origin, userId, body) => {
     return buildResponse(404, { error: "Legacy not found" }, origin);
   }
 
-  if (!generation_id || !isValidUuid(generation_id)) {
+  const townie = is_townie === true;
+
+  if (generation_id && !isValidUuid(generation_id)) {
     return buildResponse(
       400,
-      { error: "generation_id is required and must be a valid UUID" },
+      { error: "generation_id must be a valid UUID" },
+      origin
+    );
+  }
+
+  if (!townie && !generation_id) {
+    return buildResponse(
+      400,
+      { error: "generation_id is required for non-townie sims" },
       origin
     );
   }
@@ -190,6 +201,10 @@ const createSim = async (origin, userId, body) => {
     return buildResponse(400, { error: "is_founder must be a boolean" }, origin);
   }
 
+  if (is_townie !== undefined && is_townie !== null && !isBoolean(is_townie)) {
+    return buildResponse(400, { error: "is_townie must be a boolean" }, origin);
+  }
+
   const pool = await getPool();
   const client = await pool.connect();
 
@@ -201,16 +216,16 @@ const createSim = async (origin, userId, body) => {
         legacy_id, generation_id, name, gender, pronouns, portrait,
         life_stage, occult_type, cause_of_death, death_date, buried_location,
         mother_id, father_id, birth_date, world_of_residence_id,
-        current_household, is_generation_heir, is_founder, notes
+        current_household, is_generation_heir, is_founder, is_townie, notes
       ) VALUES (
         $1, $2, $3, $4, $5, $6,
         $7, $8, $9, $10, $11,
         $12, $13, $14, $15,
-        $16, $17, $18, $19
+        $16, $17, $18, $19, $20
       ) RETURNING *`,
       [
         legacy_id,
-        generation_id,
+        generation_id || null,
         name.trim(),
         gender.trim(),
         pronouns || null,
@@ -227,6 +242,7 @@ const createSim = async (origin, userId, body) => {
         current_household ?? false,
         is_generation_heir ?? false,
         is_founder ?? false,
+        townie,
         notes || null,
       ]
     );
@@ -269,11 +285,26 @@ const getSimById = async (origin, userId, simId) => {
     `SELECT s.*,
             w.world_name,
             m.name AS mother_name,
-            f.name AS father_name
+            f.name AS father_name,
+            spouse.sim_id AS spouse_id,
+            spouse.name AS spouse_name,
+            spouse.portrait AS spouse_portrait
      FROM sims s
      LEFT JOIN worlds w ON s.world_of_residence_id = w.world_id
      LEFT JOIN sims m ON s.mother_id = m.sim_id
      LEFT JOIN sims f ON s.father_id = f.sim_id
+     LEFT JOIN LATERAL (
+       SELECT CASE WHEN r.sim_id_1 = s.sim_id THEN r.sim_id_2 ELSE r.sim_id_1 END AS sim_id,
+              CASE WHEN r.sim_id_1 = s.sim_id THEN s2.name ELSE s1.name END AS name,
+              CASE WHEN r.sim_id_1 = s.sim_id THEN s2.portrait ELSE s1.portrait END AS portrait
+       FROM relationships r
+       JOIN sims s1 ON r.sim_id_1 = s1.sim_id
+       JOIN sims s2 ON r.sim_id_2 = s2.sim_id
+       WHERE (r.sim_id_1 = s.sim_id OR r.sim_id_2 = s.sim_id)
+         AND r.relationship_type = 'spouse'
+         AND r.is_active = TRUE
+       LIMIT 1
+     ) spouse ON TRUE
      WHERE s.sim_id = $1 AND s.status != 'deleted'`,
     [simId]
   );
@@ -338,12 +369,27 @@ const getSimsByLegacy = async (origin, userId, legacyId, queryParams) => {
             w.world_name,
             m.name AS mother_name,
             f.name AS father_name,
-            g.generation_number
+            g.generation_number,
+            spouse.sim_id AS spouse_id,
+            spouse.name AS spouse_name,
+            spouse.portrait AS spouse_portrait
      FROM sims s
      LEFT JOIN worlds w ON s.world_of_residence_id = w.world_id
      LEFT JOIN sims m ON s.mother_id = m.sim_id
      LEFT JOIN sims f ON s.father_id = f.sim_id
      LEFT JOIN generations g ON s.generation_id = g.generation_id
+     LEFT JOIN LATERAL (
+       SELECT CASE WHEN r.sim_id_1 = s.sim_id THEN r.sim_id_2 ELSE r.sim_id_1 END AS sim_id,
+              CASE WHEN r.sim_id_1 = s.sim_id THEN s2.name ELSE s1.name END AS name,
+              CASE WHEN r.sim_id_1 = s.sim_id THEN s2.portrait ELSE s1.portrait END AS portrait
+       FROM relationships r
+       JOIN sims s1 ON r.sim_id_1 = s1.sim_id
+       JOIN sims s2 ON r.sim_id_2 = s2.sim_id
+       WHERE (r.sim_id_1 = s.sim_id OR r.sim_id_2 = s.sim_id)
+         AND r.relationship_type = 'spouse'
+         AND r.is_active = TRUE
+       LIMIT 1
+     ) spouse ON TRUE
      WHERE ${conditions.join(" AND ")}
      ORDER BY g.generation_number ASC, s.created_at ASC`,
     params
@@ -384,6 +430,8 @@ const updateSim = async (origin, userId, simId, body) => {
     "current_household",
     "is_generation_heir",
     "is_founder",
+    "is_townie",
+    "generation_id",
     "notes",
   ];
 
@@ -438,7 +486,7 @@ const updateSim = async (origin, userId, simId, body) => {
     }
 
     if (
-      ["mother_id", "father_id", "world_of_residence_id"].includes(field) &&
+      ["mother_id", "father_id", "world_of_residence_id", "generation_id"].includes(field) &&
       value &&
       !isValidUuid(value)
     ) {
@@ -458,7 +506,7 @@ const updateSim = async (origin, userId, simId, body) => {
     }
 
     if (
-      ["current_household", "is_generation_heir", "is_founder"].includes(field) &&
+      ["current_household", "is_generation_heir", "is_founder", "is_townie"].includes(field) &&
       value !== null &&
       !isBoolean(value)
     ) {

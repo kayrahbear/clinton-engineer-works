@@ -124,6 +124,7 @@ export default function SimForm() {
     occultType: 'human',
     currentHousehold: true,
     isHeir: Boolean(location.state?.prefillHeir),
+    isTownie: false,
     selectedTraitIds: ['', '', ''],
     aspirationId: '',
     careerId: '',
@@ -276,7 +277,7 @@ export default function SimForm() {
         throw new Error('Gender is required by the current backend schema.')
       }
 
-      if (!formData.generationId) {
+      if (!formData.isTownie && !formData.generationId) {
         throw new Error('Please choose a generation.')
       }
 
@@ -286,15 +287,16 @@ export default function SimForm() {
 
       const createPayload = {
         legacy_id: activeLegacyId,
-        generation_id: formData.generationId,
+        generation_id: formData.isTownie ? null : formData.generationId,
         name: buildName(),
         gender: formData.gender.trim(),
         pronouns: formData.pronouns.trim() || null,
         life_stage: formData.lifeStage,
         occult_type: formData.occultType,
         world_of_residence_id: formData.worldId || null,
-        current_household: formData.currentHousehold,
-        is_generation_heir: formData.isHeir,
+        current_household: formData.isTownie ? false : formData.currentHousehold,
+        is_generation_heir: formData.isTownie ? false : formData.isHeir,
+        is_townie: formData.isTownie,
         notes: formData.notes.trim() || null,
       }
 
@@ -307,31 +309,33 @@ export default function SimForm() {
 
       const optionalRequests = []
 
-      selectedTraits.forEach((traitId, index) => {
-        optionalRequests.push(
-          apiClient.post(`/sims/${simId}/traits`, {
-            trait_id: traitId,
-            trait_slot: String(index + 1),
-          })
-        )
-      })
+      if (!formData.isTownie) {
+        selectedTraits.forEach((traitId, index) => {
+          optionalRequests.push(
+            apiClient.post(`/sims/${simId}/traits`, {
+              trait_id: traitId,
+              trait_slot: String(index + 1),
+            })
+          )
+        })
 
-      if (formData.aspirationId && aspirationOptions.length > 0) {
-        optionalRequests.push(
-          apiClient.post(`/sims/${simId}/aspirations`, {
-            aspiration_id: formData.aspirationId,
-            is_current: true,
-          })
-        )
-      }
+        if (formData.aspirationId && aspirationOptions.length > 0) {
+          optionalRequests.push(
+            apiClient.post(`/sims/${simId}/aspirations`, {
+              aspiration_id: formData.aspirationId,
+              is_current: true,
+            })
+          )
+        }
 
-      if (formData.careerId && careerAllowed) {
-        optionalRequests.push(
-          apiClient.post(`/sims/${simId}/careers`, {
-            career_id: formData.careerId,
-            is_current: true,
-          })
-        )
+        if (formData.careerId && careerAllowed) {
+          optionalRequests.push(
+            apiClient.post(`/sims/${simId}/careers`, {
+              career_id: formData.careerId,
+              is_current: true,
+            })
+          )
+        }
       }
 
       if (optionalRequests.length > 0) {
@@ -435,20 +439,22 @@ export default function SimForm() {
                   onChange={(event) => handleChange('pronouns', event.target.value)}
                 />
               </label>
-              <label className="grid gap-2 text-xs text-ff-muted">
-                <span className="uppercase tracking-[0.2em] text-ff-subtle">Generation</span>
-                <select
-                  className="ff-input text-sm"
-                  value={formData.generationId}
-                  onChange={(event) => handleChange('generationId', event.target.value)}
-                >
-                  {referenceData.generations.map((generation) => (
-                    <option key={generation.generation_id} value={generation.generation_id}>
-                      Gen {generation.generation_number} - {generation.pack_name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {!formData.isTownie && (
+                <label className="grid gap-2 text-xs text-ff-muted">
+                  <span className="uppercase tracking-[0.2em] text-ff-subtle">Generation</span>
+                  <select
+                    className="ff-input text-sm"
+                    value={formData.generationId}
+                    onChange={(event) => handleChange('generationId', event.target.value)}
+                  >
+                    {referenceData.generations.map((generation) => (
+                      <option key={generation.generation_id} value={generation.generation_id}>
+                        Gen {generation.generation_number} - {generation.pack_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               <label className="grid gap-2 text-xs text-ff-muted">
                 <span className="uppercase tracking-[0.2em] text-ff-subtle">World</span>
                 <select
@@ -502,17 +508,28 @@ export default function SimForm() {
               <label className="flex items-center gap-2 text-sm text-ff-muted">
                 <input
                   type="checkbox"
-                  checked={formData.currentHousehold}
+                  checked={formData.isTownie}
+                  onChange={(event) => handleChange('isTownie', event.target.checked)}
+                  className="h-4 w-4 accent-ff-lilac"
+                />
+                Townie
+              </label>
+              <label className={`flex items-center gap-2 text-sm text-ff-muted${formData.isTownie ? ' opacity-40' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={formData.isTownie ? false : formData.currentHousehold}
                   onChange={(event) => handleChange('currentHousehold', event.target.checked)}
+                  disabled={formData.isTownie}
                   className="h-4 w-4 accent-ff-mint"
                 />
                 Household member
               </label>
-              <label className="flex items-center gap-2 text-sm text-ff-muted">
+              <label className={`flex items-center gap-2 text-sm text-ff-muted${formData.isTownie ? ' opacity-40' : ''}`}>
                 <input
                   type="checkbox"
-                  checked={formData.isHeir}
+                  checked={formData.isTownie ? false : formData.isHeir}
                   onChange={(event) => handleChange('isHeir', event.target.checked)}
+                  disabled={formData.isTownie}
                   className="h-4 w-4 accent-ff-pink"
                 />
                 Heir
@@ -520,6 +537,7 @@ export default function SimForm() {
             </div>
           </div>
 
+          {!formData.isTownie && (
           <div className="ff-card p-5">
             <h3 className="text-base font-semibold text-ff-text">Personality picks</h3>
             <p className="mt-2 text-xs text-ff-muted">
@@ -601,6 +619,7 @@ export default function SimForm() {
               </p>
             ) : null}
           </div>
+          )}
         </div>
 
         <aside className="grid gap-6">

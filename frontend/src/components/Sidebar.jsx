@@ -1,4 +1,4 @@
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useActiveLegacy } from '../context/useActiveLegacy'
 
 const sideLinks = [
@@ -9,6 +9,7 @@ const sideLinks = [
 
 export default function Sidebar() {
   const { legacies, activeLegacyId, setActiveLegacyId, loading } = useActiveLegacy()
+  const navigate = useNavigate()
 
   return (
     <aside className="ff-card hidden w-full max-w-[220px] flex-col gap-4 p-5 text-sm text-ff-muted md:flex">
@@ -23,7 +24,10 @@ export default function Sidebar() {
         <select
           className="ff-input py-1.5 text-xs"
           value={activeLegacyId}
-          onChange={(event) => setActiveLegacyId(event.target.value)}
+          onChange={(event) => {
+            setActiveLegacyId(event.target.value)
+            navigate('/sims')
+          }}
           disabled={loading || legacies.length === 0}
         >
           {legacies.length === 0 ? <option value="">No legacies yet</option> : null}
