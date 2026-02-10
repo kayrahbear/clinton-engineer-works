@@ -1,0 +1,2508 @@
+{
+  "version": 4,
+  "terraform_version": "1.5.7",
+  "serial": 161,
+  "lineage": "e47e591c-a583-d9a2-a889-a13b12a75bb1",
+  "outputs": {
+    "api_gateway_id": {
+      "value": "aqenhmjz5m",
+      "type": "string"
+    },
+    "api_gateway_url": {
+      "value": "https://aqenhmjz5m.execute-api.us-east-1.amazonaws.com/dev/api/v1",
+      "type": "string"
+    },
+    "db_secret_arn": {
+      "value": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+      "type": "string"
+    },
+    "jwt_secret_arn": {
+      "value": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+      "type": "string"
+    },
+    "lambda_function_arn": {
+      "value": "arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api",
+      "type": "string"
+    },
+    "lambda_function_name": {
+      "value": "sims-legacy-tracker-dev-api",
+      "type": "string"
+    },
+    "lambda_role_arn": {
+      "value": "arn:aws:iam::427566522734:role/sims-legacy-tracker-dev-lambda-role",
+      "type": "string"
+    },
+    "public_subnet_ids": {
+      "value": [
+        "subnet-0cd2d3b8af02b8561",
+        "subnet-07dd42bd32c2f5ef3"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "rds_address": {
+      "value": "sims-legacy-tracker-dev.ckveumuqs38x.us-east-1.rds.amazonaws.com",
+      "type": "string"
+    },
+    "rds_database_name": {
+      "value": "sims_legacy",
+      "type": "string"
+    },
+    "rds_endpoint": {
+      "value": "sims-legacy-tracker-dev.ckveumuqs38x.us-east-1.rds.amazonaws.com:5432",
+      "type": "string"
+    },
+    "rds_port": {
+      "value": 5432,
+      "type": "number"
+    },
+    "s3_deployment_bucket": {
+      "value": "sims-legacy-tracker-dev-lambda-deployments",
+      "type": "string"
+    },
+    "vpc_id": {
+      "value": "vpc-0fd39fa2f95175508",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "archive_file",
+      "name": "lambda_placeholder",
+      "provider": "provider[\"registry.terraform.io/hashicorp/archive\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "exclude_symlink_directories": null,
+            "excludes": null,
+            "id": "e406868e96d13b8c6c5ac9de71f128fe92d70ca6",
+            "output_base64sha256": "pf41dUgxNsr7wcLLFU1uz1ylY0QJxMfosw5hq7CAlbo=",
+            "output_base64sha512": "wLC/LosnPcF5rCMhDIhaY3bb8MnaO6burRNk/Bc+Ovj0iGjrR+IuzLvTJJ6jgxgptDVfJsE4wjxYyR3eWXZshw==",
+            "output_file_mode": null,
+            "output_md5": "3188fd3239e02325f76febd3fe2ad286",
+            "output_path": "./.build/placeholder.zip",
+            "output_sha": "e406868e96d13b8c6c5ac9de71f128fe92d70ca6",
+            "output_sha256": "a5fe3575483136cafbc1c2cb154d6ecf5ca5634409c4c7e8b30e61abb08095ba",
+            "output_sha512": "c0b0bf2e8b273dc179ac23210c885a6376dbf0c9da3ba6eead1364fc173e3af8f48868eb47e22eccbbd3249ea3831829b4355f26c138c23c58c91dde59766c87",
+            "output_size": 247,
+            "source": [
+              {
+                "content": "exports.handler = async (event) =\u003e ({ statusCode: 200, body: JSON.stringify({ message: 'Sims Legacy Tracker API' }) });",
+                "filename": "index.js"
+              }
+            ],
+            "source_content": null,
+            "source_content_filename": null,
+            "source_dir": null,
+            "source_file": null,
+            "type": "zip"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_account",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_version": "4",
+            "cloudwatch_role_arn": "arn:aws:iam::427566522734:role/sims-legacy-tracker-dev-apigw-logs-role",
+            "features": [
+              "UsagePlans"
+            ],
+            "id": "api-gateway-account",
+            "reset_on_delete": null,
+            "throttle_settings": [
+              {
+                "burst_limit": 5000,
+                "rate_limit": 10000
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "dependencies": [
+            "aws_iam_role.api_gateway_cloudwatch"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_deployment",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "canary_settings": [],
+            "created_date": "2026-02-04T01:13:41Z",
+            "description": "",
+            "execution_arn": "arn:aws:execute-api:us-east-1:427566522734:aqenhmjz5m/",
+            "id": "6dehwn",
+            "invoke_url": "https://aqenhmjz5m.execute-api.us-east-1.amazonaws.com/",
+            "rest_api_id": "aqenhmjz5m",
+            "stage_description": null,
+            "stage_name": null,
+            "triggers": {
+              "redeployment": "640583808f7d4b4f5374423687dafc273b2fb53d"
+            },
+            "variables": null
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_integration.health_get",
+            "aws_api_gateway_integration.health_options",
+            "aws_api_gateway_integration.proxy_any",
+            "aws_api_gateway_integration.proxy_options",
+            "aws_api_gateway_integration_response.health_options",
+            "aws_api_gateway_integration_response.proxy_options",
+            "aws_api_gateway_method.health_get",
+            "aws_api_gateway_method.health_options",
+            "aws_api_gateway_method.proxy_any",
+            "aws_api_gateway_method.proxy_options",
+            "aws_api_gateway_method_response.health_options",
+            "aws_api_gateway_method_response.proxy_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main",
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_gateway_response",
+      "name": "cors_4xx",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "aggr-aqenhmjz5m-DEFAULT_4XX",
+            "response_parameters": {
+              "gatewayresponse.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+              "gatewayresponse.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "response_templates": {
+              "application/json": "{\"message\":$context.error.messageString}"
+            },
+            "response_type": "DEFAULT_4XX",
+            "rest_api_id": "aqenhmjz5m",
+            "status_code": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_rest_api.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_gateway_response",
+      "name": "cors_5xx",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "aggr-aqenhmjz5m-DEFAULT_5XX",
+            "response_parameters": {
+              "gatewayresponse.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+              "gatewayresponse.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "response_templates": {
+              "application/json": "{\"message\":$context.error.messageString}"
+            },
+            "response_type": "DEFAULT_5XX",
+            "rest_api_id": "aqenhmjz5m",
+            "status_code": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_rest_api.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration",
+      "name": "health_get",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cache_key_parameters": [],
+            "cache_namespace": "nzueez",
+            "connection_id": "",
+            "connection_type": "INTERNET",
+            "content_handling": "",
+            "credentials": "",
+            "http_method": "GET",
+            "id": "agi-aqenhmjz5m-nzueez-GET",
+            "integration_http_method": "POST",
+            "passthrough_behavior": "WHEN_NO_MATCH",
+            "request_parameters": {},
+            "request_templates": {},
+            "resource_id": "nzueez",
+            "rest_api_id": "aqenhmjz5m",
+            "timeout_milliseconds": 29000,
+            "tls_config": [],
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api/invocations"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.health_get",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main",
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration",
+      "name": "health_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cache_key_parameters": [],
+            "cache_namespace": "nzueez",
+            "connection_id": "",
+            "connection_type": "INTERNET",
+            "content_handling": "",
+            "credentials": "",
+            "http_method": "OPTIONS",
+            "id": "agi-aqenhmjz5m-nzueez-OPTIONS",
+            "integration_http_method": "",
+            "passthrough_behavior": "WHEN_NO_MATCH",
+            "request_parameters": {},
+            "request_templates": {
+              "application/json": "{\"statusCode\": 200}"
+            },
+            "resource_id": "nzueez",
+            "rest_api_id": "aqenhmjz5m",
+            "timeout_milliseconds": 29000,
+            "tls_config": [],
+            "type": "MOCK",
+            "uri": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.health_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration",
+      "name": "proxy_any",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cache_key_parameters": [],
+            "cache_namespace": "i925u8",
+            "connection_id": "",
+            "connection_type": "INTERNET",
+            "content_handling": "",
+            "credentials": "",
+            "http_method": "ANY",
+            "id": "agi-aqenhmjz5m-i925u8-ANY",
+            "integration_http_method": "POST",
+            "passthrough_behavior": "WHEN_NO_MATCH",
+            "request_parameters": {},
+            "request_templates": {},
+            "resource_id": "i925u8",
+            "rest_api_id": "aqenhmjz5m",
+            "timeout_milliseconds": 29000,
+            "tls_config": [],
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api/invocations"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.proxy_any",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main",
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration",
+      "name": "proxy_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cache_key_parameters": [],
+            "cache_namespace": "i925u8",
+            "connection_id": "",
+            "connection_type": "INTERNET",
+            "content_handling": "",
+            "credentials": "",
+            "http_method": "OPTIONS",
+            "id": "agi-aqenhmjz5m-i925u8-OPTIONS",
+            "integration_http_method": "",
+            "passthrough_behavior": "WHEN_NO_MATCH",
+            "request_parameters": {},
+            "request_templates": {
+              "application/json": "{\"statusCode\": 200}"
+            },
+            "resource_id": "i925u8",
+            "rest_api_id": "aqenhmjz5m",
+            "timeout_milliseconds": 29000,
+            "tls_config": [],
+            "type": "MOCK",
+            "uri": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.proxy_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration_response",
+      "name": "health_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "content_handling": "",
+            "http_method": "OPTIONS",
+            "id": "agir-aqenhmjz5m-nzueez-OPTIONS-200",
+            "resource_id": "nzueez",
+            "response_parameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "response_templates": {},
+            "rest_api_id": "aqenhmjz5m",
+            "selection_pattern": "",
+            "status_code": "200"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.health_options",
+            "aws_api_gateway_method_response.health_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_integration_response",
+      "name": "proxy_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "content_handling": "",
+            "http_method": "OPTIONS",
+            "id": "agir-aqenhmjz5m-i925u8-OPTIONS-200",
+            "resource_id": "i925u8",
+            "response_parameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "response_templates": {},
+            "rest_api_id": "aqenhmjz5m",
+            "selection_pattern": "",
+            "status_code": "200"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.proxy_options",
+            "aws_api_gateway_method_response.proxy_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method",
+      "name": "health_get",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_required": false,
+            "authorization": "NONE",
+            "authorization_scopes": [],
+            "authorizer_id": "",
+            "http_method": "GET",
+            "id": "agm-aqenhmjz5m-nzueez-GET",
+            "operation_name": "",
+            "request_models": {},
+            "request_parameters": {},
+            "request_validator_id": "",
+            "resource_id": "nzueez",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method",
+      "name": "health_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_required": false,
+            "authorization": "NONE",
+            "authorization_scopes": [],
+            "authorizer_id": "",
+            "http_method": "OPTIONS",
+            "id": "agm-aqenhmjz5m-nzueez-OPTIONS",
+            "operation_name": "",
+            "request_models": {},
+            "request_parameters": {},
+            "request_validator_id": "",
+            "resource_id": "nzueez",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method",
+      "name": "proxy_any",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_required": false,
+            "authorization": "NONE",
+            "authorization_scopes": [],
+            "authorizer_id": "",
+            "http_method": "ANY",
+            "id": "agm-aqenhmjz5m-i925u8-ANY",
+            "operation_name": "",
+            "request_models": {},
+            "request_parameters": {},
+            "request_validator_id": "",
+            "resource_id": "i925u8",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method",
+      "name": "proxy_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_required": false,
+            "authorization": "NONE",
+            "authorization_scopes": [],
+            "authorizer_id": "",
+            "http_method": "OPTIONS",
+            "id": "agm-aqenhmjz5m-i925u8-OPTIONS",
+            "operation_name": "",
+            "request_models": {},
+            "request_parameters": {},
+            "request_validator_id": "",
+            "resource_id": "i925u8",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method_response",
+      "name": "health_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "http_method": "OPTIONS",
+            "id": "agmr-aqenhmjz5m-nzueez-OPTIONS-200",
+            "resource_id": "nzueez",
+            "response_models": {},
+            "response_parameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "rest_api_id": "aqenhmjz5m",
+            "status_code": "200"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.health_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_method_response",
+      "name": "proxy_options",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "http_method": "OPTIONS",
+            "id": "agmr-aqenhmjz5m-i925u8-OPTIONS-200",
+            "resource_id": "i925u8",
+            "response_models": {},
+            "response_parameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "rest_api_id": "aqenhmjz5m",
+            "status_code": "200"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_method.proxy_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_resource",
+      "name": "api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "ztk7xl",
+            "parent_id": "61j3pafrrf",
+            "path": "/api",
+            "path_part": "api",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_resource",
+      "name": "api_v1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "icpkem",
+            "parent_id": "ztk7xl",
+            "path": "/api/v1",
+            "path_part": "v1",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_resource",
+      "name": "health",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "nzueez",
+            "parent_id": "icpkem",
+            "path": "/api/v1/health",
+            "path_part": "health",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_resource",
+      "name": "proxy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "i925u8",
+            "parent_id": "icpkem",
+            "path": "/api/v1/{proxy+}",
+            "path_part": "{proxy+}",
+            "rest_api_id": "aqenhmjz5m"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_rest_api.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_rest_api",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_key_source": "HEADER",
+            "arn": "arn:aws:apigateway:us-east-1::/restapis/aqenhmjz5m",
+            "binary_media_types": [],
+            "body": null,
+            "created_date": "2026-02-03T19:13:55Z",
+            "description": "Sims Legacy Tracker API - dev",
+            "disable_execute_api_endpoint": false,
+            "endpoint_configuration": [
+              {
+                "ip_address_type": "ipv4",
+                "types": [
+                  "REGIONAL"
+                ],
+                "vpc_endpoint_ids": []
+              }
+            ],
+            "execution_arn": "arn:aws:execute-api:us-east-1:427566522734:aqenhmjz5m",
+            "fail_on_warnings": null,
+            "id": "aqenhmjz5m",
+            "minimum_compression_size": "",
+            "name": "sims-legacy-tracker-dev-api",
+            "parameters": null,
+            "policy": "",
+            "put_rest_api_mode": null,
+            "root_resource_id": "61j3pafrrf",
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_api_gateway_stage",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_log_settings": [
+              {
+                "destination_arn": "arn:aws:logs:us-east-1:427566522734:log-group:/aws/apigateway/sims-legacy-tracker-dev",
+                "format": "{\"caller\":\"$context.identity.caller\",\"httpMethod\":\"$context.httpMethod\",\"ip\":\"$context.identity.sourceIp\",\"protocol\":\"$context.protocol\",\"requestId\":\"$context.requestId\",\"requestTime\":\"$context.requestTime\",\"resourcePath\":\"$context.resourcePath\",\"responseLength\":\"$context.responseLength\",\"status\":\"$context.status\",\"user\":\"$context.identity.user\"}"
+              }
+            ],
+            "arn": "arn:aws:apigateway:us-east-1::/restapis/aqenhmjz5m/stages/dev",
+            "cache_cluster_enabled": false,
+            "cache_cluster_size": "",
+            "canary_settings": [],
+            "client_certificate_id": "",
+            "deployment_id": "6dehwn",
+            "description": "",
+            "documentation_version": "",
+            "execution_arn": "arn:aws:execute-api:us-east-1:427566522734:aqenhmjz5m/dev",
+            "id": "ags-aqenhmjz5m-dev",
+            "invoke_url": "https://aqenhmjz5m.execute-api.us-east-1.amazonaws.com/dev",
+            "rest_api_id": "aqenhmjz5m",
+            "stage_name": "dev",
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            },
+            "variables": {},
+            "web_acl_arn": "",
+            "xray_tracing_enabled": false
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_account.main",
+            "aws_api_gateway_deployment.main",
+            "aws_api_gateway_integration.health_get",
+            "aws_api_gateway_integration.health_options",
+            "aws_api_gateway_integration.proxy_any",
+            "aws_api_gateway_integration.proxy_options",
+            "aws_api_gateway_integration_response.health_options",
+            "aws_api_gateway_integration_response.proxy_options",
+            "aws_api_gateway_method.health_get",
+            "aws_api_gateway_method.health_options",
+            "aws_api_gateway_method.proxy_any",
+            "aws_api_gateway_method.proxy_options",
+            "aws_api_gateway_method_response.health_options",
+            "aws_api_gateway_method_response.proxy_options",
+            "aws_api_gateway_resource.api",
+            "aws_api_gateway_resource.api_v1",
+            "aws_api_gateway_resource.health",
+            "aws_api_gateway_resource.proxy",
+            "aws_api_gateway_rest_api.main",
+            "aws_cloudwatch_log_group.api_gateway",
+            "aws_iam_role.api_gateway_cloudwatch",
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "api_gateway",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:logs:us-east-1:427566522734:log-group:/aws/apigateway/sims-legacy-tracker-dev",
+            "id": "/aws/apigateway/sims-legacy-tracker-dev",
+            "kms_key_id": "",
+            "log_group_class": "STANDARD",
+            "name": "/aws/apigateway/sims-legacy-tracker-dev",
+            "name_prefix": "",
+            "retention_in_days": 14,
+            "skip_destroy": false,
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "lambda_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:logs:us-east-1:427566522734:log-group:/aws/lambda/sims-legacy-tracker-dev-api",
+            "id": "/aws/lambda/sims-legacy-tracker-dev-api",
+            "kms_key_id": "",
+            "log_group_class": "STANDARD",
+            "name": "/aws/lambda/sims-legacy-tracker-dev-api",
+            "name_prefix": "",
+            "retention_in_days": 14,
+            "skip_destroy": false,
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "address": "sims-legacy-tracker-dev.ckveumuqs38x.us-east-1.rds.amazonaws.com",
+            "allocated_storage": 20,
+            "allow_major_version_upgrade": null,
+            "apply_immediately": false,
+            "arn": "arn:aws:rds:us-east-1:427566522734:db:sims-legacy-tracker-dev",
+            "auto_minor_version_upgrade": true,
+            "availability_zone": "us-east-1a",
+            "backup_retention_period": 1,
+            "backup_target": "region",
+            "backup_window": "03:00-04:00",
+            "blue_green_update": [],
+            "ca_cert_identifier": "rds-ca-rsa2048-g1",
+            "character_set_name": "",
+            "copy_tags_to_snapshot": false,
+            "custom_iam_instance_profile": "",
+            "customer_owned_ip_enabled": false,
+            "database_insights_mode": "standard",
+            "db_name": "sims_legacy",
+            "db_subnet_group_name": "sims-legacy-tracker-dev-db-subnet",
+            "dedicated_log_volume": false,
+            "delete_automated_backups": true,
+            "deletion_protection": false,
+            "domain": "",
+            "domain_auth_secret_arn": "",
+            "domain_dns_ips": [],
+            "domain_fqdn": "",
+            "domain_iam_role_name": "",
+            "domain_ou": "",
+            "enabled_cloudwatch_logs_exports": [],
+            "endpoint": "sims-legacy-tracker-dev.ckveumuqs38x.us-east-1.rds.amazonaws.com:5432",
+            "engine": "postgres",
+            "engine_lifecycle_support": "open-source-rds-extended-support",
+            "engine_version": "15.15",
+            "engine_version_actual": "15.15",
+            "final_snapshot_identifier": null,
+            "hosted_zone_id": "Z2R2ITUGPM61AM",
+            "iam_database_authentication_enabled": false,
+            "id": "db-W47P6WQTJF2WMH27G6IAFB2QTI",
+            "identifier": "sims-legacy-tracker-dev",
+            "identifier_prefix": "",
+            "instance_class": "db.t3.micro",
+            "iops": 3000,
+            "kms_key_id": "arn:aws:kms:us-east-1:427566522734:key/e36f7d54-00a5-4b98-9caf-60a19884de9c",
+            "latest_restorable_time": "2026-02-10T23:09:38Z",
+            "license_model": "postgresql-license",
+            "listener_endpoint": [],
+            "maintenance_window": "mon:04:00-mon:05:00",
+            "manage_master_user_password": null,
+            "master_user_secret": [],
+            "master_user_secret_kms_key_id": null,
+            "max_allocated_storage": 50,
+            "monitoring_interval": 0,
+            "monitoring_role_arn": "",
+            "multi_az": false,
+            "nchar_character_set_name": "",
+            "network_type": "IPV4",
+            "option_group_name": "default:postgres-15",
+            "parameter_group_name": "sims-legacy-tracker-dev-pg15-20260203191354282400000002",
+            "password": "-ysaVkNSDtShhL37E?y+1oA#4kaQ9jC:",
+            "password_wo": null,
+            "password_wo_version": null,
+            "performance_insights_enabled": false,
+            "performance_insights_kms_key_id": "",
+            "performance_insights_retention_period": 0,
+            "port": 5432,
+            "publicly_accessible": false,
+            "replica_mode": "",
+            "replicas": [],
+            "replicate_source_db": "",
+            "resource_id": "db-W47P6WQTJF2WMH27G6IAFB2QTI",
+            "restore_to_point_in_time": [],
+            "s3_import": [],
+            "skip_final_snapshot": true,
+            "snapshot_identifier": null,
+            "status": "available",
+            "storage_encrypted": true,
+            "storage_throughput": 125,
+            "storage_type": "gp3",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-db"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-db",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "timezone": "",
+            "upgrade_storage_config": null,
+            "username": "sims_admin",
+            "vpc_security_group_ids": [
+              "sg-00980999f66cd7205"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "username"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NDgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9"
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_db_parameter_group",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:rds:us-east-1:427566522734:pg:sims-legacy-tracker-dev-pg15-20260203191354282400000002",
+            "description": "Parameter group for sims-legacy-tracker dev",
+            "family": "postgres15",
+            "id": "sims-legacy-tracker-dev-pg15-20260203191354282400000002",
+            "name": "sims-legacy-tracker-dev-pg15-20260203191354282400000002",
+            "name_prefix": "sims-legacy-tracker-dev-pg15-",
+            "parameter": [
+              {
+                "apply_method": "immediate",
+                "name": "log_min_duration_statement",
+                "value": "1000"
+              },
+              {
+                "apply_method": "immediate",
+                "name": "log_statement",
+                "value": "all"
+              },
+              {
+                "apply_method": "immediate",
+                "name": "rds.force_ssl",
+                "value": "1"
+              }
+            ],
+            "skip_destroy": false,
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_db_subnet_group",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:rds:us-east-1:427566522734:subgrp:sims-legacy-tracker-dev-db-subnet",
+            "description": "Managed by Terraform",
+            "id": "sims-legacy-tracker-dev-db-subnet",
+            "name": "sims-legacy-tracker-dev-db-subnet",
+            "name_prefix": "",
+            "subnet_ids": [
+              "subnet-00cfc63204dd30501",
+              "subnet-02cc4516664a13dd5"
+            ],
+            "supported_network_types": [
+              "IPV4"
+            ],
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-db-subnet-group"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-db-subnet-group",
+              "Project": "sims-legacy-tracker"
+            },
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_subnet.database",
+            "aws_subnet.public",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "api_gateway_cloudwatch",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::427566522734:role/sims-legacy-tracker-dev-apigw-logs-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-02-03T19:35:23Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "sims-legacy-tracker-dev-apigw-logs-role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+            ],
+            "max_session_duration": 3600,
+            "name": "sims-legacy-tracker-dev-apigw-logs-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            },
+            "unique_id": "AROAWHDHTMFXA4L2XM6VZ"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "lambda_execution",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::427566522734:role/sims-legacy-tracker-dev-lambda-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-02-03T19:13:55Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "sims-legacy-tracker-dev-lambda-role",
+            "inline_policy": [
+              {
+                "name": "sims-legacy-tracker-dev-lambda-s3",
+                "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::sims-legacy-tracker-dev-lambda-deployments/*\"]}]}"
+              },
+              {
+                "name": "sims-legacy-tracker-dev-lambda-secrets",
+                "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"secretsmanager:GetSecretValue\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo\",\"arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV\"]}]}"
+              }
+            ],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+            ],
+            "max_session_duration": 3600,
+            "name": "sims-legacy-tracker-dev-lambda-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            },
+            "unique_id": "AROAWHDHTMFXAW6J6T2Q5"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "lambda_s3",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "sims-legacy-tracker-dev-lambda-role:sims-legacy-tracker-dev-lambda-s3",
+            "name": "sims-legacy-tracker-dev-lambda-s3",
+            "name_prefix": "",
+            "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::sims-legacy-tracker-dev-lambda-deployments/*\"]}]}",
+            "role": "sims-legacy-tracker-dev-lambda-role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.lambda_execution",
+            "aws_s3_bucket.lambda_deployments"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "lambda_secrets",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "sims-legacy-tracker-dev-lambda-role:sims-legacy-tracker-dev-lambda-secrets",
+            "name": "sims-legacy-tracker-dev-lambda-secrets",
+            "name_prefix": "",
+            "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"secretsmanager:GetSecretValue\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo\",\"arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV\"]}]}",
+            "role": "sims-legacy-tracker-dev-lambda-role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.lambda_execution",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "api_gateway_cloudwatch",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "sims-legacy-tracker-dev-apigw-logs-role-20260203193522193800000001",
+            "policy_arn": "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+            "role": "sims-legacy-tracker-dev-apigw-logs-role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.api_gateway_cloudwatch"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "lambda_basic",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "sims-legacy-tracker-dev-lambda-role-20260203191354926900000003",
+            "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+            "role": "sims-legacy-tracker-dev-lambda-role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.lambda_execution"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:internet-gateway/igw-0440c3d271bbe802d",
+            "id": "igw-0440c3d271bbe802d",
+            "owner_id": "427566522734",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-igw"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-igw",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lambda_function",
+      "name": "api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "architectures": [
+              "x86_64"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api",
+            "code_sha256": "nBQ87+0TsQlYmxWoOOmiIcg3ByQ/ymXW/wtZYJ9J+gY=",
+            "code_signing_config_arn": "",
+            "dead_letter_config": [],
+            "description": "Sims Legacy Tracker API handler",
+            "environment": [
+              {
+                "variables": {
+                  "CORS_ALLOWED_ORIGIN": "*",
+                  "DB_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+                  "JWT_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+                  "NODE_ENV": "dev"
+                }
+              }
+            ],
+            "ephemeral_storage": [
+              {
+                "size": 512
+              }
+            ],
+            "file_system_config": [],
+            "filename": "",
+            "function_name": "sims-legacy-tracker-dev-api",
+            "handler": "index.handler",
+            "id": "sims-legacy-tracker-dev-api",
+            "image_config": [],
+            "image_uri": "",
+            "invoke_arn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api/invocations",
+            "kms_key_arn": "",
+            "last_modified": "2026-02-10T23:11:55.000+0000",
+            "layers": [],
+            "logging_config": [
+              {
+                "application_log_level": "",
+                "log_format": "Text",
+                "log_group": "/aws/lambda/sims-legacy-tracker-dev-api",
+                "system_log_level": ""
+              }
+            ],
+            "memory_size": 256,
+            "package_type": "Zip",
+            "publish": false,
+            "qualified_arn": "arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api:$LATEST",
+            "qualified_invoke_arn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:427566522734:function:sims-legacy-tracker-dev-api:$LATEST/invocations",
+            "replace_security_groups_on_destroy": null,
+            "replacement_security_group_ids": null,
+            "reserved_concurrent_executions": -1,
+            "role": "arn:aws:iam::427566522734:role/sims-legacy-tracker-dev-lambda-role",
+            "runtime": "nodejs20.x",
+            "s3_bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "s3_key": "lambda-placeholder.zip",
+            "s3_object_version": null,
+            "signing_job_arn": "",
+            "signing_profile_version_arn": "",
+            "skip_destroy": false,
+            "snap_start": [],
+            "source_code_hash": "pf41dUgxNsr7wcLLFU1uz1ylY0QJxMfosw5hq7CAlbo=",
+            "source_code_size": 3354274,
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeout": 30,
+            "timeouts": null,
+            "tracing_config": [
+              {
+                "mode": "PassThrough"
+              }
+            ],
+            "version": "$LATEST",
+            "vpc_config": []
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lambda_permission",
+      "name": "api_gateway",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "action": "lambda:InvokeFunction",
+            "event_source_token": null,
+            "function_name": "sims-legacy-tracker-dev-api",
+            "function_url_auth_type": null,
+            "id": "AllowAPIGatewayInvoke",
+            "principal": "apigateway.amazonaws.com",
+            "principal_org_id": null,
+            "qualifier": "",
+            "source_account": null,
+            "source_arn": "arn:aws:execute-api:us-east-1:427566522734:aqenhmjz5m/*/*",
+            "statement_id": "AllowAPIGatewayInvoke",
+            "statement_id_prefix": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_api_gateway_rest_api.main",
+            "aws_iam_role.lambda_execution",
+            "aws_iam_role_policy_attachment.lambda_basic",
+            "aws_lambda_function.api",
+            "aws_s3_bucket.lambda_deployments",
+            "aws_s3_object.lambda_placeholder",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_secretsmanager_secret.jwt_secret",
+            "data.archive_file.lambda_placeholder"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:route-table/rtb-042faa4ead8ad17f4",
+            "id": "rtb-042faa4ead8ad17f4",
+            "owner_id": "427566522734",
+            "propagating_vgws": [],
+            "route": [
+              {
+                "carrier_gateway_id": "",
+                "cidr_block": "0.0.0.0/0",
+                "core_network_arn": "",
+                "destination_prefix_list_id": "",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-0440c3d271bbe802d",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              }
+            ],
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-public-rt"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-public-rt",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.main",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-04c155bc7a77afb0c",
+            "route_table_id": "rtb-042faa4ead8ad17f4",
+            "subnet_id": "subnet-0cd2d3b8af02b8561",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.main",
+            "aws_route_table.public",
+            "aws_subnet.public",
+            "aws_vpc.main"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0a0f5a00b69354b9e",
+            "route_table_id": "rtb-042faa4ead8ad17f4",
+            "subnet_id": "subnet-07dd42bd32c2f5ef3",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.main",
+            "aws_route_table.public",
+            "aws_subnet.public",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "lambda_deployments",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::sims-legacy-tracker-dev-lambda-deployments",
+            "bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "bucket_domain_name": "sims-legacy-tracker-dev-lambda-deployments.s3.amazonaws.com",
+            "bucket_prefix": "",
+            "bucket_regional_domain_name": "sims-legacy-tracker-dev-lambda-deployments.s3.us-east-1.amazonaws.com",
+            "cors_rule": [],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "f232c620d308d26c40579f672d18c8d67baf57d42cea51c65dbcce14f7adb42a",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z3AQBSTGFYJSTF",
+            "id": "sims-legacy-tracker-dev-lambda-deployments",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "",
+            "region": "us-east-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-lambda-deployments"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-lambda-deployments",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": true,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "lambda_deployments",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "block_public_acls": true,
+            "block_public_policy": true,
+            "bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "id": "sims-legacy-tracker-dev-lambda-deployments",
+            "ignore_public_acls": true,
+            "restrict_public_buckets": true
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.lambda_deployments"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_server_side_encryption_configuration",
+      "name": "lambda_deployments",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "expected_bucket_owner": "",
+            "id": "sims-legacy-tracker-dev-lambda-deployments",
+            "rule": [
+              {
+                "apply_server_side_encryption_by_default": [
+                  {
+                    "kms_master_key_id": "",
+                    "sse_algorithm": "AES256"
+                  }
+                ],
+                "bucket_key_enabled": false
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.lambda_deployments"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_versioning",
+      "name": "lambda_deployments",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "expected_bucket_owner": "",
+            "id": "sims-legacy-tracker-dev-lambda-deployments",
+            "mfa": null,
+            "versioning_configuration": [
+              {
+                "mfa_delete": "",
+                "status": "Enabled"
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.lambda_deployments"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_object",
+      "name": "lambda_placeholder",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acl": null,
+            "arn": "arn:aws:s3:::sims-legacy-tracker-dev-lambda-deployments/lambda-placeholder.zip",
+            "bucket": "sims-legacy-tracker-dev-lambda-deployments",
+            "bucket_key_enabled": false,
+            "cache_control": "",
+            "checksum_algorithm": null,
+            "checksum_crc32": "",
+            "checksum_crc32c": "",
+            "checksum_crc64nvme": "",
+            "checksum_sha1": "",
+            "checksum_sha256": "",
+            "content": null,
+            "content_base64": null,
+            "content_disposition": "",
+            "content_encoding": "",
+            "content_language": "",
+            "content_type": "application/octet-stream",
+            "etag": "3188fd3239e02325f76febd3fe2ad286",
+            "force_destroy": false,
+            "id": "lambda-placeholder.zip",
+            "key": "lambda-placeholder.zip",
+            "kms_key_id": null,
+            "metadata": {},
+            "object_lock_legal_hold_status": "",
+            "object_lock_mode": "",
+            "object_lock_retain_until_date": "",
+            "override_provider": [],
+            "server_side_encryption": "AES256",
+            "source": "./.build/placeholder.zip",
+            "source_hash": null,
+            "storage_class": "STANDARD",
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            },
+            "version_id": "Ps4Zf.J8ZbhmpPmlR1V1cMkO55uj6lEI",
+            "website_redirect": ""
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.lambda_deployments",
+            "data.archive_file.lambda_placeholder"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_secretsmanager_secret",
+      "name": "db_credentials",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+            "description": "Database credentials for sims-legacy-tracker dev",
+            "force_overwrite_replica_secret": false,
+            "id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+            "kms_key_id": "",
+            "name": "sims-legacy-tracker/dev/db-credentials",
+            "name_prefix": "",
+            "policy": "",
+            "recovery_window_in_days": 0,
+            "replica": [],
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_secretsmanager_secret",
+      "name": "jwt_secret",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+            "description": "JWT signing secret for sims-legacy-tracker dev",
+            "force_overwrite_replica_secret": false,
+            "id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+            "kms_key_id": "",
+            "name": "sims-legacy-tracker/dev/jwt-secret",
+            "name_prefix": "",
+            "policy": "",
+            "recovery_window_in_days": 0,
+            "replica": [],
+            "tags": {},
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_secretsmanager_secret_version",
+      "name": "db_credentials",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+            "has_secret_string_wo": null,
+            "id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo|terraform-20260203193005025300000001",
+            "secret_binary": "",
+            "secret_id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/db-credentials-OSrMFo",
+            "secret_string": "{\"dbname\":\"sims_legacy\",\"engine\":\"postgres\",\"host\":\"sims-legacy-tracker-dev.ckveumuqs38x.us-east-1.rds.amazonaws.com\",\"password\":\"-ysaVkNSDtShhL37E?y+1oA#4kaQ9jC:\",\"port\":5432,\"username\":\"sims_admin\"}",
+            "secret_string_wo": null,
+            "secret_string_wo_version": null,
+            "version_id": "terraform-20260203193005025300000001",
+            "version_stages": [
+              "AWSCURRENT"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "secret_string"
+              }
+            ]
+          ],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_db_instance.main",
+            "aws_db_parameter_group.main",
+            "aws_db_subnet_group.main",
+            "aws_secretsmanager_secret.db_credentials",
+            "aws_security_group.rds",
+            "aws_subnet.database",
+            "aws_vpc.main",
+            "random_password.db_password"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_secretsmanager_secret_version",
+      "name": "jwt_secret",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+            "has_secret_string_wo": null,
+            "id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV|terraform-20260207215239201000000002",
+            "secret_binary": "",
+            "secret_id": "arn:aws:secretsmanager:us-east-1:427566522734:secret:sims-legacy-tracker/dev/jwt-secret-RlGeSV",
+            "secret_string": "m0nSzJD5P3u62GNgw5anjrHTxOCP8zWXZCELNeSg5rgy8tI3hsprfO3kx4rMySbO",
+            "secret_string_wo": null,
+            "secret_string_wo_version": null,
+            "version_id": "terraform-20260207215239201000000002",
+            "version_stages": [
+              "AWSCURRENT"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "secret_string"
+              }
+            ]
+          ],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_secretsmanager_secret.jwt_secret",
+            "random_password.jwt_secret"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "lambda",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:security-group/sg-0e378a72d297582a4",
+            "description": "Security group for Lambda functions",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow all outbound (internet via NAT, RDS, etc.)",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0e378a72d297582a4",
+            "ingress": [],
+            "name": "sims-legacy-tracker-dev-lambda-20260203191407675200000005",
+            "name_prefix": "sims-legacy-tracker-dev-lambda-",
+            "owner_id": "427566522734",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-lambda-sg"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-lambda-sg",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "ops",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:security-group/sg-094903efca2912f19",
+            "description": "Security group for ops EC2 instance",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow all outbound",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-094903efca2912f19",
+            "ingress": [],
+            "name": "sims-legacy-tracker-dev-ops-20260203224140179200000001",
+            "name_prefix": "sims-legacy-tracker-dev-ops-",
+            "owner_id": "427566522734",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-ops-sg"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-ops-sg",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "rds",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:security-group/sg-00980999f66cd7205",
+            "description": "Security group for RDS PostgreSQL instance",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow all outbound",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-00980999f66cd7205",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "PostgreSQL access",
+                "from_port": 5432,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 5432
+              }
+            ],
+            "name": "sims-legacy-tracker-dev-rds-20260203191409591200000007",
+            "name_prefix": "sims-legacy-tracker-dev-rds-",
+            "owner_id": "427566522734",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-rds-sg"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-rds-sg",
+              "Project": "sims-legacy-tracker"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "database",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:subnet/subnet-02cc4516664a13dd5",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1a",
+            "availability_zone_id": "use1-az2",
+            "cidr_block": "10.0.10.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-02cc4516664a13dd5",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "427566522734",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-private-1",
+              "Tier": "private"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-private-1",
+              "Project": "sims-legacy-tracker",
+              "Tier": "private"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "private",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 1,
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:subnet/subnet-00cfc63204dd30501",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1b",
+            "availability_zone_id": "use1-az4",
+            "cidr_block": "10.0.11.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-00cfc63204dd30501",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "427566522734",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-private-2",
+              "Tier": "private"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-private-2",
+              "Project": "sims-legacy-tracker",
+              "Tier": "private"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:subnet/subnet-0cd2d3b8af02b8561",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1a",
+            "availability_zone_id": "use1-az2",
+            "cidr_block": "10.0.1.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0cd2d3b8af02b8561",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "427566522734",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-public-1",
+              "Tier": "public"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-public-1",
+              "Project": "sims-legacy-tracker",
+              "Tier": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        },
+        {
+          "index_key": 1,
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:subnet/subnet-07dd42bd32c2f5ef3",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1b",
+            "availability_zone_id": "use1-az4",
+            "cidr_block": "10.0.2.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-07dd42bd32c2f5ef3",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "427566522734",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-public-2",
+              "Tier": "public"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-public-2",
+              "Project": "sims-legacy-tracker",
+              "Tier": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fd39fa2f95175508"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:427566522734:vpc/vpc-0fd39fa2f95175508",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "10.0.0.0/16",
+            "default_network_acl_id": "acl-0b817fabe1f15ff7d",
+            "default_route_table_id": "rtb-0b747af3fd5a56a21",
+            "default_security_group_id": "sg-072307673fe159fe4",
+            "dhcp_options_id": "dopt-05abe8223c83d327e",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-0fd39fa2f95175508",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-0b747af3fd5a56a21",
+            "owner_id": "427566522734",
+            "tags": {
+              "Name": "sims-legacy-tracker-dev-vpc"
+            },
+            "tags_all": {
+              "Environment": "dev",
+              "ManagedBy": "terraform",
+              "Name": "sims-legacy-tracker-dev-vpc",
+              "Project": "sims-legacy-tracker"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_password",
+      "name": "db_password",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 3,
+          "attributes": {
+            "bcrypt_hash": "$2a$10$u8P..1OkkgEnefJBqYPcl.8uyGfukhjZEXWzuJfmypWfT/GIMjE5K",
+            "id": "none",
+            "keepers": null,
+            "length": 32,
+            "lower": true,
+            "min_lower": 0,
+            "min_numeric": 0,
+            "min_special": 0,
+            "min_upper": 0,
+            "number": true,
+            "numeric": true,
+            "override_special": "!#$%\u0026*()-_=+[]{}\u003c\u003e:?",
+            "result": "-ysaVkNSDtShhL37E?y+1oA#4kaQ9jC:",
+            "special": true,
+            "upper": true
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "random_password",
+      "name": "jwt_secret",
+      "provider": "provider[\"registry.terraform.io/hashicorp/random\"]",
+      "instances": [
+        {
+          "schema_version": 3,
+          "attributes": {
+            "bcrypt_hash": "$2a$10$L2qFJZRVP.1B35KPscMidOxIKQ7EQ9kOedxRUF6imoVFaWVT8xZqm",
+            "id": "none",
+            "keepers": null,
+            "length": 64,
+            "lower": true,
+            "min_lower": 0,
+            "min_numeric": 0,
+            "min_special": 0,
+            "min_upper": 0,
+            "number": true,
+            "numeric": true,
+            "override_special": null,
+            "result": "m0nSzJD5P3u62GNgw5anjrHTxOCP8zWXZCELNeSg5rgy8tI3hsprfO3kx4rMySbO",
+            "special": false,
+            "upper": true
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

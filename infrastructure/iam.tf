@@ -46,40 +46,6 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# VPC access for Lambda (to reach RDS in private subnet)
-resource "aws_iam_role_policy_attachment" "lambda_vpc" {
-  role       = aws_iam_role.lambda_execution.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-# IAM role for ops EC2 instance (SSM managed)
-resource "aws_iam_role" "ops" {
-  name = "${var.project_name}-${var.environment}-ops-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ops_ssm" {
-  role       = aws_iam_role.ops.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "ops" {
-  name = "${var.project_name}-${var.environment}-ops-profile"
-  role = aws_iam_role.ops.name
-}
-
 # Secrets Manager read access for Lambda
 resource "aws_iam_role_policy" "lambda_secrets" {
   name = "${var.project_name}-${var.environment}-lambda-secrets"
