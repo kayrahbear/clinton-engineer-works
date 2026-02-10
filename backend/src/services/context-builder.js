@@ -1,8 +1,118 @@
 const { getPool } = require("../db/pool");
+const fs = require("fs");
+const path = require("path");
 
 const SYSTEM_PROMPT =
   "You are the Sims Legacy Assistant. Be concise and helpful. " +
   "Only use the provided legacy context. If data is missing, ask a clarifying question.";
+
+let packLegacyRulesCache = null;
+
+const loadPackLegacyRules = () => {
+  if (packLegacyRulesCache) {
+    return packLegacyRulesCache;
+  }
+
+  const dataPath = path.resolve(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "database",
+    "seed-data",
+    "pack_legacy_generations.json"
+  );
+
+  try {
+    const raw = fs.readFileSync(dataPath, "utf8");
+    packLegacyRulesCache = JSON.parse(raw);
+  } catch (error) {
+    console.warn("Failed to load Pack Legacy Challenge rules:", error.message);
+    packLegacyRulesCache = [];
+  }
+
+  return packLegacyRulesCache;
+};
+
+const getPackLegacyRulesForGeneration = (generationNumber) => {
+  if (!generationNumber) return null;
+  const rules = loadPackLegacyRules();
+  return rules.find((entry) => entry.generation_number === generationNumber) || null;
+};
+
+const summarizeGoals = (goals = []) => {
+  if (goals.length === 0) {
+    return "No goals recorded for this generation.";
+  }
+  const required = goals.filter((goal) => !goal.is_optional);
+  const optional = goals.filter((goal) => goal.is_optional);
+  const completed = goals.filter((goal) => goal.is_completed).length;
+  const total = goals.length;
+  const lines = [
+    `Goals: ${completed}/${total} completed (${required.length} required, ${optional.length} optional).`,
+  ];
+  for (const goal of goals.slice(0, 8)) {
+    lines.push(
+      `- ${goal.is_completed ? "[x]" : "[ ]"} ${goal.goal_text}${
+        goal.is_optional ? " (optional)" : ""
+      }`
+    );
+  }
+  if (goals.length > 8) {
+    lines.push(`- ...and ${goals.length - 8} more goals.`);
+  }
+  return lines.join("\n");
+};
+
+const summarizeRequirements = (traits = [], careers = []) => {
+  const lines = [];
+  if (traits.length > 0) {
+    lines.push(`Required traits: ${traits.map((t) => t.trait_name).join(", ")}.`);
+  }
+  if (careers.length > 0) {
+    const careerLines = careers.map((career) => {
+      if (career.branch_name) {
+        return `${career.career_name} (${career.branch_name})`;
+      }
+      return career.career_name;
+    });
+    lines.push(`Required careers: ${careerLines.join(", ")}.`);
+  }
+  return lines.join("\n");
+};
+
+const summarizeMilestones = (summary, recent) => {
+  if (!summary || summary.total === 0) {
+    return "No milestones recorded yet.";
+  }
+
+  const lines = [`Milestones achieved: ${summary.total}.`];
+  if (summary.byCategory.length > 0) {
+    const categoryLine = summary.byCategory
+      .map((row) => `${row.category}: ${row.count}`)
+      .join(", ");
+    lines.push(`By category: ${categoryLine}.`);
+  }
+  if (recent.length > 0) {
+    lines.push("Recent milestones:");
+    for (const milestone of recent) {
+      let date = "";
+      if (milestone.achieved_date) {
+        const dateValue =
+          milestone.achieved_date instanceof Date
+            ? milestone.achieved_date
+            : new Date(milestone.achieved_date);
+        if (!Number.isNaN(dateValue.getTime())) {
+          date = ` (${dateValue.toISOString().slice(0, 10)})`;
+        }
+      }
+      lines.push(
+        `- ${milestone.sim_name}: ${milestone.milestone_name} [${milestone.category}]${date}`
+      );
+    }
+  }
+  return lines.join("\n");
+};
 
 const buildContextText = (context) => {
   if (!context) {
@@ -27,6 +137,18 @@ const buildContextText = (context) => {
     if (active.backstory) {
       lines.push(`Backstory: ${active.backstory}`);
     }
+
+    if (active.requirementsSummary) {
+      lines.push(active.requirementsSummary);
+    }
+
+    if (active.goalsSummary) {
+      lines.push(active.goalsSummary);
+    }
+
+    if (active.packLegacySummary) {
+      lines.push(active.packLegacySummary);
+    }
   }
 
   const household = context.household || [];
@@ -37,6 +159,10 @@ const buildContextText = (context) => {
     for (const sim of household) {
       lines.push(`- ${sim.name} (${sim.life_stage}, ${sim.occult_type})`);
     }
+  }
+
+  if (context.milestonesSummary) {
+    lines.push(context.milestonesSummary);
   }
 
   return lines.join("\n");
@@ -69,6 +195,41 @@ const buildLegacyContext = async (legacyId, userId) => {
 
   const activeGeneration = activeGenResult.rows[0] || null;
 
+  let goals = [];
+  let requiredTraits = [];
+  let requiredCareers = [];
+
+  if (activeGeneration) {
+    const goalsResult = await pool.query(
+      `SELECT goal_text, is_optional, is_completed
+       FROM generation_goals
+       WHERE generation_id = $1
+       ORDER BY is_optional ASC, goal_text ASC`,
+      [activeGeneration.generation_id]
+    );
+    goals = goalsResult.rows;
+
+    const traitsResult = await pool.query(
+      `SELECT t.trait_name, grt.trait_order
+       FROM generation_required_traits grt
+       JOIN traits t ON grt.trait_id = t.trait_id
+       WHERE grt.generation_id = $1
+       ORDER BY grt.trait_order ASC`,
+      [activeGeneration.generation_id]
+    );
+    requiredTraits = traitsResult.rows;
+
+    const careersResult = await pool.query(
+      `SELECT c.career_name, cb.branch_name
+       FROM generation_required_careers grc
+       JOIN careers c ON grc.career_id = c.career_id
+       LEFT JOIN career_branches cb ON grc.branch_id = cb.branch_id
+       WHERE grc.generation_id = $1`,
+      [activeGeneration.generation_id]
+    );
+    requiredCareers = careersResult.rows;
+  }
+
   const householdResult = await pool.query(
     `SELECT sim_id, name, life_stage, occult_type
      FROM sims
@@ -76,6 +237,54 @@ const buildLegacyContext = async (legacyId, userId) => {
      ORDER BY name`,
     [legacyId]
   );
+
+  const milestoneSummaryResult = await pool.query(
+    `SELECT m.category, COUNT(*)::int AS count
+     FROM sim_milestones sm
+     JOIN sims s ON sm.sim_id = s.sim_id
+     JOIN milestones m ON sm.milestone_id = m.milestone_id
+     WHERE s.legacy_id = $1
+     GROUP BY m.category
+     ORDER BY count DESC`,
+    [legacyId]
+  );
+
+  const milestoneTotal = milestoneSummaryResult.rows.reduce(
+    (sum, row) => sum + row.count,
+    0
+  );
+
+  const recentMilestonesResult = await pool.query(
+    `SELECT s.name AS sim_name,
+            m.milestone_name,
+            m.category,
+            sm.achieved_date
+     FROM sim_milestones sm
+     JOIN sims s ON sm.sim_id = s.sim_id
+     JOIN milestones m ON sm.milestone_id = m.milestone_id
+     WHERE s.legacy_id = $1
+     ORDER BY sm.achieved_date DESC NULLS LAST, sm.created_at DESC
+     LIMIT 8`,
+    [legacyId]
+  );
+
+  let packLegacySummary = "";
+  if (activeGeneration?.generation_number) {
+    const packRules = getPackLegacyRulesForGeneration(
+      activeGeneration.generation_number
+    );
+    if (packRules) {
+      const goalsCount =
+        (packRules.required_goals?.length || 0) +
+        (packRules.optional_goals?.length || 0);
+      packLegacySummary =
+        `Pack Legacy rules (gen ${packRules.generation_number} - ${packRules.pack_name}): ` +
+        `${goalsCount} goals, ` +
+        `${packRules.required_traits?.length || 0} required traits` +
+        (packRules.required_career ? `, career ${packRules.required_career}` : "") +
+        ".";
+    }
+  }
 
   const context = {
     legacy: {
@@ -85,12 +294,34 @@ const buildLegacyContext = async (legacyId, userId) => {
     },
     active_generation: activeGeneration,
     household: householdResult.rows,
+    milestones_summary: {
+      total: milestoneTotal,
+      byCategory: milestoneSummaryResult.rows,
+      recent: recentMilestonesResult.rows,
+    },
   };
 
   return {
     systemPrompt: SYSTEM_PROMPT,
     context,
-    contextText: buildContextText(context),
+    contextText: buildContextText({
+      ...context,
+      active_generation: activeGeneration
+        ? {
+            ...activeGeneration,
+            goalsSummary: summarizeGoals(goals),
+            requirementsSummary: summarizeRequirements(requiredTraits, requiredCareers),
+            packLegacySummary,
+          }
+        : null,
+      milestonesSummary: summarizeMilestones(
+        {
+          total: milestoneTotal,
+          byCategory: milestoneSummaryResult.rows,
+        },
+        recentMilestonesResult.rows
+      ),
+    }),
   };
 };
 

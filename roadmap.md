@@ -404,19 +404,19 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
   - Choose model: Claude 3.5 Sonnet (via Bedrock) for best balance of quality/cost
   - Implement streaming responses for better UX
 - [ ]  AI Agent endpoints:  
-  - `POST /api/agent/chat` - Send message to agent (supports streaming)
-  - `GET /api/agent/conversation/:legacyId` - Get conversation history
-  - `POST /api/agent/generate-story` - Generate story for sim/generation
-  - `POST /api/agent/suggest-goals` - Get goal suggestions
+  - [x]  `POST /api/agent/chat` - Send message to agent (supports streaming)
+  - [x]  `GET /api/agent/conversation/:legacyId` - Get conversation history
+  - [ ]  `POST /api/agent/generate-story` - Generate story for sim/generation
+  - [ ]  `POST /api/agent/suggest-goals` - Get goal suggestions
 - [ ]  Context building for agent:  
-  - Package legacy data (sims, generations, goals, milestones)
-  - Include current household state
-  - Add relevant Pack Legacy Challenge rules
-  - Build system prompt with user's legacy context
-- [ ]  Conversation persistence:  
-  - Store agent conversations in database
-  - Link conversations to legacies
-  - Track token usage for cost monitoring
+  - [ ]  Package legacy data (sims, generations, goals, milestones)
+  - [x]  Include current household state
+  - [ ]  Add relevant Pack Legacy Challenge rules
+  - [x]  Build system prompt with user's legacy context
+- [x]  Conversation persistence:  
+  - [x]  Store agent conversations in database
+  - [x]  Link conversations to legacies
+  - [x]  Track token usage for cost monitoring
 
 ### Infrastructure (Terraform)
 
@@ -465,17 +465,17 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 ### Frontend
 
 - [ ]  AI Agent Chat Interface:  
-  - Chat panel (can be sidebar or full page)
-  - Message history display with markdown rendering
-  - Input field with send button
-  - Loading states with streaming text (typewriter effect)
-  - Token usage indicator (optional)
+  - [x]  Chat panel (can be sidebar or full page)
+  - [x]  Message history display with markdown rendering
+  - [x]  Input field with send button
+  - [ ]  Loading states with streaming text (typewriter effect)
+  - [x]  Token usage indicator (optional)
 - [ ]  Agent features:  
   - "Suggest what my heir should do next"
   - "Write a summary of Generation X"
   - "Generate a dramatic event for my family"
-- [ ]  Integration with existing pages:  
-  - Quick-access agent icon in header
+- [x]  Integration with existing pages:  
+  - [x]  Quick-access agent icon in header
 
 ### Agent Capabilities
 - [ ]  End of play wrapup. A user can give the agent a summary of what happened during their play session (ex "My sim Lavender was promoted twice and raised her cooking skill to level 7") and the agent would update any relevent data related to the conversation
@@ -488,7 +488,7 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 
 ### Database Changes
 
-- [ ]  **Conversation Storage:**
+- [x]  **Conversation Storage:**
   ```sql
   conversations (
     conversation_id UUID PRIMARY KEY,
