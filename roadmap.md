@@ -1,5 +1,16 @@
 # Sims Legacy Tracker - Complete Development Roadmap
 
+## 🔮 **AI Integration Note**
+
+**AWS Bedrock** is used throughout this project for all AI features (Phases 4, 5, 6, 7):
+- **Model**: Claude 3.5 Sonnet (via Bedrock) for primary AI features
+- **Model**: Claude 3 Haiku (via Bedrock) for quick/simple tasks
+- **Budget**: $400 AWS credits available
+- **Integration**: Seamless with existing AWS infrastructure (Lambda, Secrets Manager)
+- **Benefits**: No separate API key management, native AWS IAM, cost tracking via CloudWatch
+
+---
+
 ## ✅ **COMPLETED: Foundation Setup**
 
 - [x]  Project structure created  
@@ -154,7 +165,7 @@
   - Display required traits/careers
   - Show heir information
   - Mark goals complete
-- [ ]  Generation Timeline view:  
+- [x]  Generation Timeline view:  
   - Visual timeline of all generations
   - Mark which are complete/active/upcoming
   - Click to view generation details
@@ -380,46 +391,94 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 
 ---
 
-## 🤖 **Phase 4: AI Agent Integration**
+## 🤖 **Phase 4: AI Agent Integration** (Week 4)
 
 **Goal:** Conversational AI agent that helps with storytelling and tracking
 
 ### Backend
 
-- [ ]  Claude API integration:  
-  - Set up API key management (AWS Secrets Manager)
-  - Create Claude service wrapper
+- [ ]  **AWS Bedrock Integration:**  
+  - Set up AWS Bedrock access in your AWS account
+  - Configure IAM roles/policies for Lambda to access Bedrock
+  - Create Bedrock service wrapper in backend
+  - Choose model: Claude 3.5 Sonnet (via Bedrock) for best balance of quality/cost
+  - Implement streaming responses for better UX
 - [ ]  AI Agent endpoints:  
-  - `POST /api/agent/chat` - Send message to agent
+  - `POST /api/agent/chat` - Send message to agent (supports streaming)
   - `GET /api/agent/conversation/:legacyId` - Get conversation history
+  - `POST /api/agent/generate-story` - Generate story for sim/generation
+  - `POST /api/agent/suggest-goals` - Get goal suggestions
 - [ ]  Context building for agent:  
-  - Package legacy data (sims, generations, goals)
+  - Package legacy data (sims, generations, goals, milestones)
   - Include current household state
   - Add relevant Pack Legacy Challenge rules
+  - Build system prompt with user's legacy context
 - [ ]  Conversation persistence:  
   - Store agent conversations in database
   - Link conversations to legacies
+  - Track token usage for cost monitoring
+
+### Infrastructure (Terraform)
+
+- [ ]  **Bedrock Access Configuration:**
+  - Add IAM policy allowing Lambda to invoke Bedrock models
+  - Specific permissions: `bedrock:InvokeModel`, `bedrock:InvokeModelWithResponseStream`
+  - Add Bedrock model ARNs to Lambda environment variables
+  - Configure VPC endpoints for Bedrock (optional, for cost savings)
+- [ ]  **Cost Monitoring:**
+  - Set up CloudWatch metrics for Bedrock usage
+  - Configure cost alerts if usage exceeds thresholds
+  - Track tokens per request for budget management
+
+### Backend Implementation Details
+
+- [ ]  **Bedrock Service Wrapper** (`backend/src/services/bedrock.js`):
+  ```javascript
+  // Example structure:
+  class BedrockService {
+    constructor() {
+      this.client = new BedrockRuntimeClient({ region: process.env.AWS_REGION });
+      this.modelId = "anthropic.claude-3-5-sonnet-20241022-v2:0"; // Sonnet 3.5
+    }
+    
+    async invokeModel(prompt, systemPrompt, options = {}) {
+      // Invoke Bedrock with Claude
+      // Handle streaming if needed
+      // Return response + token usage
+    }
+    
+    async streamResponse(prompt, systemPrompt, onChunk) {
+      // Stream responses for real-time chat experience
+    }
+  }
+  ```
+- [ ]  **Context Builder** (`backend/src/services/context-builder.js`):
+  - Build system prompt with legacy details
+  - Format sim data, generations, goals, milestones
+  - Include Pack Legacy Challenge rules
+  - Keep context under token limits
+- [ ]  **Cost Tracking:**
+  - Log input/output tokens per request
+  - Store in database for analytics
+  - Create endpoint to view usage stats
 
 ### Frontend
 
 - [ ]  AI Agent Chat Interface:  
   - Chat panel (can be sidebar or full page)
-  - Message history display
+  - Message history display with markdown rendering
   - Input field with send button
-  - Loading states while agent responds
+  - Loading states with streaming text (typewriter effect)
+  - Token usage indicator (optional)
 - [ ]  Agent features:  
-  - "Tell me about my current generation"
   - "Suggest what my heir should do next"
   - "Write a summary of Generation X"
   - "Generate a dramatic event for my family"
-  - "Help me choose an heir"
 - [ ]  Integration with existing pages:  
-  - "Ask AI about this sim" button on sim profiles
-  - "Get story ideas" button on generation page
   - Quick-access agent icon in header
 
 ### Agent Capabilities
-
+- [ ]  End of play wrapup. A user can give the agent a summary of what happened during their play session (ex "My sim Lavender was promoted twice and raised her cooking skill to level 7") and the agent would update any relevent data related to the conversation
 - [ ]  Answer questions about legacy/sims/generations  
 - [ ]  Generate narrative summaries  
 - [ ]  Suggest next steps based on goals  
@@ -427,16 +486,54 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 - [ ]  Create dramatic story prompts  
 - [ ]  Track legacy statistics in conversation  
 
+### Database Changes
+
+- [ ]  **Conversation Storage:**
+  ```sql
+  conversations (
+    conversation_id UUID PRIMARY KEY,
+    legacy_id UUID REFERENCES legacies,
+    user_id UUID REFERENCES users,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+  )
+  
+  messages (
+    message_id UUID PRIMARY KEY,
+    conversation_id UUID REFERENCES conversations,
+    role TEXT, -- 'user' or 'assistant'
+    content TEXT,
+    input_tokens INT,
+    output_tokens INT,
+    created_at TIMESTAMP
+  )
+  ```
+
+### Cost Considerations
+
+- **Claude 3.5 Sonnet via Bedrock pricing** (as of Jan 2025):
+  - Input: ~$3 per million tokens
+  - Output: ~$15 per million tokens
+- **Your $400 budget estimate:**
+  - ~133M input tokens OR ~27M output tokens
+  - Mix: ~50M input + ~15M output = plenty for development!
+- **Optimization strategies:**
+  - Cache system prompts when possible
+  - Summarize long conversations to stay under context limits
+  - Use cheaper models for simple tasks (Haiku for quick responses)
+
 ### Deliverable
 
 - Users can chat with AI agent about their legacy
-- Agent has full context of legacy data
+- Agent has full context of legacy data via Bedrock
 - Agent can generate stories and suggestions
 - Conversation history is saved
+- Token usage tracked for cost monitoring
+- Streaming responses for better UX
 
 ---
 
-## 🎲 **Phase 5: AI Challenge Generator**
+## 🎲 **Phase 5: AI Challenge Generator** (Week 5)
 
 **Goal:** Generate unique, personalized legacy challenges based on user's owned packs
 
@@ -452,7 +549,7 @@ Players get stuck in gameplay routines. The AI Challenge Generator creates fresh
 
 ### Backend
 
-- [ ]  Challenge generation endpoints:  #phase/challenges #status/backlog
+- [ ]  Challenge generation endpoints:  
   - `POST /api/challenges/generate` - Generate new challenge
   - `GET /api/challenges/:id` - Get challenge details
   - `GET /api/challenges/templates` - Get existing challenge templates
@@ -460,39 +557,78 @@ Players get stuck in gameplay routines. The AI Challenge Generator creates fresh
   - `POST /api/challenges/save/:challengeId` - Save generated challenge
   - `GET /api/challenges/my-challenges` - Get user's saved challenges
   - `POST /api/legacies/create-from-challenge/:challengeId` - Start legacy with challenge
-- [ ]  Claude API integration for challenge generation:  #phase/challenges #status/backlog
+- [ ]  **AWS Bedrock Integration for Challenge Generation:**  
+  - Use Claude 3.5 Sonnet via Bedrock for complex multi-generation challenges
+  - Consider Claude 3 Haiku via Bedrock for quick single-generation tweaks
+  - Implement prompt engineering for consistent JSON output
   - Smart pack usage algorithm (ensures all owned packs used)
   - Goal generation (balanced, thematic, difficulty-appropriate)
   - Backstory generation (builds on previous generations)
   - Trait/career selection (thematically appropriate)
   - Challenge naming (AI-generated creative names)
-- [ ]  Challenge database schema:  #phase/challenges #status/backlog
+- [ ]  Challenge database schema:  
   - `challenges` table (stores generated challenges)
   - `challenge_generations` table (generation templates)
   - `legacy_challenges` table (links legacies to challenges)
+  - Track generation metadata (model used, tokens, generation time)
 
 ### Challenge Generation Logic
 
-- [ ]  **Pack Distribution:**  #phase/challenges #status/backlog
+- [ ]  **Pack Distribution:**  
   - Ensure each owned pack used at least once
   - Combine packs creatively ("University vampire detective")
   - Suggest pack-specific worlds per generation
-- [ ]  **Goal Generation:**  #phase/challenges #status/backlog
+- [ ]  **Goal Generation:**  
   - Balance skill maxing, aspiration completion, career progression
   - Create thematic cohesion (goals support backstory)
   - Adjust difficulty based on user preference
   - Mix gameplay styles (building, relationships, skills, careers, collections)
   - Include unique/creative challenges ("Never use a bed, only nap")
-- [ ]  **Backstory Generation:**  #phase/challenges #status/backlog
+- [ ]  **Backstory Generation:**  
   - Build on previous generation's story
   - Create family drama and conflicts
   - Suggest character arcs
   - Tie into pack themes organically
-- [ ]  **Smart Randomization:**  #phase/challenges #status/backlog
+- [ ]  **Smart Randomization:**  
   - Trait compatibility (no contradictions)
   - Aspiration-trait matching
   - Career-skill alignment
   - Thematic consistency across generations
+
+### Bedrock-Specific Implementation
+
+- [ ]  **Challenge Generation Service** (`backend/src/services/challenge-generator.js`):
+  ```javascript
+  class ChallengeGenerator {
+    constructor(bedrockService) {
+      this.bedrock = bedrockService;
+    }
+    
+    async generateChallenge(params) {
+      // params: ownedPacks, generationCount, style, theme, difficulty
+      // Build prompt with constraints
+      // Call Bedrock with structured output request
+      // Parse and validate JSON response
+      // Return challenge object
+    }
+    
+    async regenerateGeneration(challengeId, genNumber) {
+      // Load existing challenge
+      // Generate replacement for specific generation
+      // Maintain consistency with surrounding generations
+    }
+  }
+  ```
+- [ ]  **Prompt Engineering:**
+  - Request structured JSON output from Claude
+  - Include schema validation in prompts
+  - Use examples of good vs bad challenge designs
+  - Implement retry logic for invalid outputs
+- [ ]  **Cost Optimization:**
+  - Cache common pack combination patterns
+  - Reuse backstory elements for similar themes
+  - Use Haiku for simple regenerations
+  - Batch multiple generation requests when possible
 
 ### Frontend
 
@@ -632,13 +768,14 @@ Gen 3 (Yellow/Spellcaster): "The Golden Age"
 
 ### Deliverable
 
-- Users can generate completely unique challenges based on owned packs
-- AI creates compelling backstories and thematic goals
+- Users can generate completely unique challenges based on owned packs using AWS Bedrock
+- AI creates compelling backstories and thematic goals via Claude 3.5 Sonnet
 - Challenges can be any length (5-50 generations)
 - "Regenerate" functionality for flexibility
 - Challenges integrate with legacy creation
 - Export challenges for sharing with community
 - Infinite replayability - never run out of fresh challenges
+- Token usage and costs tracked for budget management
 
 ---
 

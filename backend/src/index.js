@@ -80,6 +80,10 @@ const {
   updateSimRelationship,
   removeSimRelationship,
 } = require("./handlers/sim-relationships");
+const {
+  chatWithAgent,
+  getConversation,
+} = require("./handlers/agent");
 const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
 const { withAuth } = require("./middleware/auth");
@@ -138,6 +142,11 @@ const ROUTE_GOAL_COMPLETE = new RegExp(
 // Generation template routes
 const ROUTE_GENERATION_TEMPLATES = /\/generation-templates\/?$/i;
 const ROUTE_GENERATION_TEMPLATE_NUMBER = /\/generation-templates\/(\d+)\/?$/i;
+const ROUTE_AGENT_CHAT = /\/agent\/chat\/?$/i;
+const ROUTE_AGENT_CONVERSATION = new RegExp(
+  `\\/agent\\/conversation\\/(${UUID_PATTERN})\\/?$`,
+  "i"
+);
 
 // Sub-resource ID routes (2 UUIDs) - checked before collection routes
 const ROUTE_SIM_RELATIONSHIP_ID = new RegExp(
@@ -261,6 +270,18 @@ const handler = async (event) => {
   }
   if (method === "POST" && /\/auth\/logout\/?$/i.test(path)) {
     return logout(origin, event.userId, event?.body);
+  }
+
+  // Agent routes
+  if (method === "POST" && ROUTE_AGENT_CHAT.test(path)) {
+    return chatWithAgent(origin, event.userId, event?.body);
+  }
+
+  const agentConversationMatch = path.match(ROUTE_AGENT_CONVERSATION);
+  if (method === "GET" && agentConversationMatch) {
+    const queryParams =
+      event?.queryStringParameters || parseQueryString(rawPath);
+    return getConversation(origin, event.userId, agentConversationMatch[1], queryParams);
   }
 
   // Reference data

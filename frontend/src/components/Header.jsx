@@ -7,7 +7,7 @@ const navItems = [
   { label: 'Legacy', to: '/legacy' },
 ]
 
-export default function Header() {
+export default function Header({ onToggleAgent, agentOpen }) {
   const { user, logout } = useAuth()
 
   return (
@@ -37,6 +37,17 @@ export default function Header() {
               </NavLink>
             ))}
           </nav>
+          <button
+            type="button"
+            onClick={onToggleAgent}
+            className={`rounded-full px-3 py-1 text-sm font-medium transition ${
+              agentOpen
+                ? 'border border-ff-mint/40 bg-ff-mint/15 text-ff-mint'
+                : 'border border-ff-border/60 text-ff-muted hover:text-ff-text'
+            }`}
+          >
+            AI Agent
+          </button>
           {user && (
             <div className="flex items-center gap-3 border-l border-ff-border/50 pl-4">
               <span className="text-sm text-ff-muted">{user.display_name}</span>

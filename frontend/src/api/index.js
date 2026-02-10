@@ -1,4 +1,5 @@
 export { apiClient, ApiError } from './client'
 export * from './auth'
+export * from './agent'
 export * from './legacies'
 export * from './generations'
