@@ -4,6 +4,7 @@ import { getLegacy, getLegacyStats, getLegacySims, getLegacyGenerations, updateL
 import ErrorState from '../components/ErrorState'
 import LoadingSpinner from '../components/LoadingSpinner'
 import GoalProgressRing from '../components/GoalProgressRing'
+import GenerationTimeline from '../components/GenerationTimeline'
 import Modal from '../components/Modal'
 import StatCard from '../components/StatCard'
 import { useActiveLegacy } from '../context/useActiveLegacy'
@@ -135,6 +136,17 @@ export default function LegacyDashboard() {
       isMounted = false
     }
   }, [activeLegacyId])
+
+  const hashIsTimeline = window.location.hash === '#timeline'
+
+  useEffect(() => {
+    let timerId
+    if (!state.loading && hashIsTimeline) {
+      const el = document.getElementById('timeline')
+      if (el) timerId = setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
+    }
+    return () => clearTimeout(timerId)
+  }, [state.loading, hashIsTimeline])
 
   const openFounderModal = async () => {
     setFounderModal(true)
@@ -462,6 +474,18 @@ export default function LegacyDashboard() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="timeline" className="scroll-mt-6">
+        <div className="mb-4">
+          <p className="text-xs uppercase tracking-[0.3em] text-ff-subtle">Timeline</p>
+          <h2 className="mt-1 text-lg font-semibold text-ff-text">Generation Timeline</h2>
+        </div>
+        <GenerationTimeline
+          generations={state.generations}
+          legacyId={activeLegacyId}
+          autoScrollToActive={!hashIsTimeline}
+        />
       </section>
 
       <Modal

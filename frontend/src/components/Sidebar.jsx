@@ -1,14 +1,14 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useActiveLegacy } from '../context/useActiveLegacy'
 
-const sideLinks = [
-  { label: 'Legacy dashboard', to: '/legacy' },
-  { label: 'Sims roster', to: '/sims' },
-  { label: 'Generation timeline', to: '/legacy#timeline' },
-]
-
 export default function Sidebar() {
   const { legacies, activeLegacyId, setActiveLegacyId, loading } = useActiveLegacy()
+
+  const sideLinks = [
+    { label: 'Legacy dashboard', to: activeLegacyId ? `/legacy/${activeLegacyId}` : '/legacy' },
+    { label: 'Sims roster', to: '/sims' },
+    { label: 'Generation timeline', to: activeLegacyId ? `/legacy/${activeLegacyId}#timeline` : '/legacy#timeline' },
+  ]
   const navigate = useNavigate()
 
   return (
