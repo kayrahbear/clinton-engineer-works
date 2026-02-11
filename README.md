@@ -119,33 +119,23 @@ DB_USER
 DB_PASSWORD
 ```
 
-### RDS migrations via SSM port forwarding (recommended)
+### RDS migrations (direct connection)
 
-After Terraform apply, use the SSM-managed ops instance to forward a local port
-to the private RDS endpoint without creating a bastion.
+RDS is publicly accessible (secured by strong password + SSL). After Terraform
+apply, connect directly:
 
-1. Fetch the ops instance ID and RDS endpoint:
+1. Fetch the RDS endpoint:
 
 ```bash
 cd infrastructure
-terraform output -raw ops_instance_id
 terraform output -raw rds_address
 ```
 
-2. Start the SSM port forwarding session:
-
-```bash
-aws ssm start-session \
-  --target <ops-instance-id> \
-  --document-name AWS-StartPortForwardingSessionToRemoteHost \
-  --parameters '{"host":["<rds-address>"],"portNumber":["5432"],"localPortNumber":["5432"]}'
-```
-
-3. In a second terminal, run migrations with SSL enabled:
+2. Run migrations with SSL enabled:
 
 ```bash
 cd backend
-DB_HOST=127.0.0.1 DB_PORT=5432 DB_SSL=true npm run db:migrate
+DB_HOST=<rds-address> DB_PORT=5432 DB_SSL=true npm run db:migrate
 ```
 
 ## Infrastructure Deployment
@@ -172,11 +162,12 @@ terraform apply
 ### Key Outputs
 
 After deployment, Terraform outputs:
-- `rds_endpoint` - Database connection endpoint
+- `rds_endpoint` / `rds_address` - Database connection endpoint (publicly accessible)
 - `api_gateway_url` - API base URL
 - `lambda_function_name` - Lambda function name
 - `s3_deployment_bucket` - Deployment artifact bucket
 - `db_secret_arn` - Secrets Manager ARN for DB credentials
+- `jwt_secret_arn` - Secrets Manager ARN for JWT signing key
 
 ### Lambda package bucket
 

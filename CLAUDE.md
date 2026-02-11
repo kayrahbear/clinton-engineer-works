@@ -113,26 +113,21 @@ terraform output       # View outputs (API URL, RDS endpoint, etc.)
 
 **Key outputs:**
 - `api_gateway_url` - Base API URL
-- `rds_address` / `rds_endpoint` - Database connection
-- `ops_instance_id` - SSM-managed instance for RDS access
+- `rds_address` / `rds_endpoint` - Database connection (publicly accessible)
 - `db_secret_arn` - Secrets Manager ARN for database credentials
 - `jwt_secret_arn` - Secrets Manager ARN for JWT signing key
 
-**RDS access via SSM port forwarding:**
+**RDS access (direct connection):**
 ```bash
-# Get outputs
-terraform output -raw ops_instance_id
+# Get RDS address
 terraform output -raw rds_address
 
-# Forward RDS port through ops instance
-aws ssm start-session \
-  --target <ops-instance-id> \
-  --document-name AWS-StartPortForwardingSessionToRemoteHost \
-  --parameters '{"host":["<rds-address>"],"portNumber":["5432"],"localPortNumber":["5432"]}'
+# Connect directly (RDS is publicly accessible with strong password + SSL)
+psql -h <rds-address> -p 5432 -U sims_admin -d sims_legacy --set=sslmode=require
 
-# In another terminal, run migrations
+# Run migrations against RDS
 cd backend
-DB_HOST=127.0.0.1 DB_PORT=5432 DB_SSL=true npm run db:migrate
+DB_HOST=<rds-address> DB_PORT=5432 DB_SSL=true npm run db:migrate
 ```
 
 ## Architecture Patterns
@@ -268,7 +263,8 @@ React Router v7 manages client-side routing. All app routes are wrapped in `Prot
 
 - Environment-specific config via `terraform.tfvars`
 - Lambda packages stored in S3 (`s3_deployment_bucket`)
-- RDS runs in private subnets, accessed via VPC Lambda or SSM port forwarding
+- Lambda runs outside VPC (can access RDS, Secrets Manager, Bedrock directly over internet)
+- RDS is publicly accessible in public subnets (secured by strong password + SSL)
 - Secrets Manager holds RDS credentials and JWT signing key
 - CloudWatch logs retention: 14 days (dev), 90 days (prod)
 

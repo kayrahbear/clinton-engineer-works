@@ -8,7 +8,7 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Public subnets (for NAT Gateway, bastion hosts if needed)
+# Public subnets (for RDS multi-AZ)
 resource "aws_subnet" "public" {
   count = length(var.public_subnet_cidrs)
 
@@ -23,20 +23,6 @@ resource "aws_subnet" "public" {
   }
 }
 
-# Private subnets (for RDS, Lambda)
-resource "aws_subnet" "private" {
-  count = length(var.private_subnet_cidrs)
-
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_cidrs[count.index]
-  availability_zone = var.availability_zones[count.index]
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-private-${count.index + 1}"
-    Tier = "private"
-  }
-}
-
 # Internet Gateway
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -44,27 +30,6 @@ resource "aws_internet_gateway" "main" {
   tags = {
     Name = "${var.project_name}-${var.environment}-igw"
   }
-}
-
-# Elastic IP for NAT Gateway
-resource "aws_eip" "nat" {
-  domain = "vpc"
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-nat-eip"
-  }
-}
-
-# NAT Gateway (allows Lambda in private subnet to reach internet)
-resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-nat"
-  }
-
-  depends_on = [aws_internet_gateway.main]
 }
 
 # Public route table
@@ -88,23 +53,24 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Private route table (routes through NAT Gateway)
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.main.id
+# Database subnets (kept from original private subnets to avoid RDS subnet group recreation)
+# Routed through IGW like public subnets — no NAT Gateway needed
+resource "aws_subnet" "database" {
+  count = length(var.database_subnet_cidrs)
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main.id
-  }
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.database_subnet_cidrs[count.index]
+  availability_zone = var.availability_zones[count.index]
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-private-rt"
+    Name = "${var.project_name}-${var.environment}-database-${count.index + 1}"
+    Tier = "database"
   }
 }
 
-resource "aws_route_table_association" "private" {
-  count = length(aws_subnet.private)
+resource "aws_route_table_association" "database" {
+  count = length(aws_subnet.database)
 
-  subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.database[count.index].id
+  route_table_id = aws_route_table.public.id
 }

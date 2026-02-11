@@ -78,8 +78,13 @@ variable "public_subnet_cidrs" {
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
+variable "db_allowed_cidrs" {
+  description = "CIDR blocks allowed to connect to RDS (e.g. your IP: [\"203.0.113.10/32\"])"
+  type        = list(string)
+}
+
+variable "database_subnet_cidrs" {
+  description = "CIDR blocks for database subnets (routed through IGW for public RDS access)"
   type        = list(string)
   default     = ["10.0.10.0/24", "10.0.11.0/24"]
 }
@@ -103,9 +108,3 @@ variable "lambda_timeout" {
   default     = 30
 }
 
-# Ops EC2 (SSM-managed) instance
-variable "ops_instance_type" {
-  description = "Instance type for the ops EC2 instance"
-  type        = string
-  default     = "t3.micro"
-}
