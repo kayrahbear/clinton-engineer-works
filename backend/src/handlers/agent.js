@@ -210,10 +210,14 @@ const chatWithAgent = async (origin, userId, body) => {
   // Load conversation history for Bedrock
   const historyResult = await pool.query(
     `SELECT role, content
-     FROM messages
-     WHERE conversation_id = $1
-     ORDER BY created_at ASC
-     LIMIT $2`,
+     FROM (
+       SELECT role, content, created_at
+       FROM messages
+       WHERE conversation_id = $1
+       ORDER BY created_at DESC
+       LIMIT $2
+     ) recent_messages
+     ORDER BY created_at ASC`,
     [conversationId, CONVERSATION_HISTORY_LIMIT]
   );
 

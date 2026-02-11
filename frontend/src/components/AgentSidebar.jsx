@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { chatWithAgent, clearAgentConversation, getAgentConversation } from '../api'
+import { clearAgentConversation, getAgentConversation } from '../api'
 import { useActiveLegacy } from '../context/useActiveLegacy'
 
 export default function AgentSidebar({ isOpen, onClose }) {
@@ -194,30 +194,32 @@ export default function AgentSidebar({ isOpen, onClose }) {
         { role: 'assistant', content: '', created_at: timestamp, is_streaming: true },
       ])
 
-      try {
-        await streamAssistantResponse({
-          legacyId: activeLegacyId,
-          conversationId: conversationId || undefined,
-          message: trimmedInput,
-        })
-      } catch (streamError) {
-        const data = await chatWithAgent({
-          legacyId: activeLegacyId,
-          conversationId: conversationId || undefined,
-          message: trimmedInput,
-        }, { timeout: 30000 })
-
-        const reply = data?.reply
-        const nextConversationId = data?.conversation_id || conversationId
-        setConversationId(nextConversationId)
-        applyStreamingUpdate(reply?.content || 'No response received.', {
-          finalize: true,
-          reply,
-        })
-      }
+      await streamAssistantResponse({
+        legacyId: activeLegacyId,
+        conversationId: conversationId || undefined,
+        message: trimmedInput,
+      })
     } catch (requestError) {
-      setMessages((prev) => prev.filter((message) => !message.is_streaming))
-      setError(requestError?.data?.error || requestError?.message || 'Failed to send message.')
+      let synced = false
+      try {
+        const data = await getAgentConversation(activeLegacyId)
+        const convo = data?.conversation
+        setConversationId(convo?.conversation_id || conversationId || '')
+        setMessages(data?.messages || [])
+        synced = true
+      } catch {
+        // Keep optimistic history only if we cannot resync from server.
+      }
+
+      if (!synced) {
+        setMessages((prev) => prev.filter((message) => !message.is_streaming))
+      }
+
+      setError(
+        requestError?.data?.error ||
+          requestError?.message ||
+          'Connection interrupted. Conversation was not retried to avoid duplicate updates.'
+      )
     } finally {
       setLoading(false)
     }

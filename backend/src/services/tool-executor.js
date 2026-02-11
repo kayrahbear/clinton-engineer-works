@@ -174,7 +174,8 @@ class ToolExecutor {
       return { success: false, error: `Skill '${skill_name}' not found` };
     }
 
-    const isMaxed = new_level >= skill.max_level;
+    const appliedLevel = Math.min(new_level, skill.max_level);
+    const isMaxed = appliedLevel >= skill.max_level;
     const maxedDate = isMaxed ? new Date().toISOString().slice(0, 10) : null;
 
     const pool = await getPool();
@@ -187,7 +188,7 @@ class ToolExecutor {
            is_maxed = $4,
            maxed_date = COALESCE($5, sim_skills.maxed_date)
          RETURNING *`,
-        [sim.sim_id, skill.skill_id, new_level, isMaxed, maxedDate]
+        [sim.sim_id, skill.skill_id, appliedLevel, isMaxed, maxedDate]
       );
     } catch (err) {
       if (err.code === "23503") {
@@ -197,8 +198,8 @@ class ToolExecutor {
     }
 
     const msg = isMaxed
-      ? `${sim.name}'s ${skill.skill_name} updated to level ${new_level} (MAXED!)`
-      : `${sim.name}'s ${skill.skill_name} updated to level ${new_level}/${skill.max_level}`;
+      ? `${sim.name}'s ${skill.skill_name} updated to level ${appliedLevel} (MAXED!)`
+      : `${sim.name}'s ${skill.skill_name} updated to level ${appliedLevel}/${skill.max_level}`;
 
     return { success: true, message: msg };
   }
