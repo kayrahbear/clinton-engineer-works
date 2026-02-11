@@ -10,6 +10,10 @@ const { ToolExecutor } = require("../services/tool-executor");
 const MESSAGE_LIMIT = 8000;
 const MAX_TOOL_ROUNDS = 5;
 const CONVERSATION_HISTORY_LIMIT = 20;
+const DEFAULT_AGENT_MAX_TOKENS = Number.parseInt(
+  process.env.BEDROCK_AGENT_MAX_TOKENS || "600",
+  10
+);
 
 const toContentBlocks = (content) => {
   if (Array.isArray(content)) {
@@ -232,6 +236,7 @@ const chatWithAgent = async (origin, userId, body) => {
     messages: bedrockMessages,
     system: systemPrompt,
     tools: toolDefs,
+    maxTokens: DEFAULT_AGENT_MAX_TOKENS,
   });
 
   if (!response.content || response.content.length === 0) {
@@ -242,6 +247,7 @@ const chatWithAgent = async (origin, userId, body) => {
         messages: [lastUserMessage],
         system: systemPrompt,
         tools: toolDefs,
+        maxTokens: DEFAULT_AGENT_MAX_TOKENS,
       });
     }
   }
@@ -290,6 +296,7 @@ const chatWithAgent = async (origin, userId, body) => {
       messages: bedrockMessages,
       system: systemPrompt,
       tools: toolDefs,
+      maxTokens: DEFAULT_AGENT_MAX_TOKENS,
     });
 
     totalInputTokens += response.inputTokens;

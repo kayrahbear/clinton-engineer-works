@@ -401,7 +401,7 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
   - [x]  Choose model: Claude 3.5 Sonnet (via Bedrock) for best balance of quality/cost
   - [ ]  Implement streaming responses for better UX
 - [ ]  AI Agent endpoints:  
-  - [x]  `POST /api/agent/chat` - Send message to agent (supports streaming)
+  - [x]  `POST /api/agent/chat` - Send message to agent
   - [x]  `GET /api/agent/conversation/:legacyId` - Get conversation history
   - [ ]  `POST /api/agent/generate-story` - Generate story for sim/generation
   - [ ]  `POST /api/agent/suggest-goals` - Get goal suggestions
@@ -495,24 +495,24 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 
 ### Function Calling / Tool Use
 
-- [ ]  **Native Claude Function Calling** (via Bedrock):
+- [x]  **Native Claude Function Calling** (via Bedrock):
   - Claude natively supports function calling - no framework needed!
   - Define tools as JSON schemas
   - Agent decides when to call functions based on conversation
   - You execute the function calls and return results
   - Agent incorporates results into response
-- [ ]  **Available Tools for Agent:**
-  - `update_sim_skill(sim_id, skill_name, new_level)` - Update skill level
-  - `update_sim_career(sim_id, new_level)` - Update career level
-  - `create_sim(name, parent_id, life_stage, traits)` - Create new sim (births)
-  - `complete_aspiration(sim_id, aspiration_name)` - Mark aspiration complete
-  - `add_milestone(sim_id, milestone_name, date)` - Add milestone achievement
-  - `update_sim_traits(sim_id, traits)` - Add/update traits (for aging up)
-  - `add_relationship(sim_id_1, sim_id_2, relationship_type)` - Create relationship
-  - `update_generation_goal(goal_id, completed)` - Mark generation goal complete
-  - `get_sim_details(sim_id)` - Fetch current sim data
-  - `get_generation_progress(generation_id)` - Check goal completion status
-- [ ]  **Tool Execution Flow:**
+- [ ]  **Available Tools for Agent (JS implementation):**
+  - `get_sim_details(sim_name)` - Fetch current sim data
+  - `get_generation_progress()` - Check current generation goals
+  - `update_sim_skill(sim_name, skill_name, new_level)` - Update skill level
+  - `update_sim_career(sim_name, promotions)` - Update career level
+  - `create_sim(name, gender, life_stage, parent_name, traits)` - Create new sim (births/adoptions)
+  - `complete_aspiration(sim_name, aspiration_name)` - Mark aspiration complete
+  - `add_milestone(sim_name, milestone_name, notes)` - Add milestone achievement
+  - `add_sim_trait(sim_name, trait_name, trait_slot)` - Add traits (aging up/reward)
+  - `add_relationship(sim_name_1, sim_name_2, relationship_type)` - Create relationship
+  - `complete_generation_goal(goal_text)` - Mark generation goal complete
+- [x]  **Tool Execution Flow:**
   1. User sends message
   2. Agent analyzes message + context
   3. Agent decides which tools to call (if any)
@@ -528,34 +528,21 @@ localStorage tokens vulnerable to XSS. Acceptable for this app's threat model (p
 
 ### Backend Implementation Details
 
-- [ ]  **LegacyAgent Service** (`backend/src/services/legacy_agent.py`):
-  ```python
-  class LegacyAgent:
-      def __init__(self):
-          self.bedrock = boto3.client('bedrock-runtime')
-          self.model_id = "anthropic.claude-3-5-sonnet-20241022-v2:0"
-          self.tools = self._define_tools()
-      
-      def chat(self, user_message, legacy_context, conversation_history):
-          # Build system prompt with legacy context
-          # Call Bedrock with tools enabled
-          # Handle tool use if requested
-          # Return response + tool results
-      
-      def _define_tools(self):
-          # Return list of tool definitions (JSON schemas)
-      
-      def _execute_tool(self, tool_name, tool_input):
-          # Execute actual API calls to update data
-          # Return success/failure status
+- [x]  **Legacy Agent Flow** (`backend/src/handlers/agent.js` + `backend/src/services/bedrock.js`):
+  ```javascript
+  // chatWithAgent handler:
+  // - Build system prompt with legacy context
+  // - Call Bedrock with tools enabled
+  // - Execute tool_use blocks
+  // - Return response + tool results
   ```
-- [ ]  **Context Builder** (`backend/src/services/context_builder.py`):
+- [x]  **Context Builder** (`backend/src/services/context-builder.js`):
   - Build system prompt with legacy details
   - Format sim data, generations, goals, milestones
   - Include Pack Legacy Challenge rules
   - Keep context under token limits
   - Cache expensive lookups
-- [ ]  **Tool Executor** (`backend/src/services/tool_executor.py`):
+- [x]  **Tool Executor** (`backend/src/services/tool-executor.js`):
   - Maps tool names to actual database operations
   - Validates inputs against database constraints
   - Executes updates transactionally
@@ -675,82 +662,84 @@ Players get stuck in gameplay routines. The AI Challenge Generator creates fresh
 
 ### Bedrock-Specific Implementation
 
-- [ ]  **Challenge Generation Service** (`backend/src/services/challenge_generator.py`):
-  ```python
-  class ChallengeGenerator:
-      """
-      Generates legacy challenges using Bedrock
-      Reuses BedrockService from Phase 4
-      """
-      def __init__(self, bedrock_service):
-          self.bedrock = bedrock_service
-          self.model_id_sonnet = "anthropic.claude-3-5-sonnet-20241022-v2:0"
-          self.model_id_haiku = "anthropic.claude-3-haiku-20240307-v1:0"
-      
-      async def generate_challenge(self, params):
-          """
-          Generate a complete challenge
-          
-          params:
-          - owned_packs: List[str] - Packs the user owns
-          - generation_count: int - How many generations (5-50)
-          - style: str - 'template', 'unique', or 'hybrid'
-          - theme: str - Optional theme (e.g., 'rags_to_riches')
-          - difficulty: str - 'casual', 'standard', or 'hardcore'
-          
-          Returns: Challenge object with all generations
-          """
-          # Build comprehensive prompt with constraints
-          prompt = self._build_generation_prompt(params)
-          
-          # Call Bedrock requesting JSON output
-          result = await self.bedrock.invoke_with_tools(
-              messages=[{"role": "user", "content": prompt}],
-              system=self._get_system_prompt(),
-              tools=[],  # No tools needed for challenge generation
-              max_tokens=16000  # Large for multi-generation output
-          )
-          
-          # Parse and validate JSON response
-          challenge_data = self._parse_and_validate(result)
-          
-          return challenge_data
-      
-      async def regenerate_generation(self, challenge_id, generation_number):
-          """
-          Regenerate a single generation while maintaining consistency
-          Uses Claude 3 Haiku for cost efficiency
-          """
-          # Load existing challenge
-          challenge = await self._load_challenge(challenge_id)
-          
-          # Build prompt with context from surrounding generations
-          prompt = self._build_regeneration_prompt(
-              challenge, 
-              generation_number
-          )
-          
-          # Use Haiku for simple regeneration (cheaper)
-          result = await self.bedrock.invoke_with_tools(
-              messages=[{"role": "user", "content": prompt}],
-              system=self._get_system_prompt(),
-              tools=[],
-              max_tokens=2000
-          )
-          
-          generation_data = self._parse_generation(result)
-          
-          return generation_data
-      
-      def _build_generation_prompt(self, params):
-          """Build prompt for challenge generation"""
-          return f"""Generate a unique Sims 4 Legacy Challenge with these specifications:
+- [ ]  **Challenge Generation Service** (`backend/src/services/challenge-generator.js`):
+  ```javascript
+  class ChallengeGenerator {
+    /**
+     * Generates legacy challenges using Bedrock
+     * Reuses BedrockService from Phase 4
+     */
+    constructor(bedrockService) {
+      this.bedrock = bedrockService
+      this.modelIdSonnet = "anthropic.claude-3-5-sonnet-20241022-v2:0"
+      this.modelIdHaiku = "anthropic.claude-3-haiku-20240307-v1:0"
+    }
 
-**Owned Packs:** {', '.join(params['owned_packs'])}
-**Generations:** {params['generation_count']}
-**Style:** {params['style']}
-**Theme:** {params.get('theme', 'None - be creative!')}
-**Difficulty:** {params['difficulty']}
+    async generateChallenge(params) {
+      /**
+       * Generate a complete challenge
+       *
+       * params:
+       * - ownedPacks: string[] - Packs the user owns
+       * - generationCount: number - How many generations (5-50)
+       * - style: string - 'template', 'unique', or 'hybrid'
+       * - theme: string - Optional theme (e.g., 'rags_to_riches')
+       * - difficulty: string - 'casual', 'standard', or 'hardcore'
+       *
+       * Returns: Challenge object with all generations
+       */
+      // Build comprehensive prompt with constraints
+      const prompt = this._buildGenerationPrompt(params)
+
+      // Call Bedrock requesting JSON output
+      const result = await this.bedrock.invokeWithTools({
+        messages: [{ role: "user", content: prompt }],
+        system: this._getSystemPrompt(),
+        tools: [], // No tools needed for challenge generation
+        maxTokens: 16000, // Large for multi-generation output
+      })
+
+      // Parse and validate JSON response
+      const challengeData = this._parseAndValidate(result)
+
+      return challengeData
+    }
+
+    async regenerateGeneration(challengeId, generationNumber) {
+      /**
+       * Regenerate a single generation while maintaining consistency
+       * Uses Claude 3 Haiku for cost efficiency
+       */
+      // Load existing challenge
+      const challenge = await this._loadChallenge(challengeId)
+
+      // Build prompt with context from surrounding generations
+      const prompt = this._buildRegenerationPrompt(challenge, generationNumber)
+
+      // Use Haiku for simple regeneration (cheaper)
+      const result = await this.bedrock.invokeWithTools({
+        messages: [{ role: "user", content: prompt }],
+        system: this._getSystemPrompt(),
+        tools: [],
+        maxTokens: 2000,
+      })
+
+      const generationData = this._parseGeneration(result)
+
+      return generationData
+    }
+
+    _buildGenerationPrompt(params) {
+      /** Build prompt for challenge generation */
+      const ownedPacks = (params.ownedPacks || []).join(", ")
+      const theme = params.theme || "None - be creative!"
+      return `Generate a unique Sims 4 Legacy Challenge with these specifications:
+
+**Owned Packs:** ${ownedPacks}
+**Generations:** ${params.generationCount}
+**Style:** ${params.style}
+**Theme:** ${theme}
+**Difficulty:** ${params.difficulty}
 
 **Requirements:**
 1. Use each owned pack at least once across all generations
@@ -772,29 +761,30 @@ Return a JSON object with this EXACT structure:
   "theme": "Underlying theme",
   "generations": [
     {{
-      "generation_number": 1,
-      "pack_focus": "Pack name",
-      "generation_name": "Generation title",
+      "generationNumber": 1,
+      "packFocus": "Pack name",
+      "generationName": "Generation title",
       "backstory": "Rich backstory paragraph",
-      "required_goals": ["Goal 1", "Goal 2", ...],
-      "optional_goals": ["Optional 1", "Optional 2", ...],
-      "required_traits": ["Trait 1", "Trait 2", "Trait 3"],
+      "requiredGoals": ["Goal 1", "Goal 2", ...],
+      "optionalGoals": ["Optional 1", "Optional 2", ...],
+      "requiredTraits": ["Trait 1", "Trait 2", "Trait 3"],
       "career": "Career name",
-      "career_branch": "Branch name (if applicable)",
-      "world_restriction": "World name (if applicable)",
-      "unique_restrictions": ["Special rule 1", ...],
-      "story_hooks": ["Story idea 1", "Story idea 2", ...]
+      "careerBranch": "Branch name (if applicable)",
+      "worldRestriction": "World name (if applicable)",
+      "uniqueRestrictions": ["Special rule 1", ...],
+      "storyHooks": ["Story idea 1", "Story idea 2", ...]
     }}
     // ... more generations
   ]
 }}
 
-IMPORTANT: Return ONLY valid JSON. No markdown, no explanations, just the JSON object."""
-      
-      def _get_system_prompt(self):
-          """System prompt for challenge generation"""
-          return """You are an expert Sims 4 challenge designer. You create engaging, 
-creative, and balanced legacy challenges that push players to explore different 
+IMPORTANT: Return ONLY valid JSON. No markdown, no explanations, just the JSON object.`
+    }
+
+    _getSystemPrompt() {
+      /** System prompt for challenge generation */
+      return `You are an expert Sims 4 challenge designer. You create engaging,
+creative, and balanced legacy challenges that push players to explore different
 gameplay styles.
 
 You understand:
@@ -804,14 +794,16 @@ You understand:
 - How to write compelling backstories that motivate players
 - How to combine pack features in creative ways
 
-You always return valid JSON and follow the exact schema requested."""
-      
-      def _parse_and_validate(self, result):
-          """Parse JSON and validate structure"""
-          # Extract JSON from response
-          # Validate against schema
-          # Return validated challenge data
-          pass
+You always return valid JSON and follow the exact schema requested.`
+    }
+
+    _parseAndValidate(result) {
+      /** Parse JSON and validate structure */
+      // Extract JSON from response
+      // Validate against schema
+      // Return validated challenge data
+    }
+  }
   ```
 
 - [ ]  **Prompt Engineering:**
@@ -961,20 +953,20 @@ CREATE INDEX idx_legacy_challenges_legacy_id ON legacy_challenges(legacy_id);
 Since the Phase 4 conversational agent already has access to the ChallengeGenerator service, users can request challenges directly through chat:
 
 - [ ]  **Add Challenge Generation Tools to Phase 4 Agent:**
-  ```python
-  # Add to agent_tools.py
+  ```javascript
+  // Add to agent_tools.js
   {
       "name": "generate_challenge",
       "description": "Generate a new legacy challenge based on user's specifications",
       "input_schema": {
           "type": "object",
           "properties": {
-              "owned_packs": {
+              "ownedPacks": {
                   "type": "array",
                   "items": {"type": "string"},
                   "description": "List of Sims 4 packs the user owns"
               },
-              "generation_count": {
+              "generationCount": {
                   "type": "integer",
                   "description": "Number of generations (5-50)",
                   "minimum": 5,
@@ -990,7 +982,7 @@ Since the Phase 4 conversational agent already has access to the ChallengeGenera
                   "description": "Challenge difficulty level"
               }
           },
-          "required": ["owned_packs", "generation_count"]
+          "required": ["ownedPacks", "generationCount"]
       }
   },
   {
@@ -999,11 +991,11 @@ Since the Phase 4 conversational agent already has access to the ChallengeGenera
       "input_schema": {
           "type": "object",
           "properties": {
-              "challenge_id": {
+              "challengeId": {
                   "type": "string",
                   "description": "ID of the challenge to modify"
               },
-              "generation_number": {
+              "generationNumber": {
                   "type": "integer",
                   "description": "Which generation to regenerate (1-based)"
               },
@@ -1012,7 +1004,7 @@ Since the Phase 4 conversational agent already has access to the ChallengeGenera
                   "description": "Why regenerate (e.g., 'too easy', 'doesn't fit theme')"
               }
           },
-          "required": ["challenge_id", "generation_number"]
+          "required": ["challengeId", "generationNumber"]
       }
   }
   ```
@@ -1022,8 +1014,8 @@ Since the Phase 4 conversational agent already has access to the ChallengeGenera
   **Example 1 - Simple Request:**
   ```
   User: "Generate me a 10-generation vampire challenge"
-  Agent: [calls generate_challenge with owned_packs=all occult packs, 
-          generation_count=10, theme="vampire dynasty"]
+  Agent: [calls generate_challenge with ownedPacks=all occult packs, 
+          generationCount=10, theme="vampire dynasty"]
   Agent: "I've created 'The Crimson Legacy' - a 10-generation vampire dynasty 
           challenge! Each generation explores different aspects of vampire life, 
           from ancient nobility to modern-day influencers. Want to see the details 

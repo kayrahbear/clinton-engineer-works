@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { chatWithAgent, clearAgentConversation, getAgentConversation } from '../api'
 import { useActiveLegacy } from '../context/useActiveLegacy'
@@ -11,6 +11,7 @@ export default function AgentSidebar({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false)
   const [clearing, setClearing] = useState(false)
   const [error, setError] = useState('')
+  const endRef = useRef(null)
 
   const canChat = useMemo(() => !legacyLoading && Boolean(activeLegacyId), [legacyLoading, activeLegacyId])
 
@@ -48,6 +49,13 @@ export default function AgentSidebar({ isOpen, onClose }) {
       isMounted = false
     }
   }, [isOpen, canChat, activeLegacyId, legacyLoading])
+
+  useEffect(() => {
+    if (!isOpen) return
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
+  }, [messages, loading, isOpen])
 
   const handleSend = async (event) => {
     event.preventDefault()
@@ -252,23 +260,19 @@ export default function AgentSidebar({ isOpen, onClose }) {
                   )}
               </div>
             ))}
-          </div>
-          {loading && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-ff-surface/80 text-ff-text backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <span className="h-8 w-8 animate-spin rounded-full border-2 border-ff-mint/30 border-t-ff-mint" />
-                <div>
-                  <p className="text-sm font-semibold">Thinking...</p>
-                  <p className="text-xs text-ff-muted">Searching legacy context and tools</p>
+            {loading && (
+              <div className="mr-auto w-fit max-w-[85%] rounded-2xl bg-ff-border/20 px-4 py-3 text-sm text-ff-text">
+                <p className="text-xs uppercase tracking-[0.2em] text-ff-muted">Assistant</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:150ms]" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:300ms]" />
+                  <span className="text-xs text-ff-muted">Thinking...</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:150ms]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:300ms]" />
-              </div>
-            </div>
-          )}
+            )}
+            <div ref={endRef} />
+          </div>
         </div>
 
         <form onSubmit={handleSend} className="border-t border-ff-border/60 px-5 py-4">

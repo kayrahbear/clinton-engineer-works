@@ -14,6 +14,8 @@ const SYSTEM_PROMPT =
   "- When the user describes gameplay events (promotions, skill gains, births, " +
   "aspiration completions, trait acquisitions, marriages, etc.), USE YOUR TOOLS to update the data.\n" +
   "- Always confirm what you updated after using tools.\n" +
+  "- Keep responses concise: 1-3 sentences, no bullet lists unless the user asks.\n" +
+  "- After tool use, respond with a single confirmation sentence and one short follow-up question.\n" +
   "- If you are unsure which sim they are referring to, ask for clarification before updating.\n" +
   "- Use get_sim_details or get_generation_progress to check current state when needed.\n" +
   "- Be conversational, friendly, and celebrate achievements!\n" +

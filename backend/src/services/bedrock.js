@@ -50,7 +50,7 @@ class BedrockService {
   async invokeWithTools({ messages, system, tools, maxTokens, temperature } = {}) {
     const resolvedMaxTokens = Number.isFinite(maxTokens)
       ? maxTokens
-      : Math.max(DEFAULT_MAX_TOKENS, 4096);
+      : DEFAULT_MAX_TOKENS;
     const temp = Number.isFinite(temperature) ? temperature : DEFAULT_TEMPERATURE;
 
     const payload = {
