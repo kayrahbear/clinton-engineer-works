@@ -18,8 +18,9 @@ const isPublicRoute = (method, path) => {
 };
 
 const withAuth = (handler) => async (event) => {
-  const method = event?.httpMethod || "";
-  const rawPath = event?.path || "";
+  const method =
+    event?.httpMethod || event?.requestContext?.http?.method || "";
+  const rawPath = event?.path || event?.rawPath || "";
   const path = rawPath.split("?")[0];
 
   // Skip auth for OPTIONS (CORS preflight) and public routes

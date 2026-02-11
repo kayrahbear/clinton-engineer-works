@@ -259,7 +259,7 @@ class ToolExecutor {
     };
   }
 
-  async _createSim({ name, gender, life_stage, parent_name, traits = [] }) {
+  async _createSim({ name, gender, life_stage, parent_name, parent_names, traits = [] }) {
     const generation = await this._getCurrentGeneration();
     if (!generation) {
       return { success: false, error: "No active generation found" };
@@ -267,15 +267,29 @@ class ToolExecutor {
 
     let motherId = null;
     let fatherId = null;
+    const parentIds = [];
 
-    if (parent_name) {
-      const parent = await this._findSimByName(parent_name);
-      if (parent) {
-        if (parent.gender === "female") {
+    const normalizedParentNames = [
+      ...(Array.isArray(parent_names) ? parent_names : []),
+      ...(parent_name ? [parent_name] : []),
+    ]
+      .map((value) => (typeof value === "string" ? value.trim() : ""))
+      .filter((value) => value.length > 0);
+
+    const uniqueParentNames = [...new Set(normalizedParentNames)];
+
+    if (uniqueParentNames.length > 0) {
+      for (const parentName of uniqueParentNames) {
+        const parent = await this._findSimByName(parentName);
+        if (!parent) continue;
+
+        if (parent.gender === "female" && !motherId) {
           motherId = parent.sim_id;
-        } else {
+        } else if (parent.gender === "male" && !fatherId) {
           fatherId = parent.sim_id;
         }
+
+        parentIds.push({ id: parent.sim_id, name: parent.name });
       }
     }
 
@@ -312,24 +326,19 @@ class ToolExecutor {
         }
       }
 
-      // Add parent relationship if parent found
-      if (motherId || fatherId) {
-        const parentId = motherId || fatherId;
-        try {
-          await client.query(
-            `INSERT INTO relationships (sim_id_1, sim_id_2, relationship_type, is_active)
-             VALUES ($1, $2, 'parent', TRUE)
-             ON CONFLICT DO NOTHING`,
-            [parentId, newSim.sim_id]
-          );
-          await client.query(
-            `INSERT INTO relationships (sim_id_1, sim_id_2, relationship_type, is_active)
-             VALUES ($1, $2, 'child', TRUE)
-             ON CONFLICT DO NOTHING`,
-            [newSim.sim_id, parentId]
-          );
-        } catch (_) {
-          // relationship insert failures are non-fatal
+      // Add parent relationship(s) if parents found
+      if (parentIds.length > 0) {
+        for (const parent of parentIds) {
+          try {
+            await client.query(
+              `INSERT INTO relationships (sim_id_1, sim_id_2, relationship_type, is_active)
+               VALUES ($1, $2, 'parent', TRUE)
+               ON CONFLICT DO NOTHING`,
+              [parent.id, newSim.sim_id]
+            );
+          } catch (_) {
+            // relationship insert failures are non-fatal
+          }
         }
       }
 
@@ -338,7 +347,9 @@ class ToolExecutor {
       return {
         success: true,
         message: `Created new sim: ${name} (${life_stage}, ${gender})` +
-          (parent_name ? `, child of ${parent_name}` : ""),
+          (parentIds.length > 0
+            ? `, child of ${parentIds.map((parent) => parent.name).join(" and ")}`
+            : ""),
         data: { sim_id: newSim.sim_id, name: newSim.name },
       };
     } catch (err) {

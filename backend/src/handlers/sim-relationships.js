@@ -36,7 +36,27 @@ const getSimRelationships = async (origin, userId, simId) => {
     [simId]
   );
 
-  return buildResponse(200, { data: result.rows }, origin);
+  const seen = new Set();
+  const normalized = result.rows.reduce((acc, row) => {
+    let relationshipType = row.relationship_type;
+
+    if (relationshipType === "parent") {
+      relationshipType = row.sim_id_1 === simId ? "child" : "parent";
+    } else if (relationshipType === "child") {
+      relationshipType = row.sim_id_1 === simId ? "parent" : "child";
+    }
+
+    const key = `${row.related_sim_id}:${relationshipType}`;
+    if (seen.has(key)) {
+      return acc;
+    }
+    seen.add(key);
+
+    acc.push({ ...row, relationship_type: relationshipType });
+    return acc;
+  }, []);
+
+  return buildResponse(200, { data: normalized }, origin);
 };
 
 const addSimRelationship = async (origin, userId, simId, body) => {

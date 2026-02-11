@@ -9,9 +9,16 @@ export default function AgentSidebar({ isOpen, onClose }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [streaming, setStreaming] = useState(false)
   const [clearing, setClearing] = useState(false)
   const [error, setError] = useState('')
   const endRef = useRef(null)
+  const abortRef = useRef(null)
+
+  const STREAM_BASE_URL =
+    import.meta.env.VITE_STREAM_API_BASE_URL ??
+    import.meta.env.VITE_API_BASE_URL ??
+    'http://localhost:3001/api/v1'
 
   const canChat = useMemo(() => !legacyLoading && Boolean(activeLegacyId), [legacyLoading, activeLegacyId])
 
@@ -57,37 +64,159 @@ export default function AgentSidebar({ isOpen, onClose }) {
     }
   }, [messages, loading, isOpen])
 
+  useEffect(() => () => {
+    if (abortRef.current) {
+      abortRef.current.abort()
+      abortRef.current = null
+    }
+  }, [])
+
+  const applyStreamingUpdate = (content, { finalize = false, reply } = {}) => {
+    setMessages((prev) => {
+      const next = [...prev]
+      for (let i = next.length - 1; i >= 0; i -= 1) {
+        if (next[i].role === 'assistant' && next[i].is_streaming) {
+          next[i] = {
+            ...next[i],
+            content,
+            is_streaming: finalize ? false : true,
+            input_tokens: finalize ? reply?.input_tokens : next[i].input_tokens,
+            output_tokens: finalize ? reply?.output_tokens : next[i].output_tokens,
+            tool_calls: finalize ? reply?.tool_calls || null : next[i].tool_calls,
+          }
+          break
+        }
+      }
+      return next
+    })
+  }
+
+  const streamAssistantResponse = async ({ legacyId, conversationId, message }) => {
+    if (abortRef.current) {
+      abortRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    abortRef.current = controller
+    setStreaming(true)
+    try {
+      const token = localStorage.getItem('access_token')
+      const response = await fetch(`${STREAM_BASE_URL}/agent/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          legacy_id: legacyId,
+          conversation_id: conversationId,
+          message,
+        }),
+        signal: controller.signal,
+      })
+
+      if (!response.ok || !response.body) {
+        throw new Error('Streaming request failed')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let fullText = ''
+
+      const processEvent = (event, data) => {
+        if (event === 'chunk') {
+          const chunk = JSON.parse(data)
+          fullText += chunk
+          applyStreamingUpdate(fullText)
+        } else if (event === 'done') {
+          const payload = JSON.parse(data)
+          applyStreamingUpdate(payload.reply?.content || fullText, {
+            finalize: true,
+            reply: payload.reply,
+          })
+          if (payload.conversation_id) {
+            setConversationId(payload.conversation_id)
+          }
+        } else if (event === 'error') {
+          const payload = JSON.parse(data)
+          throw new Error(payload?.error || 'Streaming error')
+        }
+      }
+
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        let separatorIndex = buffer.indexOf('\n\n')
+        while (separatorIndex !== -1) {
+          const rawEvent = buffer.slice(0, separatorIndex).trim()
+          buffer = buffer.slice(separatorIndex + 2)
+
+          let eventType = 'message'
+          const dataLines = []
+          rawEvent.split('\n').forEach((line) => {
+            if (line.startsWith('event:')) {
+              eventType = line.replace('event:', '').trim()
+            } else if (line.startsWith('data:')) {
+              dataLines.push(line.replace('data:', '').trim())
+            }
+          })
+
+          if (dataLines.length > 0) {
+            processEvent(eventType, dataLines.join('\n'))
+          }
+
+          separatorIndex = buffer.indexOf('\n\n')
+        }
+      }
+    } finally {
+      setStreaming(false)
+      abortRef.current = null
+    }
+  }
+
   const handleSend = async (event) => {
     event.preventDefault()
-    if (!input.trim() || !canChat || loading) return
+    if (!input.trim() || !canChat || loading || streaming) return
 
     try {
+      const trimmedInput = input.trim()
+      const timestamp = new Date().toISOString()
+      setInput('')
       setLoading(true)
       setError('')
-      const data = await chatWithAgent({
-        legacyId: activeLegacyId,
-        conversationId: conversationId || undefined,
-        message: input.trim(),
-      }, { timeout: 30000 })
-
-      const reply = data?.reply
-      const nextConversationId = data?.conversation_id || conversationId
-
-      setConversationId(nextConversationId)
       setMessages((prev) => [
         ...prev,
-        { role: 'user', content: input.trim(), created_at: new Date().toISOString() },
-        {
-          role: 'assistant',
-          content: reply?.content || 'No response received.',
-          input_tokens: reply?.input_tokens,
-          output_tokens: reply?.output_tokens,
-          tool_calls: reply?.tool_calls || null,
-          created_at: new Date().toISOString(),
-        },
+        { role: 'user', content: trimmedInput, created_at: timestamp },
+        { role: 'assistant', content: '', created_at: timestamp, is_streaming: true },
       ])
-      setInput('')
+
+      try {
+        await streamAssistantResponse({
+          legacyId: activeLegacyId,
+          conversationId: conversationId || undefined,
+          message: trimmedInput,
+        })
+      } catch (streamError) {
+        const data = await chatWithAgent({
+          legacyId: activeLegacyId,
+          conversationId: conversationId || undefined,
+          message: trimmedInput,
+        }, { timeout: 30000 })
+
+        const reply = data?.reply
+        const nextConversationId = data?.conversation_id || conversationId
+        setConversationId(nextConversationId)
+        applyStreamingUpdate(reply?.content || 'No response received.', {
+          finalize: true,
+          reply,
+        })
+      }
     } catch (requestError) {
+      setMessages((prev) => prev.filter((message) => !message.is_streaming))
       setError(requestError?.data?.error || requestError?.message || 'Failed to send message.')
     } finally {
       setLoading(false)
@@ -288,10 +417,10 @@ export default function AgentSidebar({ isOpen, onClose }) {
             disabled={!canChat || loading}
           />
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-xs text-ff-muted">Non-streaming response mode</p>
+            <p className="text-xs text-ff-muted">Streaming response mode</p>
             <button
               type="submit"
-              disabled={!canChat || loading || !input.trim()}
+              disabled={!canChat || loading || streaming || !input.trim()}
               className="rounded-full bg-ff-mint/20 px-4 py-2 text-sm font-medium text-ff-mint transition hover:bg-ff-mint/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Send

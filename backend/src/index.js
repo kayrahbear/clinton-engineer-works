@@ -85,9 +85,11 @@ const {
   getConversation,
   deleteConversation,
 } = require("./handlers/agent");
+const { buildResponse } = require("./utils/response");
 const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
 const { withAuth } = require("./middleware/auth");
+const { verifyToken } = require("./utils/jwt");
 
 const UUID_PATTERN =
   "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -144,6 +146,7 @@ const ROUTE_GOAL_COMPLETE = new RegExp(
 const ROUTE_GENERATION_TEMPLATES = /\/generation-templates\/?$/i;
 const ROUTE_GENERATION_TEMPLATE_NUMBER = /\/generation-templates\/(\d+)\/?$/i;
 const ROUTE_AGENT_CHAT = /\/agent\/chat\/?$/i;
+const ROUTE_AGENT_CHAT_STREAM = /\/agent\/chat\/stream\/?$/i;
 const ROUTE_AGENT_CONVERSATION = new RegExp(
   `\\/agent\\/conversation\\/(${UUID_PATTERN})\\/?$`,
   "i"
@@ -240,16 +243,20 @@ const parseQueryString = (rawPath) => {
   return params;
 };
 
+const getRequestMethod = (event) =>
+  event?.httpMethod || event?.requestContext?.http?.method || "";
+const getRawPath = (event) => event?.rawPath || event?.path || "";
+const getRequestPath = (event) => getRawPath(event).split("?")[0];
+
 const handler = async (event) => {
   const origin = event?.headers?.origin || event?.headers?.Origin || "";
 
-  if (event?.httpMethod === "OPTIONS") {
+  const method = getRequestMethod(event);
+  if (method === "OPTIONS") {
     return optionsResponse(origin);
   }
 
-  const rawPath = event?.path || "";
-  const path = rawPath.split("?")[0];
-  const method = event?.httpMethod || "";
+  const path = getRequestPath(event);
 
   // Health
   if (method === "GET" && path.endsWith("/health")) {
@@ -281,12 +288,12 @@ const handler = async (event) => {
   const agentConversationMatch = path.match(ROUTE_AGENT_CONVERSATION);
   if (method === "GET" && agentConversationMatch) {
     const queryParams =
-      event?.queryStringParameters || parseQueryString(rawPath);
+      event?.queryStringParameters || parseQueryString(getRawPath(event));
     return getConversation(origin, event.userId, agentConversationMatch[1], queryParams);
   }
   if (method === "DELETE" && agentConversationMatch) {
     const queryParams =
-      event?.queryStringParameters || parseQueryString(rawPath);
+      event?.queryStringParameters || parseQueryString(getRawPath(event));
     return deleteConversation(origin, event.userId, agentConversationMatch[1], queryParams);
   }
 
@@ -433,7 +440,7 @@ const handler = async (event) => {
   const legacySimsMatch = path.match(ROUTE_LEGACY_SIMS);
   if (method === "GET" && legacySimsMatch) {
     const queryParams =
-      event?.queryStringParameters || parseQueryString(rawPath);
+      event?.queryStringParameters || parseQueryString(getRawPath(event));
     return getSimsByLegacy(origin, event.userId, legacySimsMatch[1], queryParams);
   }
 
@@ -596,6 +603,117 @@ const handler = async (event) => {
   return notFound(origin);
 };
 
-module.exports = {
-  handler: withErrorHandling(withAuth(handler)),
-};
+const streamHandler =
+  globalThis?.awslambda?.streamifyResponse?.(async (event, responseStream) => {
+    const origin = event?.headers?.origin || event?.headers?.Origin || "";
+    const method = getRequestMethod(event);
+    const path = getRequestPath(event);
+
+    if (method !== "POST" || !ROUTE_AGENT_CHAT_STREAM.test(path)) {
+      responseStream.setStatusCode(404);
+      responseStream.setContentType("application/json");
+      responseStream.write(JSON.stringify({ error: "Not found" }));
+      responseStream.end();
+      return;
+    }
+
+    const authHeader =
+      event?.headers?.authorization || event?.headers?.Authorization || "";
+
+    if (!authHeader.startsWith("Bearer ")) {
+      responseStream.setStatusCode(401);
+      responseStream.setContentType("application/json");
+      responseStream.write(JSON.stringify({ error: "Authentication required" }));
+      responseStream.end();
+      return;
+    }
+
+    let decoded;
+    try {
+      decoded = await verifyToken(authHeader.slice(7));
+      if (decoded.type !== "access") {
+        responseStream.setStatusCode(401);
+        responseStream.setContentType("application/json");
+        responseStream.write(JSON.stringify({ error: "Invalid token type" }));
+        responseStream.end();
+        return;
+      }
+    } catch (error) {
+      responseStream.setStatusCode(401);
+      responseStream.setContentType("application/json");
+      responseStream.write(
+        JSON.stringify({
+          error: error.name === "TokenExpiredError" ? "Token expired" : "Invalid token",
+        })
+      );
+      responseStream.end();
+      return;
+    }
+
+    let rawBody = event?.body || "";
+    if (event?.isBase64Encoded && rawBody) {
+      rawBody = Buffer.from(rawBody, "base64").toString("utf8");
+    }
+
+    responseStream.setContentType("text/event-stream");
+    responseStream.setHeader("Cache-Control", "no-cache");
+    responseStream.setHeader("Connection", "keep-alive");
+    responseStream.setHeader(
+      "Access-Control-Allow-Origin",
+      origin || "*"
+    );
+    responseStream.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+    responseStream.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+
+    try {
+      const response = await chatWithAgent(origin, decoded.userId, rawBody);
+      const payload = response?.body ? JSON.parse(response.body) : null;
+
+      if (!response || response.statusCode >= 400 || !payload?.reply) {
+        responseStream.write(
+          `event: error\ndata: ${JSON.stringify(payload || { error: "Request failed" })}\n\n`
+        );
+        responseStream.end();
+        return;
+      }
+
+      const reply = payload.reply || {};
+      const content = reply.content || "";
+      const chunkSize = 32;
+
+      for (let i = 0; i < content.length; i += chunkSize) {
+        const chunk = content.slice(i, i + chunkSize);
+        responseStream.write(`event: chunk\ndata: ${JSON.stringify(chunk)}\n\n`);
+      }
+
+      responseStream.write(
+        `event: done\ndata: ${JSON.stringify({
+          conversation_id: payload.conversation_id,
+          reply: {
+            role: "assistant",
+            content,
+            input_tokens: reply.input_tokens ?? null,
+            output_tokens: reply.output_tokens ?? null,
+            tool_calls: reply.tool_calls || null,
+          },
+        })}\n\n`
+      );
+    } catch (error) {
+      responseStream.write(
+        `event: error\ndata: ${JSON.stringify({ error: error.message || "Streaming failed" })}\n\n`
+      );
+    } finally {
+      responseStream.end();
+    }
+  }) ||
+  (async (event) => {
+    const origin = event?.headers?.origin || event?.headers?.Origin || "";
+    return buildResponse(
+      501,
+      { error: "Streaming not supported in this environment." },
+      origin
+    );
+  });
+
+exports.handler = withErrorHandling(withAuth(handler));
+exports.streamHandler = streamHandler;

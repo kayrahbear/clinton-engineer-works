@@ -255,10 +255,20 @@ const chatWithAgent = async (origin, userId, body) => {
   let totalInputTokens = response.inputTokens;
   let totalOutputTokens = response.outputTokens;
   const allToolCalls = [];
+  const preToolTextBlocks = [];
   let round = 0;
 
   const hasToolUseBlocks = (content = []) =>
     Array.isArray(content) && content.some((block) => block.type === "tool_use");
+  const textFromBlocks = (content = []) =>
+    content
+      .filter((block) => block.type === "text")
+      .map((block) => block.text)
+      .join("");
+
+  const lastUserMessage = [...bedrockMessages].reverse().find((msg) => msg.role === "user");
+  const lastUserText = lastUserMessage ? textFromBlocks(lastUserMessage.content) : "";
+  const lastUserAskedQuestion = /\?/.test(lastUserText);
 
   // Multi-turn tool use loop (handle tool_use blocks even if stop_reason is unexpected)
   while (
@@ -266,6 +276,33 @@ const chatWithAgent = async (origin, userId, body) => {
     round < MAX_TOOL_ROUNDS
   ) {
     round++;
+
+    if (lastUserAskedQuestion && preToolTextBlocks.length === 0) {
+      const answerOnly = await bedrock.invokeWithTools({
+        messages: bedrockMessages,
+        system: systemPrompt,
+        tools: [],
+        maxTokens: DEFAULT_AGENT_MAX_TOKENS,
+      });
+      totalInputTokens += answerOnly.inputTokens;
+      totalOutputTokens += answerOnly.outputTokens;
+      const answerText = textFromBlocks(answerOnly.content).trim();
+      if (answerText) {
+        preToolTextBlocks.push(answerText);
+        bedrockMessages.push({ role: "assistant", content: answerOnly.content });
+      }
+    }
+
+    // Capture any text before tool use so it can be surfaced to the user
+    if (lastUserAskedQuestion) {
+      const toolRoundText = response.content
+        .filter((block) => block.type === "text" && block.text?.trim())
+        .map((block) => block.text.trim())
+        .join(" ");
+      if (toolRoundText) {
+        preToolTextBlocks.push(toolRoundText);
+      }
+    }
 
     // Append assistant response (with tool_use blocks) to messages
     bedrockMessages.push({ role: "assistant", content: response.content });
@@ -308,6 +345,23 @@ const chatWithAgent = async (origin, userId, body) => {
     .filter((block) => block.type === "text")
     .map((block) => block.text)
     .join("");
+  const preToolText = preToolTextBlocks.join(" ").trim();
+  if (preToolText && !finalText.includes(preToolText)) {
+    finalText = `${preToolText} ${finalText}`.trim();
+  }
+
+  const limitToThreeSentences = (text, shouldAskFollowUp) => {
+    if (!text) return text;
+    const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((s) => s.trim()) || [];
+    if (sentences.length === 0) return text.trim();
+    let limited = sentences.slice(0, 3);
+    const hasQuestion = limited.some((sentence) => sentence.endsWith("?"));
+    if (shouldAskFollowUp && !hasQuestion) {
+      limited.push("Anything else you'd like to update?");
+    }
+    return limited.join(" ");
+  };
+  finalText = limitToThreeSentences(finalText, allToolCalls.length > 0);
   if (!finalText || finalText.trim().length === 0) {
     console.warn("Agent response had no text blocks", {
       stopReason: response.stopReason,

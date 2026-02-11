@@ -108,6 +108,12 @@ const getToolDefinitions = () => [
           type: "string",
           description: "The name of a parent sim (for births/adoptions). Used to link the family relationship.",
         },
+        parent_names: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            "Names of parent sims (for births/adoptions). Use when two parents are mentioned (e.g., ['Kayla', 'Greg']).",
+        },
         traits: {
           type: "array",
           items: { type: "string" },
