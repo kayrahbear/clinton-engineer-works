@@ -3,11 +3,6 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "private_subnet_ids" {
-  description = "Private subnet IDs (for Lambda and RDS)"
-  value       = aws_subnet.private[*].id
-}
-
 output "public_subnet_ids" {
   description = "Public subnet IDs"
   value       = aws_subnet.public[*].id
@@ -73,7 +68,3 @@ output "jwt_secret_arn" {
   value       = aws_secretsmanager_secret.jwt_secret.arn
 }
 
-output "ops_instance_id" {
-  description = "Ops EC2 instance ID (SSM managed)"
-  value       = aws_instance.ops.id
-}

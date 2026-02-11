@@ -18,11 +18,6 @@ resource "aws_lambda_function" "api" {
 
   role = aws_iam_role.lambda_execution.arn
 
-  vpc_config {
-    subnet_ids         = aws_subnet.private[*].id
-    security_group_ids = [aws_security_group.lambda.id]
-  }
-
   environment {
     variables = {
       NODE_ENV            = var.environment
@@ -34,7 +29,6 @@ resource "aws_lambda_function" "api" {
 
   depends_on = [
     aws_iam_role_policy_attachment.lambda_basic,
-    aws_iam_role_policy_attachment.lambda_vpc,
   ]
 }
 

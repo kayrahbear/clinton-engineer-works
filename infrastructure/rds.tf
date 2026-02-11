@@ -1,7 +1,7 @@
 # RDS subnet group (requires at least 2 AZs)
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-${var.environment}-db-subnet"
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = aws_subnet.database[*].id
 
   tags = {
     Name = "${var.project_name}-${var.environment}-db-subnet-group"
@@ -33,7 +33,7 @@ resource "aws_db_instance" "main" {
   # Networking
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  publicly_accessible    = false
+  publicly_accessible    = true
   multi_az               = var.environment == "prod"
 
   # Backup
@@ -67,6 +67,11 @@ resource "aws_db_parameter_group" "main" {
   parameter {
     name  = "log_min_duration_statement"
     value = "1000" # Log queries taking more than 1 second
+  }
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "1"
   }
 
   lifecycle {

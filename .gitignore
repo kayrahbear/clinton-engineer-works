@@ -20,6 +20,7 @@ out/
 infrastructure/.terraform/
 infrastructure/.terraform.lock.hcl
 infrastructure/*.tfstate
+infrastructure/*.tfstate.*.backup
 infrastructure/*.tfstate.backup
 infrastructure/*.tfvars
 infrastructure/.build/
