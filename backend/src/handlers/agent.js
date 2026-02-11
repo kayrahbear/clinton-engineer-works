@@ -4,8 +4,25 @@ const { parseBody, isValidUuid } = require("../utils/validation");
 const { verifyLegacyOwnership } = require("../utils/authorization");
 const { BedrockService } = require("../services/bedrock");
 const { buildLegacyContext } = require("../services/context-builder");
+const { getToolDefinitions } = require("../services/tool-definitions");
+const { ToolExecutor } = require("../services/tool-executor");
 
 const MESSAGE_LIMIT = 8000;
+const MAX_TOOL_ROUNDS = 5;
+const CONVERSATION_HISTORY_LIMIT = 20;
+
+const toContentBlocks = (content) => {
+  if (Array.isArray(content)) {
+    return content;
+  }
+  if (typeof content === "string") {
+    return [{ type: "text", text: content }];
+  }
+  if (content === null || content === undefined) {
+    return [{ type: "text", text: "" }];
+  }
+  return [{ type: "text", text: JSON.stringify(content) }];
+};
 
 const validateMessage = (message) => {
   if (!message || typeof message !== "string" || message.trim().length === 0) {
@@ -59,7 +76,7 @@ const getConversation = async (origin, userId, legacyId, queryParams = {}) => {
   const conversation = conversationResult.rows[0];
 
   const messagesResult = await pool.query(
-    `SELECT message_id, role, content, input_tokens, output_tokens, created_at
+    `SELECT message_id, role, content, input_tokens, output_tokens, tool_calls, created_at
      FROM messages
      WHERE conversation_id = $1
      ORDER BY created_at ASC`,
@@ -74,6 +91,47 @@ const getConversation = async (origin, userId, legacyId, queryParams = {}) => {
     },
     origin
   );
+};
+
+const deleteConversation = async (origin, userId, legacyId, queryParams = {}) => {
+  if (!isValidUuid(legacyId)) {
+    return buildResponse(400, { error: "legacyId must be a valid UUID" }, origin);
+  }
+
+  if (!(await verifyLegacyOwnership(legacyId, userId))) {
+    return buildResponse(404, { error: "Legacy not found" }, origin);
+  }
+
+  const conversationId = queryParams.conversation_id;
+  if (conversationId && !isValidUuid(conversationId)) {
+    return buildResponse(400, { error: "conversation_id must be a valid UUID" }, origin);
+  }
+
+  const pool = await getPool();
+  let targetId = conversationId;
+
+  if (!targetId) {
+    const latest = await pool.query(
+      `SELECT conversation_id
+       FROM conversations
+       WHERE legacy_id = $1 AND user_id = $2
+       ORDER BY updated_at DESC
+       LIMIT 1`,
+      [legacyId, userId]
+    );
+    if (latest.rows.length === 0) {
+      return buildResponse(200, { deleted: false, message: "No conversation to delete" }, origin);
+    }
+    targetId = latest.rows[0].conversation_id;
+  }
+
+  const result = await pool.query(
+    `DELETE FROM conversations
+     WHERE conversation_id = $1 AND legacy_id = $2 AND user_id = $3`,
+    [targetId, legacyId, userId]
+  );
+
+  return buildResponse(200, { deleted: result.rowCount > 0 }, origin);
 };
 
 const chatWithAgent = async (origin, userId, body) => {
@@ -104,6 +162,7 @@ const chatWithAgent = async (origin, userId, body) => {
   const pool = await getPool();
   let conversationId = conversation_id;
 
+  // Get or create conversation
   if (conversationId) {
     const existing = await pool.query(
       `SELECT conversation_id
@@ -124,6 +183,7 @@ const chatWithAgent = async (origin, userId, body) => {
     conversationId = conversationResult.rows[0].conversation_id;
   }
 
+  // Save user message
   await pool.query(
     `INSERT INTO messages (conversation_id, role, content)
      VALUES ($1, 'user', $2)`,
@@ -137,22 +197,131 @@ const chatWithAgent = async (origin, userId, body) => {
     [conversationId]
   );
 
+  // Build legacy context
   const contextResult = await buildLegacyContext(legacy_id, userId);
   if (!contextResult) {
     return buildResponse(404, { error: "Legacy not found" }, origin);
   }
 
+  // Load conversation history for Bedrock
+  const historyResult = await pool.query(
+    `SELECT role, content
+     FROM messages
+     WHERE conversation_id = $1
+     ORDER BY created_at ASC
+     LIMIT $2`,
+    [conversationId, CONVERSATION_HISTORY_LIMIT]
+  );
+
+  const bedrockMessages = historyResult.rows.map((row) => ({
+    role: row.role,
+    content: toContentBlocks(row.content),
+  }));
+
+  // Initialize Bedrock and tools
   const bedrock = new BedrockService();
-  const response = await bedrock.invokeModel({
-    systemPrompt: contextResult.systemPrompt,
-    userPrompt: message,
-    contextText: contextResult.contextText,
+  const toolDefs = getToolDefinitions();
+  const toolExecutor = new ToolExecutor(legacy_id, userId);
+  const systemPrompt = bedrock.buildSystemPrompt(
+    contextResult.systemPrompt,
+    contextResult.contextText
+  );
+
+  // First Bedrock call with tools
+  let response = await bedrock.invokeWithTools({
+    messages: bedrockMessages,
+    system: systemPrompt,
+    tools: toolDefs,
   });
 
+  if (!response.content || response.content.length === 0) {
+    const lastUserMessage = [...bedrockMessages].reverse().find((msg) => msg.role === "user");
+    if (lastUserMessage) {
+      console.warn("Empty Bedrock response; retrying with last user message only");
+      response = await bedrock.invokeWithTools({
+        messages: [lastUserMessage],
+        system: systemPrompt,
+        tools: toolDefs,
+      });
+    }
+  }
+
+  let totalInputTokens = response.inputTokens;
+  let totalOutputTokens = response.outputTokens;
+  const allToolCalls = [];
+  let round = 0;
+
+  const hasToolUseBlocks = (content = []) =>
+    Array.isArray(content) && content.some((block) => block.type === "tool_use");
+
+  // Multi-turn tool use loop (handle tool_use blocks even if stop_reason is unexpected)
+  while (
+    (response.stopReason === "tool_use" || hasToolUseBlocks(response.content)) &&
+    round < MAX_TOOL_ROUNDS
+  ) {
+    round++;
+
+    // Append assistant response (with tool_use blocks) to messages
+    bedrockMessages.push({ role: "assistant", content: response.content });
+
+    // Execute each tool call in the response
+    const toolResults = [];
+    for (const block of response.content) {
+      if (block.type === "tool_use") {
+        const result = await toolExecutor.execute(block.name, block.input);
+        allToolCalls.push({
+          name: block.name,
+          input: block.input,
+          result,
+        });
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: block.id,
+          content: JSON.stringify(result),
+        });
+      }
+    }
+
+    // Append tool results as user message
+    bedrockMessages.push({ role: "user", content: toolResults });
+
+    // Call Bedrock again with updated conversation
+    response = await bedrock.invokeWithTools({
+      messages: bedrockMessages,
+      system: systemPrompt,
+      tools: toolDefs,
+    });
+
+    totalInputTokens += response.inputTokens;
+    totalOutputTokens += response.outputTokens;
+  }
+
+  // Extract final text response
+  let finalText = response.content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+  if (!finalText || finalText.trim().length === 0) {
+    console.warn("Agent response had no text blocks", {
+      stopReason: response.stopReason,
+      content: response.content,
+    });
+    finalText =
+      "I received your message, but I couldn't generate a readable response. " +
+      "Please try again or rephrase your request.";
+  }
+
+  // Save assistant response with tool call metadata
   await pool.query(
-    `INSERT INTO messages (conversation_id, role, content, input_tokens, output_tokens)
-     VALUES ($1, 'assistant', $2, $3, $4)`,
-    [conversationId, response.text, response.inputTokens, response.outputTokens]
+    `INSERT INTO messages (conversation_id, role, content, input_tokens, output_tokens, tool_calls)
+     VALUES ($1, 'assistant', $2, $3, $4, $5)`,
+    [
+      conversationId,
+      finalText,
+      totalInputTokens,
+      totalOutputTokens,
+      allToolCalls.length > 0 ? JSON.stringify(allToolCalls) : null,
+    ]
   );
 
   await pool.query(
@@ -168,10 +337,11 @@ const chatWithAgent = async (origin, userId, body) => {
       conversation_id: conversationId,
       reply: {
         role: "assistant",
-        content: response.text,
-        input_tokens: response.inputTokens,
-        output_tokens: response.outputTokens,
+        content: finalText,
+        input_tokens: totalInputTokens,
+        output_tokens: totalOutputTokens,
         model_id: response.modelId,
+        tool_calls: allToolCalls,
       },
     },
     origin
@@ -180,5 +350,6 @@ const chatWithAgent = async (origin, userId, body) => {
 
 module.exports = {
   getConversation,
+  deleteConversation,
   chatWithAgent,
 };

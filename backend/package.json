@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "node src/dev-server.js",
     "build": "node scripts/build-lambda.js",
+    "deploy": "node scripts/deploy-lambda.js",
+    "deploy:dev": "node scripts/deploy-lambda.js",
     "package": "npm run build",
     "db:migrate": "node ../database/scripts/migrate.js up",
     "db:migrate:status": "node ../database/scripts/migrate.js status",

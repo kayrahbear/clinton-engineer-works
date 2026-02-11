@@ -83,6 +83,7 @@ const {
 const {
   chatWithAgent,
   getConversation,
+  deleteConversation,
 } = require("./handlers/agent");
 const { getCorsHeaders } = require("./middleware/cors");
 const { withErrorHandling } = require("./middleware/error-handler");
@@ -282,6 +283,11 @@ const handler = async (event) => {
     const queryParams =
       event?.queryStringParameters || parseQueryString(rawPath);
     return getConversation(origin, event.userId, agentConversationMatch[1], queryParams);
+  }
+  if (method === "DELETE" && agentConversationMatch) {
+    const queryParams =
+      event?.queryStringParameters || parseQueryString(rawPath);
+    return deleteConversation(origin, event.userId, agentConversationMatch[1], queryParams);
   }
 
   // Reference data

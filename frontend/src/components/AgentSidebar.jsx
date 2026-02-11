@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { chatWithAgent, getAgentConversation } from '../api'
+import { chatWithAgent, clearAgentConversation, getAgentConversation } from '../api'
 import { useActiveLegacy } from '../context/useActiveLegacy'
 
 export default function AgentSidebar({ isOpen, onClose }) {
@@ -9,6 +9,7 @@ export default function AgentSidebar({ isOpen, onClose }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [clearing, setClearing] = useState(false)
   const [error, setError] = useState('')
 
   const canChat = useMemo(() => !legacyLoading && Boolean(activeLegacyId), [legacyLoading, activeLegacyId])
@@ -28,9 +29,8 @@ export default function AgentSidebar({ isOpen, onClose }) {
       try {
         setLoading(true)
         setError('')
-        const response = await getAgentConversation(activeLegacyId)
+        const data = await getAgentConversation(activeLegacyId)
         if (!isMounted) return
-        const data = response.data || {}
         const convo = data.conversation
         setConversationId(convo?.conversation_id || '')
         setMessages(data.messages || [])
@@ -56,14 +56,14 @@ export default function AgentSidebar({ isOpen, onClose }) {
     try {
       setLoading(true)
       setError('')
-      const response = await chatWithAgent({
+      const data = await chatWithAgent({
         legacyId: activeLegacyId,
         conversationId: conversationId || undefined,
         message: input.trim(),
-      })
+      }, { timeout: 30000 })
 
-      const reply = response.data?.reply
-      const nextConversationId = response.data?.conversation_id || conversationId
+      const reply = data?.reply
+      const nextConversationId = data?.conversation_id || conversationId
 
       setConversationId(nextConversationId)
       setMessages((prev) => [
@@ -74,6 +74,7 @@ export default function AgentSidebar({ isOpen, onClose }) {
           content: reply?.content || 'No response received.',
           input_tokens: reply?.input_tokens,
           output_tokens: reply?.output_tokens,
+          tool_calls: reply?.tool_calls || null,
           created_at: new Date().toISOString(),
         },
       ])
@@ -82,6 +83,23 @@ export default function AgentSidebar({ isOpen, onClose }) {
       setError(requestError?.data?.error || requestError?.message || 'Failed to send message.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleClear = async () => {
+    if (!canChat || clearing) return
+    try {
+      setClearing(true)
+      setError('')
+      await clearAgentConversation(activeLegacyId, {
+        conversation_id: conversationId || undefined,
+      })
+      setConversationId('')
+      setMessages([])
+    } catch (requestError) {
+      setError(requestError?.data?.error || requestError?.message || 'Failed to clear chat.')
+    } finally {
+      setClearing(false)
     }
   }
 
@@ -147,8 +165,8 @@ export default function AgentSidebar({ isOpen, onClose }) {
         />
       )}
       <aside
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-ff-border/70 bg-ff-surface/95 backdrop-blur transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-ff-border/70 bg-ff-surface/95 backdrop-blur transition-transform duration-300 md:left-0 md:right-auto ${
+          isOpen ? 'translate-x-0' : 'translate-x-full md:-translate-x-full'
         }`}
         aria-hidden={!isOpen}
       >
@@ -157,16 +175,26 @@ export default function AgentSidebar({ isOpen, onClose }) {
             <p className="text-xs uppercase tracking-[0.2em] text-ff-muted">AI Agent</p>
             <h2 className="text-lg font-semibold text-ff-text">Legacy companion</h2>
           </div>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="rounded-full border border-ff-border/60 px-3 py-1 text-sm text-ff-muted transition hover:text-ff-text"
-          >
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={!messages.length || clearing}
+              className="rounded-full border border-ff-border/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-ff-muted transition hover:text-ff-text disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {clearing ? 'Clearing...' : 'Clear'}
+            </button>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="rounded-full border border-ff-border/60 px-3 py-1 text-sm text-ff-muted transition hover:text-ff-text"
+            >
+              Close
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="relative flex-1 overflow-y-auto px-5 py-4">
           {legacyLoading && <p className="text-sm text-ff-muted">Loading legacy context...</p>}
           {!legacyLoading && !activeLegacyId && (
             <p className="text-sm text-ff-muted">
@@ -180,7 +208,8 @@ export default function AgentSidebar({ isOpen, onClose }) {
           )}
           {messages.length === 0 && canChat && !loading && !error && (
             <p className="text-sm text-ff-muted">
-              Start a conversation. Ask for a summary, goal suggestions, or story ideas.
+              Start a conversation. Ask for a summary, describe your play session, or tell me what
+              happened in your game and I'll update your data automatically!
             </p>
           )}
           <div className="space-y-4">
@@ -198,6 +227,24 @@ export default function AgentSidebar({ isOpen, onClose }) {
                 </p>
                 <div className="mt-2 text-sm text-ff-text">{renderMarkdown(message.content)}</div>
                 {message.role === 'assistant' &&
+                  message.tool_calls &&
+                  message.tool_calls.length > 0 && (
+                    <details className="mt-3 rounded-lg border border-ff-border/40 bg-ff-border/10 px-3 py-2">
+                      <summary className="cursor-pointer text-xs font-medium text-ff-muted">
+                        Updated {message.tool_calls.length} item
+                        {message.tool_calls.length !== 1 ? 's' : ''}
+                      </summary>
+                      <ul className="mt-2 space-y-1 text-xs text-ff-muted">
+                        {message.tool_calls.map((tool, toolIndex) => (
+                          <li key={toolIndex} className="flex items-start gap-1.5">
+                            <span>{tool.result?.success ? '\u2705' : '\u274c'}</span>
+                            <span>{tool.result?.message || tool.result?.error || tool.name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                {message.role === 'assistant' &&
                   (message.input_tokens || message.output_tokens) && (
                     <p className="mt-3 text-xs text-ff-muted">
                       Tokens: in {message.input_tokens ?? 0} · out {message.output_tokens ?? 0}
@@ -206,6 +253,22 @@ export default function AgentSidebar({ isOpen, onClose }) {
               </div>
             ))}
           </div>
+          {loading && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-ff-surface/80 text-ff-text backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <span className="h-8 w-8 animate-spin rounded-full border-2 border-ff-mint/30 border-t-ff-mint" />
+                <div>
+                  <p className="text-sm font-semibold">Thinking...</p>
+                  <p className="text-xs text-ff-muted">Searching legacy context and tools</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:150ms]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-ff-mint [animation-delay:300ms]" />
+              </div>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSend} className="border-t border-ff-border/60 px-5 py-4">
@@ -221,9 +284,7 @@ export default function AgentSidebar({ isOpen, onClose }) {
             disabled={!canChat || loading}
           />
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-xs text-ff-muted">
-              {loading ? 'Thinking...' : 'Non-streaming response mode'}
-            </p>
+            <p className="text-xs text-ff-muted">Non-streaming response mode</p>
             <button
               type="submit"
               disabled={!canChat || loading || !input.trim()}

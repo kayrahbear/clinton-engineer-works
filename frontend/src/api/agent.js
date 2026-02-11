@@ -15,9 +15,12 @@ const buildQueryString = (params = {}) => {
 export const getAgentConversation = (legacyId, params) =>
   apiClient.get(`/agent/conversation/${legacyId}${buildQueryString(params)}`)
 
-export const chatWithAgent = ({ legacyId, conversationId, message }) =>
+export const clearAgentConversation = (legacyId, params) =>
+  apiClient.delete(`/agent/conversation/${legacyId}${buildQueryString(params)}`)
+
+export const chatWithAgent = ({ legacyId, conversationId, message }, options = {}) =>
   apiClient.post('/agent/chat', {
     legacy_id: legacyId,
     conversation_id: conversationId,
     message,
-  })
+  }, options)
