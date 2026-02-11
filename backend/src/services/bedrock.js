@@ -1,38 +1,82 @@
+const { BedrockRuntimeClient, InvokeModelCommand } = require("@aws-sdk/client-bedrock-runtime");
+
 const DEFAULT_MODEL_ID =
-  process.env.BEDROCK_MODEL_ID || "anthropic.claude-3-5-sonnet-20241022-v2:0";
+  process.env.BEDROCK_MODEL_ID || "us.anthropic.claude-3-5-sonnet-20240620-v1:0";
+const DEFAULT_INFERENCE_PROFILE_ARN =
+  process.env.BEDROCK_INFERENCE_PROFILE_ARN || "";
+const DEFAULT_MAX_TOKENS = Number.parseInt(process.env.BEDROCK_MAX_TOKENS || "800", 10);
+const DEFAULT_TEMPERATURE = Number.parseFloat(process.env.BEDROCK_TEMPERATURE || "0.7");
 
 class BedrockService {
   constructor({ modelId, region } = {}) {
     this.modelId = modelId || DEFAULT_MODEL_ID;
     this.region = region || process.env.AWS_REGION || "us-east-1";
+    this.client = new BedrockRuntimeClient({ region: this.region });
   }
 
-  estimateTokens(text) {
-    if (!text || typeof text !== "string") {
-      return 0;
+  buildSystemPrompt(systemPrompt, contextText) {
+    if (!contextText) {
+      return systemPrompt || "";
     }
-    return Math.max(1, Math.ceil(text.length / 4));
+    if (!systemPrompt) {
+      return `Legacy context:\n${contextText}`;
+    }
+    return `${systemPrompt}\n\nLegacy context:\n${contextText}`;
   }
 
-  async invokeModel({ systemPrompt, userPrompt, contextText } = {}) {
-    const prompt = [systemPrompt, contextText, userPrompt]
-      .filter(Boolean)
-      .join("\n\n");
+  extractText(responseBody) {
+    if (!responseBody || !Array.isArray(responseBody.content)) {
+      return "";
+    }
+    return responseBody.content
+      .filter((block) => block.type === "text")
+      .map((block) => block.text)
+      .join("");
+  }
 
-    const inputTokens = this.estimateTokens(prompt);
+  async invokeModel({ systemPrompt, userPrompt, contextText, options = {} } = {}) {
+    const maxTokens =
+      Number.isFinite(options.maxTokens) ? options.maxTokens : DEFAULT_MAX_TOKENS;
+    const temperature =
+      Number.isFinite(options.temperature) ? options.temperature : DEFAULT_TEMPERATURE;
 
-    const responseText =
-      "Stubbed response: Bedrock integration is not wired yet. " +
-      "Your message was received and recorded.";
+    const payload = {
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: maxTokens,
+      temperature,
+      system: this.buildSystemPrompt(systemPrompt, contextText),
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: userPrompt || "",
+            },
+          ],
+        },
+      ],
+    };
 
-    const outputTokens = this.estimateTokens(responseText);
+    const modelTarget = DEFAULT_INFERENCE_PROFILE_ARN || this.modelId;
+
+    const command = new InvokeModelCommand({
+      modelId: modelTarget,
+      contentType: "application/json",
+      accept: "application/json",
+      body: JSON.stringify(payload),
+    });
+
+    const response = await this.client.send(command);
+    const decoded = new TextDecoder().decode(response.body);
+    const responseBody = JSON.parse(decoded);
 
     return {
-      text: responseText,
-      inputTokens,
-      outputTokens,
-      modelId: this.modelId,
-      provider: "stub",
+      text: this.extractText(responseBody),
+      inputTokens: responseBody.usage?.input_tokens ?? null,
+      outputTokens: responseBody.usage?.output_tokens ?? null,
+      modelId: modelTarget,
+      provider: "bedrock",
     };
   }
 }

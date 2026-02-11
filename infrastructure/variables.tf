@@ -108,3 +108,15 @@ variable "lambda_timeout" {
   default     = 30
 }
 
+# Bedrock
+variable "bedrock_model_id" {
+  description = "Bedrock model ID to use for AI agent"
+  type        = string
+  default     = "anthropic.claude-3-5-sonnet-20241022-v2:0"
+}
+
+variable "bedrock_max_tokens" {
+  description = "Max tokens for Bedrock responses"
+  type        = number
+  default     = 800
+}

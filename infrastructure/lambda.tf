@@ -24,6 +24,8 @@ resource "aws_lambda_function" "api" {
       DB_SECRET_ARN       = aws_secretsmanager_secret.db_credentials.arn
       JWT_SECRET_ARN      = aws_secretsmanager_secret.jwt_secret.arn
       CORS_ALLOWED_ORIGIN = var.environment == "prod" ? "https://your-domain.com" : "*"
+      BEDROCK_MODEL_ID    = var.bedrock_model_id
+      BEDROCK_MAX_TOKENS  = var.bedrock_max_tokens
     }
   }
 

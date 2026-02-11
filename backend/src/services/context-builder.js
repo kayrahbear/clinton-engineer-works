@@ -81,12 +81,14 @@ const summarizeRequirements = (traits = [], careers = []) => {
   return lines.join("\n");
 };
 
-const summarizeMilestones = (summary, recent) => {
+const summarizeMilestones = (summary, recent, scopeLabel) => {
   if (!summary || summary.total === 0) {
-    return "No milestones recorded yet.";
+    return `No milestones recorded yet${scopeLabel ? ` (${scopeLabel})` : ""}.`;
   }
 
-  const lines = [`Milestones achieved: ${summary.total}.`];
+  const lines = [
+    `Milestones achieved${scopeLabel ? ` (${scopeLabel})` : ""}: ${summary.total}.`,
+  ];
   if (summary.byCategory.length > 0) {
     const categoryLine = summary.byCategory
       .map((row) => `${row.category}: ${row.count}`)
@@ -243,7 +245,7 @@ const buildLegacyContext = async (legacyId, userId) => {
      FROM sim_milestones sm
      JOIN sims s ON sm.sim_id = s.sim_id
      JOIN milestones m ON sm.milestone_id = m.milestone_id
-     WHERE s.legacy_id = $1
+     WHERE s.legacy_id = $1 AND s.current_household = TRUE
      GROUP BY m.category
      ORDER BY count DESC`,
     [legacyId]
@@ -262,7 +264,7 @@ const buildLegacyContext = async (legacyId, userId) => {
      FROM sim_milestones sm
      JOIN sims s ON sm.sim_id = s.sim_id
      JOIN milestones m ON sm.milestone_id = m.milestone_id
-     WHERE s.legacy_id = $1
+     WHERE s.legacy_id = $1 AND s.current_household = TRUE
      ORDER BY sm.achieved_date DESC NULLS LAST, sm.created_at DESC
      LIMIT 8`,
     [legacyId]
@@ -274,6 +276,12 @@ const buildLegacyContext = async (legacyId, userId) => {
       activeGeneration.generation_number
     );
     if (packRules) {
+      const requiredExamples = (packRules.required_goals || [])
+        .slice(0, 2)
+        .map((goal) => goal.goal_text);
+      const optionalExamples = (packRules.optional_goals || [])
+        .slice(0, 2)
+        .map((goal) => goal.goal_text);
       const goalsCount =
         (packRules.required_goals?.length || 0) +
         (packRules.optional_goals?.length || 0);
@@ -283,6 +291,12 @@ const buildLegacyContext = async (legacyId, userId) => {
         `${packRules.required_traits?.length || 0} required traits` +
         (packRules.required_career ? `, career ${packRules.required_career}` : "") +
         ".";
+      if (requiredExamples.length > 0) {
+        packLegacySummary += ` Example required goals: ${requiredExamples.join("; ")}.`;
+      }
+      if (optionalExamples.length > 0) {
+        packLegacySummary += ` Example optional goals: ${optionalExamples.join("; ")}.`;
+      }
     }
   }
 
@@ -319,7 +333,8 @@ const buildLegacyContext = async (legacyId, userId) => {
           total: milestoneTotal,
           byCategory: milestoneSummaryResult.rows,
         },
-        recentMilestonesResult.rows
+        recentMilestonesResult.rows,
+        "current household"
       ),
     }),
   };

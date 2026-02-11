@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 # IAM role for Lambda execution
 resource "aws_iam_role" "lambda_execution" {
   name = "${var.project_name}-${var.environment}-lambda-role"
@@ -83,6 +85,29 @@ resource "aws_iam_role_policy" "lambda_s3" {
         ]
         Resource = [
           "${aws_s3_bucket.lambda_deployments.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Bedrock invoke access for Lambda
+resource "aws_iam_role_policy" "lambda_bedrock" {
+  name = "${var.project_name}-${var.environment}-lambda-bedrock"
+  role = aws_iam_role.lambda_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = [
+          "arn:aws:bedrock:*::foundation-model/${replace(var.bedrock_model_id, "/^[a-z]+\\./", "")}",
+          "arn:aws:bedrock:${var.aws_region}:${data.aws_caller_identity.current.account_id}:inference-profile/${var.bedrock_model_id}"
         ]
       }
     ]
