@@ -8,10 +8,17 @@ const { getToolDefinitions } = require("../services/tool-definitions");
 const { ToolExecutor } = require("../services/tool-executor");
 
 const MESSAGE_LIMIT = 8000;
+const SUGGEST_GOALS_FOCUS_LIMIT = 500;
 const MAX_TOOL_ROUNDS = 5;
 const CONVERSATION_HISTORY_LIMIT = 20;
 const DEFAULT_AGENT_MAX_TOKENS = Number.parseInt(
   process.env.BEDROCK_AGENT_MAX_TOKENS || "600",
+  10
+);
+const DEFAULT_SUGGEST_GOALS_COUNT = 5;
+const MAX_SUGGEST_GOALS_COUNT = 10;
+const SUGGEST_GOALS_MAX_TOKENS = Number.parseInt(
+  process.env.BEDROCK_SUGGEST_GOALS_MAX_TOKENS || "450",
   10
 );
 
@@ -413,8 +420,94 @@ const chatWithAgent = async (origin, userId, body) => {
   );
 };
 
+const suggestGoals = async (origin, userId, body) => {
+  const parsed = parseBody(body);
+  if (!parsed) {
+    return buildResponse(400, { error: "Invalid or missing JSON body" }, origin);
+  }
+
+  const { legacy_id, focus, count } = parsed;
+
+  if (!legacy_id || !isValidUuid(legacy_id)) {
+    return buildResponse(400, { error: "legacy_id is required and must be a valid UUID" }, origin);
+  }
+
+  if (focus !== undefined && (typeof focus !== "string" || focus.length > SUGGEST_GOALS_FOCUS_LIMIT)) {
+    return buildResponse(
+      400,
+      { error: `focus must be a string with ${SUGGEST_GOALS_FOCUS_LIMIT} characters or fewer` },
+      origin
+    );
+  }
+
+  if (
+    count !== undefined &&
+    (!Number.isInteger(count) || count < 1 || count > MAX_SUGGEST_GOALS_COUNT)
+  ) {
+    return buildResponse(
+      400,
+      { error: `count must be an integer between 1 and ${MAX_SUGGEST_GOALS_COUNT}` },
+      origin
+    );
+  }
+
+  if (!(await verifyLegacyOwnership(legacy_id, userId))) {
+    return buildResponse(404, { error: "Legacy not found" }, origin);
+  }
+
+  const contextResult = await buildLegacyContext(legacy_id, userId);
+  if (!contextResult) {
+    return buildResponse(404, { error: "Legacy not found" }, origin);
+  }
+
+  const requestedCount = count || DEFAULT_SUGGEST_GOALS_COUNT;
+  const focusText = typeof focus === "string" ? focus.trim() : "";
+  const focusInstruction = focusText
+    ? `Player focus request: ${focusText}\n`
+    : "";
+
+  const prompt =
+    `Suggest exactly ${requestedCount} concrete next goals for this Sims legacy.\n` +
+    "Prioritize incomplete required generation goals first, then optional goals, then story-driven progression ideas.\n" +
+    "Each suggestion should be specific, short, and practical for the next play session.\n" +
+    "Format output as a numbered markdown list where each item has:\n" +
+    "- Goal title\n" +
+    "- One-sentence reason tied to current context\n" +
+    "- A short 'How to do it' action step\n" +
+    focusInstruction +
+    "If context is missing, make a best effort and note assumptions briefly.";
+
+  const bedrock = new BedrockService();
+  const result = await bedrock.invokeModel({
+    systemPrompt: contextResult.systemPrompt,
+    contextText: contextResult.contextText,
+    userPrompt: prompt,
+    options: {
+      maxTokens: SUGGEST_GOALS_MAX_TOKENS,
+      temperature: 0.6,
+    },
+  });
+
+  return buildResponse(
+    200,
+    {
+      suggestions: result.text,
+      count: requestedCount,
+      focus: focusText || null,
+      usage: {
+        input_tokens: result.inputTokens,
+        output_tokens: result.outputTokens,
+        model_id: result.modelId,
+        provider: result.provider,
+      },
+    },
+    origin
+  );
+};
+
 module.exports = {
   getConversation,
   deleteConversation,
   chatWithAgent,
+  suggestGoals,
 };

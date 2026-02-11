@@ -24,3 +24,10 @@ export const chatWithAgent = ({ legacyId, conversationId, message }, options = {
     conversation_id: conversationId,
     message,
   }, options)
+
+export const suggestAgentGoals = ({ legacyId, focus, count }, options = {}) =>
+  apiClient.post('/agent/suggest-goals', {
+    legacy_id: legacyId,
+    focus,
+    count,
+  }, options)

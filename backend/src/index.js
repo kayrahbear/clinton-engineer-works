@@ -84,6 +84,7 @@ const {
   chatWithAgent,
   getConversation,
   deleteConversation,
+  suggestGoals,
 } = require("./handlers/agent");
 const { buildResponse } = require("./utils/response");
 const { getCorsHeaders } = require("./middleware/cors");
@@ -146,6 +147,7 @@ const ROUTE_GOAL_COMPLETE = new RegExp(
 const ROUTE_GENERATION_TEMPLATES = /\/generation-templates\/?$/i;
 const ROUTE_GENERATION_TEMPLATE_NUMBER = /\/generation-templates\/(\d+)\/?$/i;
 const ROUTE_AGENT_CHAT = /\/agent\/chat\/?$/i;
+const ROUTE_AGENT_SUGGEST_GOALS = /\/agent\/suggest-goals\/?$/i;
 const ROUTE_AGENT_CHAT_STREAM = /\/agent\/chat\/stream\/?$/i;
 const ROUTE_AGENT_CONVERSATION = new RegExp(
   `\\/agent\\/conversation\\/(${UUID_PATTERN})\\/?$`,
@@ -283,6 +285,9 @@ const handler = async (event) => {
   // Agent routes
   if (method === "POST" && ROUTE_AGENT_CHAT.test(path)) {
     return chatWithAgent(origin, event.userId, event?.body);
+  }
+  if (method === "POST" && ROUTE_AGENT_SUGGEST_GOALS.test(path)) {
+    return suggestGoals(origin, event.userId, event?.body);
   }
 
   const agentConversationMatch = path.match(ROUTE_AGENT_CONVERSATION);
