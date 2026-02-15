@@ -24,6 +24,40 @@ resource "aws_lambda_function" "api" {
       DB_SECRET_ARN       = aws_secretsmanager_secret.db_credentials.arn
       JWT_SECRET_ARN      = aws_secretsmanager_secret.jwt_secret.arn
       CORS_ALLOWED_ORIGIN = var.environment == "prod" ? "https://your-domain.com" : "*"
+      BEDROCK_MODEL_ID    = var.bedrock_model_id
+      BEDROCK_MAX_TOKENS  = var.bedrock_max_tokens
+    }
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_basic,
+  ]
+}
+
+# Lambda function for streaming endpoints (response streaming enabled via handler)
+resource "aws_lambda_function" "api_stream" {
+  function_name = "${var.project_name}-${var.environment}-api-stream"
+  description   = "Sims Legacy Tracker API streaming handler"
+
+  s3_bucket        = aws_s3_bucket.lambda_deployments.bucket
+  s3_key           = aws_s3_object.lambda_placeholder.key
+  source_code_hash = data.archive_file.lambda_placeholder.output_base64sha256
+
+  runtime     = var.lambda_runtime
+  handler     = "index.streamHandler"
+  memory_size = var.lambda_memory_size
+  timeout     = var.lambda_timeout
+
+  role = aws_iam_role.lambda_execution.arn
+
+  environment {
+    variables = {
+      NODE_ENV            = var.environment
+      DB_SECRET_ARN       = aws_secretsmanager_secret.db_credentials.arn
+      JWT_SECRET_ARN      = aws_secretsmanager_secret.jwt_secret.arn
+      CORS_ALLOWED_ORIGIN = var.environment == "prod" ? "https://your-domain.com" : "*"
+      BEDROCK_MODEL_ID    = var.bedrock_model_id
+      BEDROCK_MAX_TOKENS  = var.bedrock_max_tokens
     }
   }
 
@@ -64,4 +98,13 @@ resource "aws_lambda_permission" "api_gateway" {
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
+}
+
+# HTTP API Gateway Lambda integration permission (streaming)
+resource "aws_lambda_permission" "api_gateway_stream" {
+  statement_id  = "AllowHTTPAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.api_stream.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.stream.execution_arn}/*/*"
 }

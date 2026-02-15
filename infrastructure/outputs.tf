@@ -38,6 +38,11 @@ output "api_gateway_url" {
   value       = "${aws_api_gateway_stage.main.invoke_url}/api/v1"
 }
 
+output "api_stream_gateway_url" {
+  description = "HTTP API Gateway base URL for streaming"
+  value       = "${aws_apigatewayv2_stage.stream.invoke_url}/api/v1"
+}
+
 output "api_gateway_id" {
   description = "API Gateway REST API ID"
   value       = aws_api_gateway_rest_api.main.id
@@ -67,4 +72,3 @@ output "jwt_secret_arn" {
   description = "ARN of the Secrets Manager secret containing the JWT signing key"
   value       = aws_secretsmanager_secret.jwt_secret.arn
 }
-
